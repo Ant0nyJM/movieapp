@@ -1,0 +1,15 @@
+{% extends 'movieapp/base.html'%}
+{% load widget_tweaks %}
+
+{% block title %}Signup{% endblock %}
+{% block content %}
+
+    <form method="post">
+        {% csrf_token %}
+        {% render_field form.username placeholder='Username' %}
+        {% render_field form.password1 placeholder='Password' %}
+        {% render_field form.password2 placeholder='Confirm Password' %}
+        <input type='submit' value='Signup'>
+    </form>
+
+{% endblock %}

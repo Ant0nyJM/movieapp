@@ -1,0 +1,153 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <title>{% block title %}Online Movie Database{% endblock %}</title>
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
+
+  <!-- Bootstrap core CSS -->
+  <link href="{% static 'movieapp/ecommerce_template/css/bootstrap.min.css' %}" rel="stylesheet">
+
+  <!-- Material Design Bootstrap -->
+  <link href="{% static 'movieapp/ecommerce_template/css/mdb.min.css' %}" rel="stylesheet">
+
+  <!-- Your custom styles (optional) -->
+  <link href="{% static 'movieapp/ecommerce_template/css/style.min.css' %}" rel="stylesheet">
+
+  <!-- MovieDB CSS -->
+  <link href="{% static 'movieapp/css/moviedb.css' %}" rel="stylesheet">
+  <style type="text/css">
+    html,
+    body,
+    header,
+    .carousel {
+      height: 60vh;
+    }
+
+    @media (max-width: 740px) {
+
+      html,
+      body,
+      header,
+      .carousel {
+        height: 100vh;
+      }
+    }
+
+    @media (min-width: 800px) and (max-width: 850px) {
+
+      html,
+      body,
+      header,
+      .carousel {
+        height: 100vh;
+      }
+    }
+
+
+  </style>
+</head>
+
+<body>
+
+<!--Navbar-->
+
+      
+      <nav class="navbar navbar-expand-lg navbar-dark mdb-color mb-2">
+
+          <!-- Navbar brand -->
+          <h1><span class="navbar-brand">OMDB</span></h1>
+  
+          
+          <!-- Search Form -->
+          <div class="mx-auto">
+  
+            <form class="form-inline ">
+              <div class="md-form my-0">
+                <input class="form-control mr-sm-2" type="text" placeholder="Search for movies,tv shows etc" aria-label="Search">
+              </div>
+              <button class="btn btn-primary" type="submit">Search</button>
+            </form>
+  
+            <!-- Collapse button -->
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#basicExampleNav" aria-controls="basicExampleNav" aria-expanded="false" aria-label="Toggle navigation">
+              <span class="navbar-toggler-icon"></span>
+            </button>
+  
+          </div>
+          
+  
+          
+  
+          <!-- Collapsible content -->
+          <div class="collapse navbar-collapse" style="flex-grow:0;" id="basicExampleNav">
+  
+            <!-- Links -->
+            <ul class="navbar-nav">
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'signup' %}">Signup</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'login' %}">Login</a>
+              </li>
+  
+            </ul>
+            <!-- Links -->
+  
+            
+          </div>
+          <!-- Collapsible content -->
+  
+        </nav>
+        
+
+<!--/.Navbar-->
+  
+
+  <!--Main layout-->
+  <main>
+    <div class="container">
+      {% block content %}
+
+      {% endblock %}
+    </div>
+  </main>
+  <!--Main layout-->
+
+  <!--Footer-->
+  <footer class="page-footer text-center font-small mt-4 wow fadeIn">
+
+    <!--Copyright-->
+    <div class="footer-copyright py-3">
+      © 2019 Copyright:
+      <a href="https://mdbootstrap.com/education/bootstrap/" target="_blank"> MDBootstrap.com </a>
+    </div>
+    <!--/.Copyright-->
+
+  </footer>
+  <!--/.Footer-->
+
+  <!-- SCRIPTS -->
+  <!-- JQuery -->
+  <script type="text/javascript" src="{% static 'movieapp/ecommerce_template/js/jquery-3.4.1.min.js' %}"></script>
+  <!-- Bootstrap tooltips -->
+  <script type="text/javascript" src="{% static 'movieapp/ecommerce_template/js/popper.min.js' %}"></script>
+  <!-- Bootstrap core JavaScript -->
+  <script type="text/javascript" src="{% static 'movieapp/ecommerce_template/js/bootstrap.min.js' %}"></script>
+  <!-- MDB core JavaScript -->
+  <script type="text/javascript" src="{% static 'movieapp/ecommerce_template/js/mdb.min.js' %}"></script>
+  <!-- Initializations -->
+  <script type="text/javascript">
+    // Animations initialization
+    new WOW().init();
+
+  </script>
+</body>
+
+</html>
