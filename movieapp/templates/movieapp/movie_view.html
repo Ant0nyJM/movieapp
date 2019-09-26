@@ -1,0 +1,12 @@
+{% extends 'movieapp/base.html' %}
+
+{% block title %}{{ movie.name }}{% endblock %}
+
+{% block content%}
+
+ {{ movie.name}}
+ {% if not movie.approved %}
+    Movie not approved
+ {% endif %}
+
+{% endblock %}

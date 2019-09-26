@@ -1,0 +1,25 @@
+{% extends 'movieapp/base.html' %}
+{% block title %}{{ request.user.username }}{% endblock %}
+{% block content %}
+<div class="row">
+
+
+<div class="col-xs-3">
+<ul class="nav nav-tabs tabs-left">
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'movie' %}">Movie</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="#">Link</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="#">Link</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link disabled" href="#">Disabled</a>
+        </li>
+    </ul>
+</div>
+</div>
+
+{% endblock %}

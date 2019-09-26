@@ -1,0 +1,24 @@
+{% extends 'movieapp/base.html' %}
+
+{% block title %}Search{% endblock %}
+{% block content %}
+    {% if movies %}
+        <p>{{ movies|length }} result{{ movies|pluralize }} found</p>
+        {% for movie in movies %}
+            <div class="search-result-div my-3 md-5">
+                <a href="{% url 'movie_view' movie.movie_id %}"><img class="search-result-item m-1" src="img.jpg"  style="height:4.12rem;width:auto;" ></a>
+                <div class="search-result-item">
+                    <span class="search-result-item">
+                        <h4 class="h3-responsive m-1">
+                            <a href="{% url 'movie_view' movie.movie_id %}">{{ movie.name }}</a>
+                        </h4>({{ movie.release_date.year}})
+                        
+                    </span>
+                    <small><span class="search-result-sm-text m-1 p-1">Directed By: </span><span class="search-result-sm-text m-1 p-1">Cast :</span></small>
+                </div>
+            </div>
+        {% endfor %}
+    {% else %}
+        No results found
+    {% endif %}
+{% endblock %}

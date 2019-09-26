@@ -1,0 +1,32 @@
+{% extends 'movieapp/base.html' %}
+
+{% block title %}NewHomepage{% endblock %}
+
+{% block style %}
+{% load static%}
+<link rel="stylesheet" href="{% static 'movieapp/css/newhome.css' %}" >
+<link rel='stylesheet prefetch' href='https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css'>
+{% endblock %}
+
+
+{% block content %}
+
+
+	{% for movie in movies %}
+        <div class="movie-card">
+            <div class="movie-header" style="background: url({% static 'movieapp/images/blade.jpg' %});background-size:cover">
+                <div class="header-icon-container">
+                        
+                </div>
+                
+            </div>
+            <h3 class="movie-title">{{ movie.name }}</h3>
+            
+                
+            
+        </div><!--movie-card-->
+    {% endfor %}
+        
+
+{% endblock %}
+

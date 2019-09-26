@@ -1,0 +1,26 @@
+{% extends 'movieapp/base.html' %}
+
+{% block title %}Add Movie{% endblock %}
+
+{% block scripts %}
+
+<script>
+    $(function() {
+        $( ".datepicker" ).datepicker({
+        changeMonth: true,
+        changeYear: true,
+        // You can put more options here.
+    
+        });
+    });
+</script>
+
+{% endblock %}
+
+{% block content%}
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="Create Movie">
+    </form>
+{% endblock %}

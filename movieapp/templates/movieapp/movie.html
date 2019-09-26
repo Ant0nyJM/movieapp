@@ -1,0 +1,30 @@
+{% extends 'movieapp/base.html' %}
+
+{% block title %}Movie{% endblock %}
+
+{% block content%}
+
+        <div class="col-xs-3">
+            <ul class="nav nav-tabs tabs-left">
+                <li class="nav-item">
+                    <a class="nav-link active" href="{% url 'movie' %}">Movie</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Link</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Link</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link disabled" href="#">Disabled</a>
+                </li>
+            </ul>
+        </div>
+        <div class="col-xs-9">
+            {% for movie in movies %}
+                <a class="btn btn-primary" href="{% url 'movie_view' movie.movie_id %}">{{ movie.name }}</a>
+            {% endfor %}
+            <a class="btn btn-primary" href="{% url 'movie_add' %}" value="Add Movie">Add New Movie</a>
+        </div>
+
+{% endblock %}

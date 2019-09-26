@@ -1,0 +1,89 @@
+{% extends 'movieapp/base.html' %}
+{% block title %}{{ request.user.username }} - Admin {% endblock %}
+
+{% block scripts%}
+    <script type="text/javascript">
+        function approveMovie(bt,mid){
+            $(bt).children(".aprv-status").addClass('spinner-border spinner-border-sm')
+            console.log();
+            bt.disabled = true;
+            $.ajax({
+                url : "{% url 'pending' %}",
+                method : 'post',
+                data : {'movie_id':mid},
+                success : function(retData){
+                    if(retData['approved'] === 'true'){
+                        //alert(retData['msg']);
+                        setTimeout(function(){
+                            $(bt).children(".aprv-status").removeClass('spinner-border spinner-border-sm');
+                            $(bt).parent().children(".aprvd").html('<i class="fas fa-check fa-sm"></i>');
+                        },1000);
+                        
+                        setTimeout(function(){
+                             location.reload();
+                        },1000);
+                        
+                    }
+                    else{
+                        alert("not approved");
+                    }
+                    
+
+                },
+            })
+
+        }
+    </script>
+{% endblock %}
+{% block content %}
+
+    <div class="col-xs-3">
+        <ul class="nav nav-tabs tabs-left">
+            <li class="nav-item">
+                <a class="nav-link active" href="{% url 'pending' %}">Pending</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">Link</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">Link</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link disabled" href="#">Disabled</a>
+            </li>
+        </ul>
+    </div>
+    <div class="col-xs-9">
+        {% if pending %}
+            {% for movie in pending %}
+                <div class="search-result-div m-2 md-5">
+                    <a href="{% url 'movie_view' movie.movie_id %}"><img class="search-result-item m-1" src="img.jpg"  style="height:4.12rem;width:auto;" ></a>
+                    <div class="search-result-item">
+                        <span class="search-result-item">
+                            <h4 class="h3-responsive m-1">
+                                <a href="{% url 'movie_view' movie.movie_id %}">{{ movie.name }}</a>
+                            </h4>({{ movie.release_date.year}})
+                            
+                        </span>
+                        <small><span class="search-result-sm-text m-1 p-1">Directed By: </span><span class="search-result-sm-text m-1 p-1">Cast :</span></small>
+                    </div>
+                    <div class="search-result-item">
+                        <button class="btn btn-success p-2" onclick="approveMovie(this,'{{ movie.movie_id }}')">
+                            Approve
+                            <div class="aprv-status" role="status"></div>
+                        </button>
+                        <div class="aprvd">
+
+                        </div>
+                    </div>
+                </div>
+            
+            {% endfor %}
+        {% else %}
+            No movies pending for approval
+        {% endif %}
+
+    </div>
+
+
+{% endblock %}
