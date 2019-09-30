@@ -10,7 +10,8 @@ urlpatterns = [
                 path('profile/',views.UserProfileView.as_view(),name='profile'),
                 path('profile/movie/',views.UserMovieView.as_view(),name='movie'),
                 path('profile/movie/add/',views.MovieAddView.as_view(),name='movie_add'),
-                path('profile/movie/<int:movie_id>/',views.MovieView.as_view(),name='movie_view'),
+                path('movie/<int:movie_id>/',views.MovieView.as_view(),name='movie_view'),
+                path('movie/<int:movie_id>/rate/',views.rate_movie,name="rate"),
                 path('profile/pending/',views.PendingView.as_view(),name='pending'),
                 
                 

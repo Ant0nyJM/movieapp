@@ -1,12 +1,81 @@
 {% extends 'movieapp/base.html' %}
-
+{% load static %}
 {% block title %}{{ movie.name }}{% endblock %}
+
+{% block style %}
+<link rel="stylesheet" href="{% static 'movieapp/css/movie_view.css'%}">
+{% endblock %}
 
 {% block content%}
 
- {{ movie.name}}
- {% if not movie.approved %}
-    Movie not approved
- {% endif %}
+<div class="card">
+      <div class="row">
+          <aside class="col-sm-5 border-right">
+              <article class="gallery-wrap">
+                  <div class="img-big-wrap">
+                      <div>
+                          <img src="{{ movie.image.url }}" style="margin-left: 15%;margin-top: 2%;">
+                      </div>
+                  </div>
+                  
+              </article>
+              <!-- gallery-wrap .end// -->
+          </aside>
+          <aside class="col-sm-7">
+              <article class="card-body p-5">
+                  <h2 class="title mb-3">{{ movie.name }}</h2>
+  
+                  <!-- price-detail-wrap .// -->
+                  <dl class="item-property">
+                      <dt>Director</dt>
+                      <dd>
+                          <p>adfadsfadsfadsf</p>
+                      </dd>
+                  </dl>
+                  <dl class="param param-feature">
+                      <dt>Cast</dt>
+                      <dd>dfgdfgdfg,dfgdgdgdf,dfgdfgdfg,dfgdfgdf,dfgdgd</dd>
+                  </dl>
+                  <dl class="param param-feature">
+                        <dt>Genre</dt>
+                        <dd>{{ movie.genre }}</dd>
+                  </dl>
+                  <!-- item-property-hor .// -->
+                  <dl class="param param-feature">
+                      <dt>Release Date</dt>
+                      <dd>{{ movie.release_date }}</dd>
+                  </dl>
+                  <!-- item-property-hor .// -->
+                  <dl class="param param-feature">
+                      <dt>Description</dt>
+                      <dd>{{ movie.description }}</dd>
+                  </dl>
+                  <!-- item-property-hor .// -->
+                  <dl class="param param-feature">
+                        <dt>Rating</dt>
+                        <dd>Movie Rating</dd>
+                    </dl>
+                    <hr>
+                    {% if user.is_authenticated %}
+                    <dl class="param param-feature">
+                            <dt>Rate Movie</dt>
+                            <dd><form method="post" action="{% url 'rate' movie.movie_id %}">{% csrf_token %}<input type='number' name='rating'><input type="submit" value="Rate"></form></dd>
+                    </dl>
+                    {% endif %}
+              </article>
+
+              
+              <!-- card-body.// -->
+          </aside>
+          <!-- col.// -->
+      </div>
+      <!-- row.// -->
+  </div>
+  <!-- card.// -->
+  
+  </div>
+  <!--container.//-->
+  
+
 
 {% endblock %}

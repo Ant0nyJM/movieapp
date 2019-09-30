@@ -1,6 +1,11 @@
 .search-result-div {
 
     display : flex;
+    width:40%;
+    border-style: solid;
+    border-radius: 23px;
+    padding: 5px;
+    border-color: #8a91c4;
   }
 
   .search-result-item {

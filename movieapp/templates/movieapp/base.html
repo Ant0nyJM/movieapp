@@ -67,7 +67,11 @@
 
           <!-- Navbar brand -->
           <h1><span class="navbar-brand">OMDB</span></h1>
-  
+          <div class="nav-item">
+            <div class="nav-link">
+              <a class="nav-link" href="{% url 'home' %}">Home</a>
+            </div>
+          </div>
           
           <!-- Search Form -->
           <div class="mx-auto">
@@ -131,10 +135,19 @@
 
   <!--Main layout-->
   <main>
-    <div class="container">
-      {% block content %}
+    <div class="container mx-auto">
+      <div class="row">
+        <div class="col-md-9">
+            {% block content %}
 
-      {% endblock %}
+            {% endblock %}
+  
+        </div>
+        <div class="col-md-3" style="background-color: aqua;">
+
+        </div>
+      </div>
+      
     </div>
   </main>
   <!--Main layout-->

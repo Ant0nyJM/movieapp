@@ -1,0 +1,54 @@
+{% extends 'movieapp/base.html' %}
+{% block title %}{{ request.user.username }} -n User profile 2{% endblock %}
+{% block content %}
+
+
+<div class="row">
+
+
+        <div class="col-xs-3">
+            {% if request.user.is_superuser %}
+
+            <ul class="nav nav-tabs tabs-left">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'pending' %}">Pending</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'movie' %}">Your Movies</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Link</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link disabled" href="#">Disabled</a>
+                    </li>
+            </ul>
+
+            {% else %}
+
+            <ul class="nav nav-tabs tabs-left">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'pending' %}">Not yet approved</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'movie_add' %}">Add Movie</a>
+                    </li>
+                    <li class="nav-item">
+                            <a class="nav-link" href="{% url 'movie' %}">Your Movies</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link disabled" href="#">Disabled</a>
+                    </li>
+            </ul>
+
+            {% endif %}
+        </div>
+</div>
+
+
+
+{% block profile-content %}
+
+{% endblock %}
+
+{% endblock %}

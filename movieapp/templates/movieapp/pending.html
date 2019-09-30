@@ -1,4 +1,5 @@
-{% extends 'movieapp/base.html' %}
+{% extends 'movieapp/user_profile2.html' %}
+{% load static %}
 {% block title %}{{ request.user.username }} - Admin {% endblock %}
 
 {% block scripts%}
@@ -35,29 +36,14 @@
         }
     </script>
 {% endblock %}
-{% block content %}
+{% block profile-content %}
 
-    <div class="col-xs-3">
-        <ul class="nav nav-tabs tabs-left">
-            <li class="nav-item">
-                <a class="nav-link active" href="{% url 'pending' %}">Pending</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#">Link</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#">Link</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link disabled" href="#">Disabled</a>
-            </li>
-        </ul>
-    </div>
+
     <div class="col-xs-9">
         {% if pending %}
             {% for movie in pending %}
                 <div class="search-result-div m-2 md-5">
-                    <a href="{% url 'movie_view' movie.movie_id %}"><img class="search-result-item m-1" src="img.jpg"  style="height:4.12rem;width:auto;" ></a>
+                    <a href="{% url 'movie_view' movie.movie_id %}"><img class="search-result-item m-1" src="{{ movie.image.url }}"  style="height:7.0rem;width:auto;" ></a>
                     <div class="search-result-item">
                         <span class="search-result-item">
                             <h4 class="h3-responsive m-1">
@@ -67,6 +53,7 @@
                         </span>
                         <small><span class="search-result-sm-text m-1 p-1">Directed By: </span><span class="search-result-sm-text m-1 p-1">Cast :</span></small>
                     </div>
+                    {% if request.user.is_superuser %}
                     <div class="search-result-item">
                         <button class="btn btn-success p-2" onclick="approveMovie(this,'{{ movie.movie_id }}')">
                             Approve
@@ -76,6 +63,7 @@
 
                         </div>
                     </div>
+                    {% endif %}
                 </div>
             
             {% endfor %}

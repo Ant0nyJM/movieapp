@@ -13,8 +13,8 @@
 
 
 	{% for movie in movies %}
-        <div class="movie-card">
-            <div class="movie-header" style="background: url({% static 'movieapp/images/blade.jpg' %});background-size:cover">
+         <div class="movie-card"><a href="{% url 'movie_view' movie.movie_id %}">
+            <div class="movie-header" style="background: url({{movie.image.url}});background-size:cover">
                 <div class="header-icon-container">
                         
                 </div>
@@ -23,9 +23,11 @@
             <h3 class="movie-title">{{ movie.name }}</h3>
             
                 
-            
-        </div><!--movie-card-->
+        </a>
+        </div><!-- movie-card -->
     {% endfor %}
+
+
         
 
 {% endblock %}

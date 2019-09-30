@@ -1,7 +1,8 @@
 from django.shortcuts import render,redirect,reverse
 from django.http import HttpResponse,JsonResponse
 from django.views import View
-from django.contrib.auth.forms import UserCreationForm
+#from django.contrib.auth.forms import UserCreationForm
+from .forms import CustomUserCreationForm
 from django.contrib.auth.models import User
 from . import models as my_models
 from . import forms as my_forms
@@ -13,16 +14,16 @@ class HomeView(View):
 
     def get(self,request):
         #return render(request,'movieapp/base.html')
-        movies = my_models.MotionPicture.objects.all()
+        movies = my_models.MotionPicture.objects.filter(approved=True)
         return render(request,'movieapp/newhome.html',{'movies':movies})
 
 class SignupView(View):
     def get(self,request):
-        form = UserCreationForm()
+        form = CustomUserCreationForm()
         return render(request,'movieapp/signup.html',{'form':form})
     
     def post(self,request):
-        form = UserCreationForm(request.POST)
+        form = CustomUserCreationForm(request.POST)
         if form.is_valid():
             form.save()
             return redirect('login')
@@ -34,7 +35,7 @@ class UserProfileView(View):
         if request.user.is_superuser:
             return render(request,'movieapp/admin_profile.html')
         else:
-            return render(request,'movieapp/user_profile.html')
+            return render(request,'movieapp/user_profile2.html')
 
 
 class UserMovieView(View):
@@ -44,16 +45,31 @@ class UserMovieView(View):
         return render(request,'movieapp/movie.html',{'movies':movies})
 
 class MovieAddView(View):
+
+
     def get(self,request):
         form = my_forms.MotionPictureForm()
         return render(request,'movieapp/movie_add.html',{'form':form})
+
     
     def post(self,request):
-        params = request.POST
-        current_user = User.objects.get(username=request.user.username)
-        new_mp = my_models.MotionPicture(name=params['name'],genre=params['genre'],release_date=params['release_date'],description=params['description'],user=current_user)
-        new_mp.save()
+        form = my_forms.MotionPictureForm(request.POST,request.FILES)
+        usr = form.save(commit=False)
+        usr.user = User.objects.get(username=request.user.username)
+        
+        usr.save()
         return redirect('movie')
+        
+        
+        # if form.is_valid():
+        #     print("form is valid**********************************************", form.user)
+        #     form.save()
+        #     return redirect('movie')
+        # else:
+        #     return HttpResponse(form.errors)
+        # new_mp = my_models.MotionPicture(name=params['name'],genre=params['genre'],release_date=params['release_date'],description=params['description'],user=current_user,image=params.get('image'))
+        # new_mp.save()
+        # return redirect('movie')
 
 class MovieView(View):
     def get(self,request,movie_id):
@@ -66,7 +82,11 @@ class PendingView(View):
     def dispatch(self, *args, **kwargs):
         return super().dispatch(*args, **kwargs)
     def get(self,request):
-        pending = my_models.MotionPicture.objects.filter(approved=False)
+        if request.user.is_superuser:
+
+            pending = my_models.MotionPicture.objects.filter(approved=False)
+        else:
+            pending = my_models.MotionPicture.objects.filter(user=request.user,approved=False)
         return render(request,'movieapp/pending.html',{'pending':pending})
 
     def post(self,request):
@@ -88,5 +108,8 @@ class SearchView(View):
 
         except IndexError:
             return redirect('home')
+
+def rate_movie(request,movie_id):
+    return HttpResponse("Rated Movie")
             
         

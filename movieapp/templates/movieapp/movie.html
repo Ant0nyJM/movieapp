@@ -1,30 +1,28 @@
-{% extends 'movieapp/base.html' %}
-
+{% extends 'movieapp/user_profile2.html' %}
+{% load static %}
 {% block title %}Movie{% endblock %}
+{% block style %}
+<link rel="stylesheet" href="{% static 'movieapp/css/newhome.css' %}" >
+<link rel='stylesheet prefetch' href='https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css'>
+{% endblock %}
+{% block profile-content %}
 
-{% block content%}
-
-        <div class="col-xs-3">
-            <ul class="nav nav-tabs tabs-left">
-                <li class="nav-item">
-                    <a class="nav-link active" href="{% url 'movie' %}">Movie</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Link</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Link</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link disabled" href="#">Disabled</a>
-                </li>
-            </ul>
-        </div>
-        <div class="col-xs-9">
+        <!-- <div class="col-xs-9"> -->
             {% for movie in movies %}
-                <a class="btn btn-primary" href="{% url 'movie_view' movie.movie_id %}">{{ movie.name }}</a>
+                <div class="movie-card"><a href="{% url 'movie_view' movie.movie_id %}">
+                <div class="movie-header" style="background: url({{movie.image.url}});background-size:cover">
+                    <div class="header-icon-container">
+                            
+                    </div>
+                    
+                </div>
+                <h3 class="movie-title">{{ movie.name }}</h3>
+                
+                    
+                </a>
+                </div><!-- movie-card -->
             {% endfor %}
-            <a class="btn btn-primary" href="{% url 'movie_add' %}" value="Add Movie">Add New Movie</a>
-        </div>
+            
+        <!-- </div> -->
 
 {% endblock %}

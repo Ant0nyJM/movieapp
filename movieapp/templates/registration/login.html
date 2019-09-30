@@ -1,11 +1,59 @@
-{% extends 'movieapp/base.html' %}
+{% extends 'movieapp/signup.html' %}
 {% block title %}Login{% endblock %}
-
+{% load widget_tweaks %}
 {% block content %}
-<form method="post">
+ <!-- Default form login -->
 
- {% csrf_token %}
- {{ form.as_p }}
- <input type="submit" value="Login">
-</form>
+<div class="col-sm-6 mx-auto">
+    <form class="text-center border border-light p-3 mt-5" method="post">
+                {% csrf_token %}
+                <p class="h1 mb-4">Login</p>
+            
+                <!-- Email -->
+                
+                    <div class="col mx-auto">
+                            <!-- username -->
+                            <div class="row">
+                                    {% render_field form.username class+="form-control mb-4" placeholder="Username" %}
+                            </div>
+                            
+                            <!-- Password -->
+                            <div class="row">
+                                {% render_field form.password class+="form-control mb-4" placeholder="Password" %}
+                            </div>
+                            
+                            <div class="row">
+                            <div class="d-flex flex-row justify-content-around">
+                                    <!-- <div class="col-*-4 ml-0 pl-1">
+                                            <input class="btn btn-info ml-0" type="submit" value="Login">
+                                    </div>
+                                    
+                                    <div class="col-*-8 pt-3">
+                                            <small><a href="#">Forgot Password?</a></small>
+
+                                    </div> -->
+                                    <div class="col">
+                                            <input class="btn btn-info" type="submit" value="Login">
+                                    </div>
+                                    
+                                    <div class="col pt-3">
+                                            <small><a href="#">Forgot Password?</a></small>
+
+                                    </div>
+                                    
+                            </div> 
+                        </div>
+                    
+                    </div>
+                       
+
+                
+                
+                   
+            
+                
+     </form>
+</div>
+
+
 {% endblock %}

@@ -1,12 +1,12 @@
 {% extends 'movieapp/base.html' %}
-
+{% load static %}
 {% block title %}Search{% endblock %}
 {% block content %}
     {% if movies %}
         <p>{{ movies|length }} result{{ movies|pluralize }} found</p>
         {% for movie in movies %}
             <div class="search-result-div my-3 md-5">
-                <a href="{% url 'movie_view' movie.movie_id %}"><img class="search-result-item m-1" src="img.jpg"  style="height:4.12rem;width:auto;" ></a>
+                <a href="{% url 'movie_view' movie.movie_id %}"><img class="search-result-item m-1" src="{{movie.image.url}}"  style="height:7.0rem;width:auto;" ></a>
                 <div class="search-result-item">
                     <span class="search-result-item">
                         <h4 class="h3-responsive m-1">
@@ -14,7 +14,7 @@
                         </h4>({{ movie.release_date.year}})
                         
                     </span>
-                    <small><span class="search-result-sm-text m-1 p-1">Directed By: </span><span class="search-result-sm-text m-1 p-1">Cast :</span></small>
+                    <small><span class="search-result-sm-text m-1 p-1">Directed By: </span><br><span class="search-result-sm-text m-1 p-1">Cast :</span></small>
                 </div>
             </div>
         {% endfor %}

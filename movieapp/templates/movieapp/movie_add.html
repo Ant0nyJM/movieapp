@@ -1,4 +1,4 @@
-{% extends 'movieapp/base.html' %}
+{% extends 'movieapp/user_profile2.html' %}
 
 {% block title %}Add Movie{% endblock %}
 
@@ -17,8 +17,8 @@
 
 {% endblock %}
 
-{% block content%}
-    <form method="post">
+{% block profile-content%}
+    <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
         {{ form.as_p }}
         <input type="submit" value="Create Movie">
