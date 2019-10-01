@@ -56,9 +56,11 @@
                         <p>No rating yet</p>
                         {% else %}
                         
-                        <p>Average rating of {{rating.rating__avg|floatformat:1}} based on {{rating_len}} user{{rating_len|pluralize}}</p>
-                       
-                        
+                        <p>Average rating of <b>{{rating.rating__avg|floatformat:1}}</b> based on {{rating_len}} user{{rating_len|pluralize}}</p>
+                        {% if not no_rating %}
+                        <small>You have rated this movie</small>
+                        {% endif %}
+                    </bold>
                         
                         {% endif %}
                      </dl>
@@ -87,9 +89,7 @@
                                     </form>
                                 </dd>
                         </dl>
-                        {% else %}
-                        You have rated this movie
-                        {% endif %}                        
+                        {% endif %}               
                     {% endif %}
                     
               </article>
