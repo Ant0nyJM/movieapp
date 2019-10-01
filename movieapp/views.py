@@ -8,6 +8,10 @@ from . import models as my_models
 from . import forms as my_forms
 
 from django.views.decorators.csrf import csrf_exempt
+from django.db.models import Avg
+
+
+
 # Create your views here.
 
 class HomeView(View):
@@ -74,7 +78,14 @@ class MovieAddView(View):
 class MovieView(View):
     def get(self,request,movie_id):
         movie = my_models.MotionPicture.objects.get(movie_id=movie_id)
-        return render(request,'movieapp/movie_view.html',{'movie':movie})
+        rating = my_models.Rate.objects.filter(movie = movie).aggregate(Avg('rating'))
+        rating_len = len(my_models.Rate.objects.filter(movie = movie))
+        if request.user.is_authenticated:
+            user = User.objects.get(username=request.user.username)
+            not_rated = True if len(my_models.Rate.objects.filter(user=user,movie=movie))<1 else False
+            return render(request,'movieapp/movie_view.html',{'movie':movie,'rating':rating,'rating_len':rating_len,'not_rated':not_rated})
+        else:
+            return render(request,'movieapp/movie_view.html',{'movie':movie,'rating':rating,'rating_len':rating_len})
 
 
 class PendingView(View):
@@ -110,6 +121,18 @@ class SearchView(View):
             return redirect('home')
 
 def rate_movie(request,movie_id):
-    return HttpResponse("Rated Movie")
+    if request.method == "POST":
+        rating = request.POST.get('rating')
+        movie = my_models.MotionPicture.objects.get(movie_id=movie_id)
+        user = User.objects.get(username = request.user.username)
+        try:
+            assert len(my_models.Rate.objects.filter(user=user,movie=movie))==0,"User already rated"
+        except AssertionError:
+            return redirect(reverse('movie_view',args=[movie_id]))
+        movie_rating = my_models.Rate(rating=rating,movie=movie,user=user)
+        movie_rating.save()
+        return redirect(reverse('movie_view',args=[movie_id]))
+    else:
+        return redirect('home')
             
         

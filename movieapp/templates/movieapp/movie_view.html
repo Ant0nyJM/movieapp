@@ -51,17 +51,47 @@
                       <dd>{{ movie.description }}</dd>
                   </dl>
                   <!-- item-property-hor .// -->
-                  <dl class="param param-feature">
-                        <dt>Rating</dt>
-                        <dd>Movie Rating</dd>
-                    </dl>
+                    <dl class="param param-feature">
+                        {% if rating_len == 0 %}
+                        <p>No rating yet</p>
+                        {% else %}
+                        
+                        <p>Average rating of {{rating.rating__avg|floatformat:1}} based on {{rating_len}} user{{rating_len|pluralize}}</p>
+                       
+                        
+                        
+                        {% endif %}
+                     </dl>
                     <hr>
                     {% if user.is_authenticated %}
-                    <dl class="param param-feature">
-                            <dt>Rate Movie</dt>
-                            <dd><form method="post" action="{% url 'rate' movie.movie_id %}">{% csrf_token %}<input type='number' name='rating'><input type="submit" value="Rate"></form></dd>
-                    </dl>
+                        {% if not_rated %}
+                        <dl class="param param-feature">
+                                <dt>Rate Movie</dt>
+                                <dd>
+                                    <form id="rate_form" method="post" action="{% url 'rate' movie.movie_id %}">
+                                        {% csrf_token %}
+                                        <select name='rating' form='rate_form'>
+                                            <option value=0>0</option>
+                                            <option value=0.5>0.5</option>
+                                            <option value=1>1</option>
+                                            <option value=1.5>1.5</option>
+                                            <option value=2>2</option>
+                                            <option value=2.5>2.5</option>
+                                            <option value=3>3</option>
+                                            <option value=3.5>3.5</option>
+                                            <option value=4>4</option>
+                                            <option value=4.5>4.5</option>
+                                            <option value=5>5</option>
+                                        </select>
+                                        <input type="submit" value="Rate">
+                                    </form>
+                                </dd>
+                        </dl>
+                        {% else %}
+                        You have rated this movie
+                        {% endif %}                        
                     {% endif %}
+                    
               </article>
 
               
@@ -75,7 +105,7 @@
   
   </div>
   <!--container.//-->
-  
+
 
 
 {% endblock %}

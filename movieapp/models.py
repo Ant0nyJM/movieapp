@@ -30,6 +30,6 @@ class Artist(models.Model):
 class Rate(models.Model):
     def __str__(self):
         return str(self.user.username+" for "+self.movie.name)
-    rating = models.IntegerField(validators=[MinValueValidator(0),MaxValueValidator(5)])
-    movie = models.OneToOneField(MotionPicture,on_delete=models.CASCADE)
-    user = models.OneToOneField(User,on_delete=models.CASCADE)
+    rating = models.DecimalField(max_digits=3,decimal_places=1)
+    movie = models.ForeignKey(MotionPicture,on_delete=models.CASCADE)
+    user = models.ForeignKey(User,on_delete=models.CASCADE)
