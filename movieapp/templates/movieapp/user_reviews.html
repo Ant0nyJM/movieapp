@@ -1,9 +1,29 @@
 {% extends 'movieapp/user_profile2.html' %}
 {% block title %}Your Reviews{% endblock %}
+{% block scripts %}
+<script type="text/javascript">
+function deleteReview(id){
+    if(confirm("This action will delete the review")){
+        $.ajax({
+            url : "{% url 'review_delete' %}",
+            method : 'get',
+            data : {'review_id':id},
+            success : function(retData){
+                if(retData['deleted']==='deleted'){
+                    alert("Review has been deleted.");
+                    location = "{% url 'user_reviews' %}";
+                }
+            },
+        })
+    }
+}
+</script>
+{% endblock %}
+
 {% block profile-content %}
 
 {% for review in user_reviews %}
-    {{review.review}}
+    {{review.review}} <a href="{% url 'review_edit' review.id %}">Edit Review</a> <button onclick="deleteReview({{review.id}})">Delete</button><br>
 {% endfor %}
 
 {% endblock %}

@@ -177,5 +177,26 @@ class MovieEditView(View):
         usr.save()
         return redirect(reverse('movie_view',args=[movie_id]))
 
+def review_delete(request):
+    review = my_models.Review.objects.get(id=request.GET.get('review_id'))
+    review.delete()
+    return JsonResponse({'deleted':'deleted'})
+
+class ReviewEditView(View):
+    def get(self,request,review_id):
+        review = my_models.Review.objects.get(id=review_id)
+        form = my_forms.MovieReviewForm(instance=review)
+        return render(request,'movieapp/review_edit.html',{'form':form})
+    
+    def post(self,request,review_id):
+        review = my_models.Review.objects.get(id=review_id)
+        review.review = request.POST.get('review')
+        review.save()
+        # print("----->"+str(request.user.username))
+        # print("---->"+my_models.Review.objects.get(id=review_id).movie.name)
+        return redirect(reverse('user_reviews'))
+
+
+
             
         

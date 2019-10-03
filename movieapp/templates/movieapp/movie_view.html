@@ -1,5 +1,6 @@
 {% extends 'movieapp/base.html' %}
 {% load static %}
+{% load widget_tweaks %}
 {% block title %}{{ movie.name }}{% endblock %}
 
 {% block style %}
@@ -32,18 +33,24 @@ function deleteMovie(){
 <div class="row">
 <div class="card">
       <div class="row">
-          <aside class="col-sm-5 border-right">
-              <article class="gallery-wrap">
-                  <div class="img-big-wrap">
-                      <div>
-                          <img src="{{ movie.image.url }}" style="margin-left: 15%;margin-top: 2%;">
-                      </div>
-                  </div>
-                  
-              </article>
-              <!-- gallery-wrap .end// -->
-          </aside>
-          <aside class="col-sm-7">
+          <div class="col-sm-5">
+              <aside>
+                    <article class="gallery-wrap">
+                        <div class="img-big-wrap">
+                            
+                                
+                                <img class="img-responsive fit-image" src="{{movie.image.url}}" style="margin-left: 15%;margin-top: 2%;">
+                            
+                        </div>
+                        
+                    </article>
+                    <!-- gallery-wrap .end// -->
+                </aside>
+            </div>
+          <div class="col-sm-7">
+
+          
+          <aside>
               <article class="card-body p-5">
                   <h2 class="title mb-3">{{ movie.name }}</h2>
   
@@ -74,6 +81,7 @@ function deleteMovie(){
                   </dl>
                   <!-- item-property-hor .// -->
                     <dl class="param param-feature">
+                        <hr>
                         {% if rating_len == 0 %}
                         <p>No rating yet</p>
                         {% else %}
@@ -126,6 +134,7 @@ function deleteMovie(){
               <!-- card-body.// -->
           </aside>
           <!-- col.// -->
+        </div>
       </div>
       <!-- row.// -->
       
@@ -135,25 +144,54 @@ function deleteMovie(){
 
 </div>
   <!-- card.// -->
-  <div class="row">
+
+  <div class="row m-3">
+        <p class="h4 font-weight-bold">Reviews({{reviews_len}})</p>
+        <br>
+        <br>
+        <div class="container p-4">
+            {% if reviews_len == 0%}
+                <p>No reviews for {{ movie.name }}</p>
+            {% else %}
+                {% for review in reviews %}
+                    <div class="row p-3 m-2 border shadow bg-white">
+                        <div class="container">
+
+                        
+                        <div class="row ">
+                            <p class="h5">{{ review.user.username }}</p>
+                        </div>
+                        <div class="row">
+                                <span>{{review.review}}</span>
+                        </div>
+                        </div>
+                    </div>
+                    
+                {% endfor%}
+            {% endif %}
+        </div>
+        
+
+  </div>
+<div class="row m-3">
+    <p class="h4 font-weight-bold">Write a review</p>
+    <br>
+    <br>
+    <div class="container">
         <form method='post' action="{% url 'review' movie.movie_id %}">
+            <div class="row">
                 {% csrf_token %}
-                {{ review_form.as_p}}
-                <input type="submit" value="Submit">
-            </form>
+                {% render_field review_form.review class+='form-control' %}
+            </div>
 
-  </div>
-  <div class="row">
-    {% if reviews_len == 0%}
-     <p>No reviews for {{ movie.name }}</p>
-    {% else %}
-        {% for review in reviews %}
-            {{review.review}}<br>
-        {% endfor%}
-    {% endif %}
+            <div class="row">
+                <input class="btn btn-info float-right" type="submit" value="Submit">
+            </div>
+            
+        </form>
 
-  </div>
-  
+    </div>
+</div>  
 
 
 
