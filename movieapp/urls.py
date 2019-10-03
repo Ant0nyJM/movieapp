@@ -9,10 +9,13 @@ urlpatterns = [
                 path('accounts/signup/',views.SignupView.as_view(),name='signup'),
                 path('profile/',views.UserProfileView.as_view(),name='profile'),
                 path('profile/movie/',views.UserMovieView.as_view(),name='movie'),
+                path('profile/movie/edit/<int:movie_id>/',views.MovieEditView.as_view(),name="movie_edit"),
+                path('profile/movie/delete/',views.movie_delete,name="movie_delete"),
                 path('profile/movie/add/',views.MovieAddView.as_view(),name='movie_add'),
                 path('movie/<int:movie_id>/',views.MovieView.as_view(),name='movie_view'),
                 path('movie/<int:movie_id>/rate/',views.rate_movie,name="rate"),
                 path('profile/pending/',views.PendingView.as_view(),name='pending'),
-                
+                path('profile/<int:movie_id>/review/',views.review_movie,name="review"),
+                path('profile/reviews/',views.user_reviews,name='user_reviews'),
                 
             ]

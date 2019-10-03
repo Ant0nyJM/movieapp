@@ -32,28 +32,28 @@ class Command(BaseCommand):
 
 
         mv = mp(name='Mad Max',genre='Action',release_date=timezone.now().date(),description="Apocalypse",user = test1,approved=True)
-        mv.image.save('mad_max.jpg',File(open('/home/sayone/Desktop/mad_max.jpg','rb')))
+        mv.image.save('mad_max.jpg',File(open('/home/antonyjm/Desktop/mad_max.jpg','rb')))
         mv.save()
         self.stdout.write("Movie Created {}".format(mv.name))
 
 
         mv = mp(name='Avatar',genre='Adventure',release_date=timezone.now().date(),description="Aliens",user = test1,approved=True)
-        mv.image.save('avataar.jpg',File(open('/home/sayone/Desktop/avataar.jpg','rb')))
+        mv.image.save('avataar.jpg',File(open('/home/antonyjm/Desktop/avataar.jpg','rb')))
         mv.save()
         self.stdout.write("Movie Created {}".format(mv.name))
 
         mv = mp(name='Fight Club',genre='Psychological',release_date=timezone.now().date(),description="Alter Ego",user = test1,approved=True)
-        mv.image.save('fc.jpg',File(open('/home/sayone/Desktop/fight_club.jpg','rb')))
+        mv.image.save('fc.jpg',File(open('/home/antonyjm/Desktop/fight_club.jpg','rb')))
         mv.save()
         self.stdout.write("Movie Created {}".format(mv.name))
 
         mv = mp(name='Hacksaw Ridge',genre='Military',release_date=timezone.now().date(),description="War",user = test2,approved=True)
-        mv.image.save('hacksaw.jpeg',File(open('/home/sayone/Desktop/hacksaw.jpeg','rb')))
+        mv.image.save('hacksaw.jpeg',File(open('/home/antonyjm/Desktop/hacksaw.jpeg','rb')))
         mv.save()
         self.stdout.write("Movie Created {}".format(mv.name))
 
         mv = mp(name='Jaws',genre='Horror',release_date=timezone.now().date(),description="Shark",user = test2,approved=True)
-        mv.image.save('jaws.jpg',File(open('/home/sayone/Desktop/jaws.jpg','rb')))
+        mv.image.save('jaws.jpg',File(open('/home/antonyjm/Desktop/jaws.jpg','rb')))
         mv.save()
         self.stdout.write("Movie Created {}".format(mv.name))
 

@@ -33,3 +33,10 @@ class Rate(models.Model):
     rating = models.DecimalField(max_digits=3,decimal_places=1)
     movie = models.ForeignKey(MotionPicture,on_delete=models.CASCADE)
     user = models.ForeignKey(User,on_delete=models.CASCADE)
+
+class Review(models.Model):
+    def __str__(self):
+        return str("Review by "+self.user.username+" for "+self.movie.name)
+    review = models.TextField()
+    movie = models.ForeignKey(MotionPicture,on_delete=models.CASCADE)
+    user = models.ForeignKey(User,on_delete=models.CASCADE)

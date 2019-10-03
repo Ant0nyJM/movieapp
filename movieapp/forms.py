@@ -1,5 +1,5 @@
 from django.forms import ModelForm,DateInput,HiddenInput
-from .models import MotionPicture
+from .models import MotionPicture,Review
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 class MotionPictureForm(ModelForm):
@@ -15,3 +15,9 @@ class CustomUserCreationForm(UserCreationForm):
     class Meta():
         model = User
         fields = ['username','email']
+
+
+class MovieReviewForm(ModelForm):
+    class Meta():
+        model = Review
+        fields = ['review']

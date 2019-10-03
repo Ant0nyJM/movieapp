@@ -6,8 +6,30 @@
 <link rel="stylesheet" href="{% static 'movieapp/css/movie_view.css'%}">
 {% endblock %}
 
-{% block content%}
+{% block scripts %}
+<script type="text/javascript">
+function deleteMovie(){
+    if(confirm('This action will delete the movie.')){
+            $.ajax({
+                url : "{% url 'movie_delete' %}",
+                method : 'get',
+                data : {'movie_id':"{{ movie.movie_id }}"},
+                success: function(retData){
+                    if(retData['deleted']==='deleted'){
+                        alert('Movie has been deleted ');
+                        location = "{% url 'home' %}";
+                    }
+                }
+            });
+    }
+    
 
+}
+</script>
+
+{% endblock %}
+{% block content%}
+<div class="row">
 <div class="card">
       <div class="row">
           <aside class="col-sm-5 border-right">
@@ -57,16 +79,17 @@
                         {% else %}
                         
                         <p>Average rating of <b>{{rating.rating__avg|floatformat:1}}</b> based on {{rating_len}} user{{rating_len|pluralize}}</p>
-                        {% if not no_rating %}
+                        {% if not no_rating and user.is_authenticated %}
                         <small>You have rated this movie</small>
                         {% endif %}
                     </bold>
                         
                         {% endif %}
                      </dl>
-                    <hr>
+                    
                     {% if user.is_authenticated %}
                         {% if not_rated %}
+                        <hr>
                         <dl class="param param-feature">
                                 <dt>Rate Movie</dt>
                                 <dd>
@@ -91,6 +114,11 @@
                         </dl>
                         {% endif %}               
                     {% endif %}
+                    {% if user.is_superuser or movie.user == user%}
+                        <hr>
+                        <a href="{% url 'movie_edit' movie.movie_id %}">Edit Movie<a>
+                        <button onclick="deleteMovie()">Delete Movie</button>
+                    {% endif%}
                     
               </article>
 
@@ -100,11 +128,33 @@
           <!-- col.// -->
       </div>
       <!-- row.// -->
+      
+        
+      
   </div>
+
+</div>
   <!-- card.// -->
-  
+  <div class="row">
+        <form method='post' action="{% url 'review' movie.movie_id %}">
+                {% csrf_token %}
+                {{ review_form.as_p}}
+                <input type="submit" value="Submit">
+            </form>
+
   </div>
-  <!--container.//-->
+  <div class="row">
+    {% if reviews_len == 0%}
+     <p>No reviews for {{ movie.name }}</p>
+    {% else %}
+        {% for review in reviews %}
+            {{review.review}}<br>
+        {% endfor%}
+    {% endif %}
+
+  </div>
+  
+
 
 
 

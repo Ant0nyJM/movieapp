@@ -1,0 +1,9 @@
+{% extends 'movieapp/user_profile2.html' %}
+{% block title %}Your Reviews{% endblock %}
+{% block profile-content %}
+
+{% for review in user_reviews %}
+    {{review.review}}
+{% endfor %}
+
+{% endblock %}

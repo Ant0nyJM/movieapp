@@ -2,7 +2,7 @@ from django.shortcuts import render,redirect,reverse
 from django.http import HttpResponse,JsonResponse
 from django.views import View
 #from django.contrib.auth.forms import UserCreationForm
-from .forms import CustomUserCreationForm
+from .forms import CustomUserCreationForm,MovieReviewForm
 from django.contrib.auth.models import User
 from . import models as my_models
 from . import forms as my_forms
@@ -80,12 +80,15 @@ class MovieView(View):
         movie = my_models.MotionPicture.objects.get(movie_id=movie_id)
         rating = my_models.Rate.objects.filter(movie = movie).aggregate(Avg('rating'))
         rating_len = len(my_models.Rate.objects.filter(movie = movie))
+        reviews = my_models.Review.objects.filter(movie=movie)
+        reviews_len = len(reviews)
+        review_form = MovieReviewForm()
         if request.user.is_authenticated:
             user = User.objects.get(username=request.user.username)
             not_rated = True if len(my_models.Rate.objects.filter(user=user,movie=movie))<1 else False
-            return render(request,'movieapp/movie_view.html',{'movie':movie,'rating':rating,'rating_len':rating_len,'not_rated':not_rated})
+            return render(request,'movieapp/movie_view.html',{'movie':movie,'rating':rating,'rating_len':rating_len,'not_rated':not_rated,'review_form':review_form,'reviews':reviews,'reviews_len':reviews_len})
         else:
-            return render(request,'movieapp/movie_view.html',{'movie':movie,'rating':rating,'rating_len':rating_len})
+            return render(request,'movieapp/movie_view.html',{'movie':movie,'rating':rating,'rating_len':rating_len,'review_form':review_form,'reviews':reviews,'reviews_len':reviews_len})
 
 
 class PendingView(View):
@@ -134,5 +137,45 @@ def rate_movie(request,movie_id):
         return redirect(reverse('movie_view',args=[movie_id]))
     else:
         return redirect('home')
+
+def review_movie(request,movie_id):
+    if request.method == "POST":
+        review = request.POST.get('review')
+        movie = my_models.MotionPicture.objects.get(movie_id=movie_id)
+        user = User.objects.get(username = request.user.username)
+        try:
+            assert len(my_models.Review.objects.filter(user=user,movie=movie))==0,"User already reviewed"
+        except AssertionError:
+            return redirect(reverse('movie_view',args=[movie_id]))
+        movie_review = my_models.Review(review=review,movie=movie,user=user)
+        movie_review.save()
+        return redirect(reverse('movie_view',args=[movie_id]))
+    else:
+        return redirect('home')
+
+def user_reviews(request):
+    user = User.objects.get(username=request.user.username)
+    user_reviews = my_models.Review.objects.filter(user=user)
+    print(user_reviews)
+    return render(request,'movieapp/user_reviews.html',{'user_reviews':user_reviews})
+
+def movie_delete(request):
+    movie = my_models.MotionPicture.objects.get(movie_id=int(request.GET.get('movie_id')))
+    movie.delete()
+    return JsonResponse({'deleted':'deleted'})
+
+class MovieEditView(View):
+    def get(self,request,movie_id):
+        movie = my_models.MotionPicture.objects.get(movie_id=movie_id)
+        form = my_forms.MotionPictureForm(instance=movie)
+        return render(request,'movieapp/movie_edit.html',{'form':form})
+    def post(self,request,movie_id):
+        form = my_forms.MotionPictureForm(request.POST,request.FILES)
+        usr = form.save(commit=False)
+        usr.user = User.objects.get(username=request.user.username)
+        usr.movie_id = movie_id
+        usr.save()
+        return redirect(reverse('movie_view',args=[movie_id]))
+
             
         

@@ -27,14 +27,17 @@
             {% else %}
 
             <ul class="nav nav-tabs tabs-left">
+                    
+                    
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'pending' %}">Not yet approved</a>
+                            <a class="nav-link" href="{% url 'movie' %}">Your Movies</a>
+                    </li>
+
+                    <li class="nav-item">
+                            <a class="nav-link" href="{% url 'user_reviews' %}">Your Reviews</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'movie_add' %}">Add Movie</a>
-                    </li>
-                    <li class="nav-item">
-                            <a class="nav-link" href="{% url 'movie' %}">Your Movies</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link disabled" href="#">Disabled</a>
