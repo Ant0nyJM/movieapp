@@ -22,9 +22,7 @@
   <link href="{% static 'movieapp/css/bootstrap.vertical-tabs.css' %}" rel="stylesheet">
   <!-- MovieDB CSS -->
   <link href="{% static 'movieapp/css/moviedb.css' %}" rel="stylesheet">
-  {% block scripts %}
   
-  {% endblock %}
 
   {% block style %}
 
@@ -157,6 +155,9 @@
   <!-- JQuery -->
  
   <script type="text/javascript" src="{% static 'movieapp/ecommerce_template/js/jquery-3.4.1.min.js' %}"></script>
+  {% block scripts %}
+  
+  {% endblock %}
   <script type="text/javascript" src="{% static 'movieapp/js/getcsrf.js' %}"></script>
   <script type="text/javascript" src="{% static 'movieapp/js/moviedb.js' %}"></script>
   <!-- Bootstrap tooltips -->
@@ -171,6 +172,7 @@
     new WOW().init();
 
   </script>
+ 
   
 </body>
 

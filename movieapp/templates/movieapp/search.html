@@ -5,7 +5,7 @@
     {% if movies %}
         <p>{{ movies|length }} result{{ movies|pluralize }} found</p>
         {% for movie in movies %}
-            <div class="search-result-div my-3 md-5">
+            <div class="search-result-div shadow my-3 md-5">
                 <a href="{% url 'movie_view' movie.movie_id %}"><img class="search-result-item m-1" src="{{movie.image.url}}"  style="height:7.0rem;width:auto;" ></a>
                 <div class="search-result-item">
                     <span class="search-result-item">

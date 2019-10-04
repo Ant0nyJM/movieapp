@@ -1,7 +1,28 @@
 {% extends 'movieapp/user_profile2.html' %}
 {% load widget_tweaks %}
 {% block title %}Add Movie{% endblock %}
+{% block style %}
+<style>
 
+.tag {
+    font-size: 14px;
+    padding: .3em .4em .4em;
+    margin: 0 .1em;
+    background-color:blue;
+    color:white;
+  }
+  
+  .tag a {
+    color: #bbb;
+    cursor: pointer;
+    opacity: 0.6;
+  }
+  
+  .tag a {
+    margin: 0 0 0 .3em;
+  }
+</style>
+{% endblock %}
 {% block scripts %}
 
 <script>
@@ -13,6 +34,51 @@
     
         });
     });
+
+$(document).ready(function(){
+    $('#artists_hid').val("|");
+ $.ajaxSetup({ cache: false });
+ $('#artist_search').keyup(function(){
+  $('#result').html('');
+  $('#state').val('');
+  var searchField = $('#artist_search').val();
+  var expression = new RegExp(searchField, "i");
+  //alert(searchField)
+  $.getJSON("{% url 'artist-autocomplete' %}",data="q="+searchField,function(data) {
+    //alert(data)
+   $.each(JSON.parse(data), function(key, value){
+    //alert(value+" -- "+expression);
+    
+     $('#result').append('<li class="list-group-item link-class"><span class="text-muted">'+value.fields.name+"("+value.pk+")"+'</span></li>');
+    
+   });   
+  });
+ });
+ 
+ $('#result').on('click', 'li', function() {
+  var click_text = $(this).text();
+  //alert(click_text[0]);
+  $('#artist_search').val($.trim(click_text));
+  
+  $("#result").html('');
+ });
+});
+
+
+function addArtist(){
+
+    var pk = $("#artist_search").val().split('(')[1].split(')')[0];
+  //alert("num-->"+pk);
+  var hval = $('#artists_hid').attr('value');
+  //alert("val-->"+hval);
+  var hval=hval+pk+"|";
+  $('#artists_hid').val(hval);
+  //alert($('#artists_hid').attr('value'));
+
+}
+
+
+
 </script>
 
 {% endblock %}
@@ -27,7 +93,7 @@
 
             <div class="col-sm-9 mx-auto ">
                     
-                    <form class="p-3 mt-5 form-horizontal" action='' method="POST">
+                    <form class="p-3 mt-5 form-horizontal" enctype="multipart/form-data" method="POST">
                             <p class="h1 text-center">Add Movie</p>
                         {% csrf_token %}
                             <fieldset>
@@ -38,26 +104,57 @@
                                             {% render_field form.name class+="form-control" %}
                                     </div>
                                 </div>
+                                <!-- <div class="form-inline"> -->
+                                <div class="form-group row p-3">
+                                    <!-- <div class="control-group"> -->
+                                    <!-- Username -->
+                                    
+                                    <!-- <div class="controls"> -->
+                                        <div class="col-xs-6">
+                                            <label class="control-label"  for="genre">Genre</label>
+                                                {% render_field form.genre class+="form-control" %}
+                                        </div>
+                                            
+                                        <div class="col-xs-6 ml-5">
+                                            <label class="control-label" for="release_date">Release Date</label>
+                                                    {% render_field form.release_date class+="form-control" %}
+                                        </div>
+                                            
+                                    <!-- </div> -->
+                                    
+                                    
+                                    
 
-                                <div class="control-group">
-                                 <!-- Username -->
-                                <label class="control-label"  for="genre">Genre</label>
-                                <div class="controls">
-                                        {% render_field form.genre class+="form-control" %}
+
+                                    <!-- </div> -->
                                 </div>
-                                <label class="control-label" for="release_date">Release Date</label>
-                                <div class="controls">
-                                    {% render_field form.release_date class+="form-control" %}
+                                <!-- </div> -->
+                                
+                                    
+                                
+                                <div class="form-row">
+                                    <div class="form-group col-md-8">
+                                        <input id="artist_search" class="form-control" autocomplete="off">
+                                        <ul class="list-group" id="result"></ul>
+                                        <div id="tags">
+                                                <span class="tag label label-info">
+                                                    <span>Example Tag</span>
+                                                </span>
+                                                <span class="tag label label-info">
+                                                    <span>Example Tag</span> 
+                                                </span>
+
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <button class="btn btn-info" type="button" onclick="addArtist()">Add</button>
+                                        <input type="hidden" name="artists" id="artists_hid" value="|">
+                                    </div>
+                    
                                 </div>
-                                </div>
-                        
-                                <div class="control-group">
-                                 <!-- E-mail -->
-                                <label class="control-label" for="release_date">Release Date</label>
-                                <div class="controls">
-                                    {% render_field form.release_date class+="form-control" %}
-                                </div>
-                                </div>
+                                                          
+                
+                                        
                         
                                 <div class="control-group">
                                 <!-- Password-->

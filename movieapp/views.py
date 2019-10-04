@@ -9,6 +9,46 @@ from . import forms as my_forms
 
 from django.views.decorators.csrf import csrf_exempt
 from django.db.models import Avg
+from django.core import serializers
+
+import json
+
+
+from dal import autocomplete
+
+from .models import MotionPicture
+
+
+
+class MotionPictureAutocomplete(View):
+    def get(self,request):
+        # Don't forget to filter out results depending on the visitor !
+        
+
+        qs = my_models.Artist.objects.all()
+        q = request.GET.get('q','')
+        print("-- ",request.GET)
+        try:
+            if q[0]!='':
+                qs = qs.filter(name__icontains=q)
+            print(qs)
+            return JsonResponse(serializers.serialize('json',qs),safe=False)
+        except IndexError:
+            return JsonResponse({})
+
+        
+
+def artist_search(request):
+    form = my_forms.ArtistSearchForm()
+    return render(request,'movieapp/artist-search.html',{'form':form})
+
+def json_data(request):
+    return JsonResponse([{"name":"Viola Francis",
+      "image": "https://media.licdn.com/mpr/mpr/shrinknp_200_200/AAEAAQAAAAAAAASJAAAAJGMyMTUzN2EyLTExY2ItNDZiNS1hMTY1LTI4NDA2NDMwZmFkNg.jpg",
+      "location":"Zanesville, OH"}],safe=False)
+
+def test(request):
+    return render(request,'movieapp/file.html')
 
 
 
@@ -62,6 +102,14 @@ class MovieAddView(View):
         usr.user = User.objects.get(username=request.user.username)
         
         usr.save()
+        print("ccccccccc---------------"+str(usr.pk))
+        print("-------------------",str(request.POST.get('artists')))
+        data = list(filter(lambda x:    x!='',str(request.POST.get('artists')).split('|')))
+        print("************************"+str(data))
+        for x in data:
+            artist = my_models.Artist.objects.get(artist_id=x)
+            movie = my_models.MotionPicture.objects.get(movie_id=usr.pk)
+            artist.movies.add(movie)
         return redirect('movie')
         
         
@@ -81,14 +129,15 @@ class MovieView(View):
         rating = my_models.Rate.objects.filter(movie = movie).aggregate(Avg('rating'))
         rating_len = len(my_models.Rate.objects.filter(movie = movie))
         reviews = my_models.Review.objects.filter(movie=movie)
+        artists = movie.artist_set.all()
         reviews_len = len(reviews)
         review_form = MovieReviewForm()
         if request.user.is_authenticated:
             user = User.objects.get(username=request.user.username)
             not_rated = True if len(my_models.Rate.objects.filter(user=user,movie=movie))<1 else False
-            return render(request,'movieapp/movie_view.html',{'movie':movie,'rating':rating,'rating_len':rating_len,'not_rated':not_rated,'review_form':review_form,'reviews':reviews,'reviews_len':reviews_len})
+            return render(request,'movieapp/movie_view.html',{'movie':movie,'rating':rating,'rating_len':rating_len,'not_rated':not_rated,'review_form':review_form,'reviews':reviews,'reviews_len':reviews_len,'artists':artists})
         else:
-            return render(request,'movieapp/movie_view.html',{'movie':movie,'rating':rating,'rating_len':rating_len,'review_form':review_form,'reviews':reviews,'reviews_len':reviews_len})
+            return render(request,'movieapp/movie_view.html',{'movie':movie,'rating':rating,'rating_len':rating_len,'review_form':review_form,'reviews':reviews,'reviews_len':reviews_len,'artists':artists})
 
 
 class PendingView(View):
@@ -117,7 +166,7 @@ class SearchView(View):
         q = request.GET.get('q','')
         try:
             if q[0] != '' :
-                movies = my_models.MotionPicture.objects.filter(name__contains=q,approved=True)
+                movies = my_models.MotionPicture.objects.filter(name__icontains=q,approved=True)
                 return render(request,'movieapp/search.html',{'movies':movies})
 
         except IndexError:
@@ -195,6 +244,8 @@ class ReviewEditView(View):
         # print("----->"+str(request.user.username))
         # print("---->"+my_models.Review.objects.get(id=review_id).movie.name)
         return redirect(reverse('user_reviews'))
+
+
 
 
 

@@ -30,8 +30,9 @@ function deleteMovie(){
 
 {% endblock %}
 {% block content%}
+
 <div class="row">
-<div class="card">
+<div class="card p-3">
       <div class="row">
           <div class="col-sm-5">
               <aside>
@@ -51,11 +52,11 @@ function deleteMovie(){
 
           
           <aside>
-              <article class="card-body p-5">
+              <article class="card-body p-5 m-2">
                   <h2 class="title mb-3">{{ movie.name }}</h2>
   
                   <!-- price-detail-wrap .// -->
-                  <dl class="item-property">
+                  <!-- <dl class="item-property">
                       <dt>Director</dt>
                       <dd>
                           <p>adfadsfadsfadsf</p>
@@ -64,7 +65,7 @@ function deleteMovie(){
                   <dl class="param param-feature">
                       <dt>Cast</dt>
                       <dd>dfgdfgdfg,dfgdgdgdf,dfgdfgdfg,dfgdfgdf,dfgdgd</dd>
-                  </dl>
+                  </dl> -->
                   <dl class="param param-feature">
                         <dt>Genre</dt>
                         <dd>{{ movie.genre }}</dd>
@@ -74,16 +75,31 @@ function deleteMovie(){
                       <dt>Release Date</dt>
                       <dd>{{ movie.release_date }}</dd>
                   </dl>
+                  <dl class="param param-feature">
+                    <dt>Cast</dt>
+                    <dd>
+                        {% if artists %}
+                            {% for artist in artists %}
+                                {{ artist.name }},
+                            {% endfor %}
+                        {% else %}
+                            No data available
+                        {% endif %}
+                        
+
+                    </dd>
+                    </dl>
                   <!-- item-property-hor .// -->
                   <dl class="param param-feature">
                       <dt>Description</dt>
                       <dd>{{ movie.description }}</dd>
                   </dl>
+                  
                   <!-- item-property-hor .// -->
                     <dl class="param param-feature">
                         <hr>
                         {% if rating_len == 0 %}
-                        <p>No rating yet</p>
+                        <p>No ratings yet</p>
                         {% else %}
                         
                         <p>Average rating of <b>{{rating.rating__avg|floatformat:1}}</b> based on {{rating_len}} user{{rating_len|pluralize}}</p>
@@ -124,8 +140,8 @@ function deleteMovie(){
                     {% endif %}
                     {% if user.is_superuser or movie.user == user%}
                         <hr>
-                        <a href="{% url 'movie_edit' movie.movie_id %}">Edit Movie<a>
-                        <button onclick="deleteMovie()">Delete Movie</button>
+                        <a class="btn btn-warning" href="{% url 'movie_edit' movie.movie_id %}">Edit Movie<a>
+                        <button class="btn btn-danger" onclick="deleteMovie()">Delete Movie</button>
                     {% endif%}
                     
               </article>
@@ -145,7 +161,7 @@ function deleteMovie(){
 </div>
   <!-- card.// -->
 
-  <div class="row m-3">
+  <div class="row mr-auto mt-4">
         <p class="h4 font-weight-bold">Reviews({{reviews_len}})</p>
         <br>
         <br>
@@ -173,6 +189,7 @@ function deleteMovie(){
         
 
   </div>
+  {% if user.is_authenticated %}
 <div class="row m-3">
     <p class="h4 font-weight-bold">Write a review</p>
     <br>
@@ -192,6 +209,8 @@ function deleteMovie(){
 
     </div>
 </div>  
+{% endif %}
+
 
 
 

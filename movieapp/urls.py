@@ -21,5 +21,13 @@ urlpatterns = [
                 path('profile/reviews/',views.user_reviews,name='user_reviews'),
                 path('profile/review/delete/',views.review_delete,name="review_delete"),
                 path('profile/review/edit/<int:review_id>/',views.ReviewEditView.as_view(),name="review_edit"),
+
+
+                path('artist/',views.artist_search),
+                path('artist-autocomplete/',views.MotionPictureAutocomplete.as_view(),name='artist-autocomplete'),
+
+                
+                path('jqac/',views.json_data,name="ac"),
+                path('test/',views.test)
                 
             ]
