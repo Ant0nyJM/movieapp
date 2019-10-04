@@ -22,8 +22,42 @@ function deleteReview(id){
 
 {% block profile-content %}
 
-{% for review in user_reviews %}
+<!-- {% for review in user_reviews %}
     {{review.review}} <a href="{% url 'review_edit' review.id %}">Edit Review</a> <button onclick="deleteReview({{review.id}})">Delete</button><br>
-{% endfor %}
+{% endfor %} -->
+
+<div class="row m-3">
+        <br>
+        <br>
+        <div class="container p-4">
+            {% if user_reviews %}
+                
+                {% for review in user_reviews %}
+                    <div class="row p-3 m-2 border shadow bg-white">
+                        <div class="container" >
+
+                        <div class="row">
+                            <p class="h4">{{ review.movie.name }}</p>
+                        </div>
+                        
+                        <div class="row">
+                                <div style="word-wrap: break-word;"><p>{{review.review}}</p></div>
+                                <br>
+                                <hr>
+                                <a class="btn btn-warning p-1" href="{% url 'review_edit' review.id %}">Edit Review</a> <button class="btn btn-danger p-1" onclick="deleteReview({{review.id}})">Delete</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                {% endfor%}
+                
+            {% else %}
+            <p>No reviews for {{ movie.name }}</p>
+            {% endif %}
+        </div>
+        
+
+  </div>
+
 
 {% endblock %}

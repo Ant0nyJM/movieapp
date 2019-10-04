@@ -1,5 +1,5 @@
 {% extends 'movieapp/user_profile2.html' %}
-
+{% load widget_tweaks %}
 {% block title %}Add Movie{% endblock %}
 
 {% block scripts %}
@@ -18,9 +18,71 @@
 {% endblock %}
 
 {% block profile-content%}
-    <form method="post" enctype="multipart/form-data">
+    <!-- <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
         {{ form.as_p }}
         <input type="submit" value="Create Movie">
-    </form>
+    </form> -->
+    <div class="row">
+
+            <div class="col-sm-9 mx-auto ">
+                    
+                    <form class="p-3 mt-5 form-horizontal" action='' method="POST">
+                            <p class="h1 text-center">Add Movie</p>
+                        {% csrf_token %}
+                            <fieldset>
+                                <div class="control-group">
+                                    <!-- Username -->
+                                    <label class="control-label"  for="name">Name</label>
+                                    <div class="controls">
+                                            {% render_field form.name class+="form-control" %}
+                                    </div>
+                                </div>
+
+                                <div class="control-group">
+                                 <!-- Username -->
+                                <label class="control-label"  for="genre">Genre</label>
+                                <div class="controls">
+                                        {% render_field form.genre class+="form-control" %}
+                                </div>
+                                <label class="control-label" for="release_date">Release Date</label>
+                                <div class="controls">
+                                    {% render_field form.release_date class+="form-control" %}
+                                </div>
+                                </div>
+                        
+                                <div class="control-group">
+                                 <!-- E-mail -->
+                                <label class="control-label" for="release_date">Release Date</label>
+                                <div class="controls">
+                                    {% render_field form.release_date class+="form-control" %}
+                                </div>
+                                </div>
+                        
+                                <div class="control-group">
+                                <!-- Password-->
+                                <label class="control-label" for="description">Description</label>
+                                <div class="controls">
+                                        {% render_field form.description class+="form-control" %}
+                                </div>
+                                </div>
+                        
+                                <div class="control-group">
+                                <!-- Password -->
+                                <label class="control-label"  for="image">Poster</label>
+                                <div class="controls">
+                                        {% render_field form.image  %}
+                                </div>
+                                </div>
+                        
+                                <div class="control-group">
+                                <!-- Button -->
+                                <div class="controls">
+                                    <button class="btn btn-success btn-block">Add Movie</button>
+                                </div>
+                                </div>
+                            </fieldset>
+                        </form>
+            </div>
+        </div>
 {% endblock %}
