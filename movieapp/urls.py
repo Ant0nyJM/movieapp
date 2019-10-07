@@ -21,6 +21,8 @@ urlpatterns = [
                 path('profile/reviews/',views.user_reviews,name='user_reviews'),
                 path('profile/review/delete/',views.review_delete,name="review_delete"),
                 path('profile/review/edit/<int:review_id>/',views.ReviewEditView.as_view(),name="review_edit"),
+                path('profile/artist/add/',views.ArtistAddView.as_view(),name='artist_add'),
+                path('artist/<int:artist_id>/',views.ArtistView.as_view(),name='artist_view'),
 
 
                 path('artist/',views.artist_search),

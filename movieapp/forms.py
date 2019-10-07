@@ -3,7 +3,7 @@ from django import forms
 from .models import MotionPicture,Review,Artist
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-from dal import autocomplete
+
 
 class MotionPictureForm(ModelForm):
     class Meta():
@@ -25,10 +25,13 @@ class MovieReviewForm(ModelForm):
         model = Review
         fields = ['review']
 
-class ArtistSearchForm(ModelForm):
+class ArtistForm(ModelForm):
     class Meta():
         model = Artist
-        fields = ['name']
+        fields = ['name','birthday','artist_type','description','image']
+        widgets = {
+             'birthday': DateInput(attrs={'type':'date'}),
+         }
 
 
 

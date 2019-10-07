@@ -8,8 +8,6 @@
     font-size: 14px;
     padding: .3em .4em .4em;
     margin: 0 .1em;
-    background-color:blue;
-    color:white;
   }
   
   .tag a {
@@ -49,7 +47,7 @@ $(document).ready(function(){
    $.each(JSON.parse(data), function(key, value){
     //alert(value+" -- "+expression);
     
-     $('#result').append('<li class="list-group-item link-class"><span class="text-muted">'+value.fields.name+"("+value.pk+")"+'</span></li>');
+     $('#result').append(`<li class="list-group-item link-class"><img class='m-1' style="width:2em;height:auto;" src="/media/${value.fields.image}"><span class="text-muted">`+value.fields.name+"("+value.pk+")"+'</span></li>');
     
    });   
   });
@@ -68,13 +66,32 @@ $(document).ready(function(){
 function addArtist(){
 
     var pk = $("#artist_search").val().split('(')[1].split(')')[0];
+    var present = false;
+    //console.log("hell");
+    $(".tag-hidden").each(function(){
+        //console.log($(this).val())
+        if($(this).val() === pk){
+            present = true;
+            return ;
+        }
+        
+        });
   //alert("num-->"+pk);
-  var hval = $('#artists_hid').attr('value');
+  //var hval = $('#artists_hid').attr('value');
   //alert("val-->"+hval);
-  var hval=hval+pk+"|";
-  $('#artists_hid').val(hval);
+  //var hval=hval+pk+"|";
+  //$('#artists_hid').val(hval);
+  if(present == false){
+  var tag = `<div class="tag label label-info m-1"><span>`+$("#artist_search").val().split('(')[0]+`</span><i class="fa fa-times m-1" onclick="deleteArtist(this)"><input class="tag-hidden" name='artist_ids[]' type="hidden" value=`+pk+`></div>`
+  $("#tags").append(tag);
+  }
   //alert($('#artists_hid').attr('value'));
 
+}
+
+function deleteArtist(elem){
+    //alert($(elem).parent());
+    $(elem).parent().remove();
 }
 
 
@@ -136,19 +153,14 @@ function addArtist(){
                                     <div class="form-group col-md-8">
                                         <input id="artist_search" class="form-control" autocomplete="off">
                                         <ul class="list-group" id="result"></ul>
-                                        <div id="tags">
-                                                <span class="tag label label-info">
-                                                    <span>Example Tag</span>
-                                                </span>
-                                                <span class="tag label label-info">
-                                                    <span>Example Tag</span> 
-                                                </span>
+                                        <div id="tags" class="m-1">
+                                            
 
                                         </div>
                                     </div>
                                     <div class="form-group col-md-4">
                                         <button class="btn btn-info" type="button" onclick="addArtist()">Add</button>
-                                        <input type="hidden" name="artists" id="artists_hid" value="|">
+                                        <!-- <input type="hidden" name="artists" id="artists_hid" value="|"> -->
                                     </div>
                     
                                 </div>

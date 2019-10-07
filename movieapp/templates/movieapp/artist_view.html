@@ -1,0 +1,93 @@
+{% extends 'movieapp/base.html' %}
+{% block title %}{{ artist.name }}{% endblock%}
+
+{% block content %}
+
+<div class="row">
+<div class="card p-3">
+      <div class="row">
+          <div class="col-sm-5">
+              <aside>
+                    <article class="gallery-wrap">
+                        <div class="img-big-wrap">
+                            
+                                
+                                <img class="img-responsive fit-image" src="{{artist.image.url}}" style="margin-left: 15%;margin-top: 2%;">
+                            
+                        </div>
+                        
+                    </article>
+                    <!-- gallery-wrap .end// -->
+                </aside>
+            </div>
+          <div class="col-sm-7">
+
+          
+          <aside>
+              <article class="card-body p-5 m-2">
+                  <h2 class="title mb-3">{{ artist.name }}</h2>
+  
+                  <!-- price-detail-wrap .// -->
+                  <!-- <dl class="item-property">
+                      <dt>Director</dt>
+                      <dd>
+                          <p>adfadsfadsfadsf</p>
+                      </dd>
+                  </dl>
+                  <dl class="param param-feature">
+                      <dt>Cast</dt>
+                      <dd>dfgdfgdfg,dfgdgdgdf,dfgdfgdfg,dfgdfgdf,dfgdgd</dd>
+                  </dl> -->
+                  <dl class="param param-feature">
+                        <dt>Artist Type</dt>
+                        <dd>{{ artist.artist_type }}</dd>
+                  </dl>
+                  <!-- item-property-hor .// -->
+                  <dl class="param param-feature">
+                      <dt>Birthday</dt>
+                      <dd>{{ artist.birthday }}</dd>
+                  </dl>
+                  <dl class="param param-feature">
+                        <dt>Description</dt>
+                        <dd>{{ artist.description }}</dd>
+                    </dl>                  
+                  <dl class="param param-feature">
+                    <dt>Movies</dt>
+                    <dd>
+                        {% if artist.movies %}
+                            {% for movie in artist.movies.all %}
+                                {% if forloop.last %}
+                                    <a href="{% url 'movie_view' movie.movie_id %}">{{movie.name}}</a>
+                                {% else %}
+                                    <a href="{% url 'movie_view' movie.movie_id %}">{{movie.name}}</a>,
+                                {% endif %}
+
+                                
+                            {% endfor %}
+                        {% else %}
+                            No Movie have been added
+
+                        {% endif %}
+
+                    </dd>
+                    </dl>
+                  <!-- item-property-hor .// -->
+
+                           
+              </article>
+
+              
+              <!-- card-body.// -->
+          </aside>
+          <!-- col.// -->
+        </div>
+      </div>
+      <!-- row.// -->
+      
+        
+      
+  </div>
+
+</div>
+
+{% endblock %}

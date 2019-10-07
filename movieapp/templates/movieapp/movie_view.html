@@ -18,7 +18,7 @@ function deleteMovie(){
                 success: function(retData){
                     if(retData['deleted']==='deleted'){
                         alert('Movie has been deleted ');
-                        location = "{% url 'home' %}";
+                        location = "{% url 'profile' %}";
                     }
                 }
             });
@@ -80,7 +80,13 @@ function deleteMovie(){
                     <dd>
                         {% if artists %}
                             {% for artist in artists %}
-                                {{ artist.name }},
+                                {% if forloop.last %}
+                                    <a href="{% url 'artist_view' artist.artist_id %}">{{artist.name}}</a>
+                                {% else %}
+                                    <a href="{% url 'artist_view' artist.artist_id %}">{{artist.name}}</a>,
+                                {% endif %}
+
+                            
                             {% endfor %}
                         {% else %}
                             No data available

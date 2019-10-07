@@ -2,7 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.core.validators import MinValueValidator,MaxValueValidator
 # Create your models here.
-
+from django.utils import timezone
 
 class MotionPicture(models.Model):
     def __str__(self):
@@ -23,8 +23,10 @@ class Artist(models.Model):
     artist_id = models.AutoField(primary_key=True)
     artist_type = models.CharField(max_length=15,default="Actor")
     name = models.CharField(max_length=50,null=False)
+    birthday = models.DateField(null=False,default=timezone.now().date())
     description = models.TextField(default="")
-    image = models.ImageField()
+    user = models.ForeignKey(User,on_delete=models.DO_NOTHING,default=None)
+    image = models.ImageField(upload_to='images/')
     movies = models.ManyToManyField(MotionPicture)   
 
 class Rate(models.Model):

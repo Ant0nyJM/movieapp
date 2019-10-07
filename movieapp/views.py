@@ -14,8 +14,6 @@ from django.core import serializers
 import json
 
 
-from dal import autocomplete
-
 from .models import MotionPicture
 
 
@@ -102,11 +100,9 @@ class MovieAddView(View):
         usr.user = User.objects.get(username=request.user.username)
         
         usr.save()
-        print("ccccccccc---------------"+str(usr.pk))
-        print("-------------------",str(request.POST.get('artists')))
-        data = list(filter(lambda x:    x!='',str(request.POST.get('artists')).split('|')))
-        print("************************"+str(data))
-        for x in data:
+        ids = request.POST.getlist('artist_ids[]')
+        for x in ids:
+            print(x)
             artist = my_models.Artist.objects.get(artist_id=x)
             movie = my_models.MotionPicture.objects.get(movie_id=usr.pk)
             artist.movies.add(movie)
@@ -244,6 +240,25 @@ class ReviewEditView(View):
         # print("----->"+str(request.user.username))
         # print("---->"+my_models.Review.objects.get(id=review_id).movie.name)
         return redirect(reverse('user_reviews'))
+
+class ArtistAddView(View):
+    def get(self,request):
+        form = my_forms.ArtistForm()
+        return render(request,'movieapp/artist_add.html',{'form':form})
+
+    def post(self,request):
+        form = my_forms.ArtistForm(request.POST,request.FILES)
+        usr = form.save(commit=False)
+        usr.user = User.objects.get(username=request.user.username)
+        usr.save()
+        artist_id = usr.artist_id
+        return redirect(reverse('artist_view',args=[artist_id]))
+
+class ArtistView(View):
+    def get(self,request,artist_id):
+        artist = my_models.Artist.objects.get(artist_id=artist_id)
+        return render(request,'movieapp/artist_view.html',{'artist':artist})
+
 
 
 
