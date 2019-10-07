@@ -25,7 +25,7 @@ SECRET_KEY = '*rsd0awn5*x$y@xt^u-o&&oh#wwt8p=gt7%4=k=k&%(df_1sti'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['*','imoviedb.herokuapp.com']
 
 
 # Application definition
