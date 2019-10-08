@@ -39,9 +39,11 @@ function deleteMovie(){
                     <article class="gallery-wrap">
                         <div class="img-big-wrap">
                             
-                                
+                                {% if movie.image %}
                                 <img class="img-responsive fit-image" src="{{movie.image.url}}" style="margin-left: 15%;margin-top: 2%;">
-                            
+                                {% else %}
+                                No image for this movie
+                                {% endif%}
                         </div>
                         
                     </article>
@@ -124,7 +126,7 @@ function deleteMovie(){
                         <p>No ratings yet</p>
                         {% else %}
                         
-                        <p>Average rating of <b>{{rating.rating__avg|floatformat:1}}</b> based on {{rating_len}} user{{rating_len|pluralize}}</p>
+                        <p>Average rating of <b>{{movie.rating|floatformat:1}}</b> based on {{rating_len}} user{{rating_len|pluralize}}</p>
                         {% if not no_rating and user.is_authenticated %}
                         <small>You have rated this movie</small>
                         {% endif %}
@@ -135,9 +137,9 @@ function deleteMovie(){
                     
                     {% if user.is_authenticated %}
                         {% if not_rated %}
-                        <hr>
+                        
                         <dl class="param param-feature">
-                                <dt>Rate Movie</dt>
+                                <dt>Rate this Movie</dt>
                                 <dd>
                                     <form id="rate_form" method="post" action="{% url 'rate' movie.movie_id %}">
                                         {% csrf_token %}
@@ -161,13 +163,13 @@ function deleteMovie(){
                     {% endif %}    
                     
                     {% else %}
-                    <span style="visibility:hidden">NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN</span>
+                    <span style="visibility:hidden">NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN</span>
                 
                     {% endif %}
                     {% if user.is_superuser or movie.user == user%}
                         <hr>
-                        <a class="btn btn-warning" href="{% url 'movie_edit' movie.movie_id %}">Edit Movie<a>
-                        <button class="btn btn-danger" onclick="deleteMovie()">Delete Movie</button>
+                        <a class="btn btn-warning p-2" href="{% url 'movie_edit' movie.movie_id %}">Edit Movie<a>
+                        <button class="btn btn-danger p-2" onclick="deleteMovie()">Delete Movie</button>
                     {% endif%}
                     
               </article>
@@ -216,7 +218,7 @@ function deleteMovie(){
 
   </div>
   {% if user.is_authenticated %}
-<div class="row m-3">
+<div class="row mr-auto my-3">
     <p class="h4 font-weight-bold">Write a review</p>
     <br>
     <br>

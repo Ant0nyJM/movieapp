@@ -57,7 +57,9 @@ class HomeView(View):
     def get(self,request):
         #return render(request,'movieapp/base.html')
         movies = my_models.MotionPicture.objects.filter(approved=True)
-        return render(request,'movieapp/newhome.html',{'movies':movies})
+        rated_movies = movies.order_by('-rating')[:5]
+        releasing_movies = movies.order_by('release_date')[:5]
+        return render(request,'movieapp/newhome.html',{'movies':movies,'rated_movies':rated_movies,'releasing_movies':releasing_movies})
 
 class SignupView(View):
     def get(self,request):
@@ -69,8 +71,8 @@ class SignupView(View):
         if form.is_valid():
             form.save()
             return redirect('login')
-        else:
-            return HttpResponse("Form invalid")
+        
+        return render(request,'movieapp/signup.html',{'form':form})
 
 class UserProfileView(View):
     def get(self,request):
@@ -127,7 +129,6 @@ class MovieView(View):
     def get(self,request,movie_id):
         context = {}
         movie = my_models.MotionPicture.objects.get(movie_id=movie_id)
-        rating = my_models.Rate.objects.filter(movie = movie).aggregate(Avg('rating'))
         rating_len = len(my_models.Rate.objects.filter(movie = movie))
         reviews = my_models.Review.objects.filter(movie=movie)
         actors = movie.artist_set.filter(artist_type="Actor")
@@ -144,7 +145,7 @@ class MovieView(View):
             context['actors']=actors
         reviews_len = len(reviews)
         review_form = MovieReviewForm()
-        context.update({'movie':movie,'rating':rating,'rating_len':rating_len,'review_form':review_form,'reviews':reviews,'reviews_len':reviews_len})
+        context.update({'movie':movie,'rating_len':rating_len,'review_form':review_form,'reviews':reviews,'reviews_len':reviews_len})
         print("888888",context)
         if request.user.is_authenticated:
             user = User.objects.get(username=request.user.username)
@@ -183,7 +184,9 @@ class SearchView(View):
         try:
             if q[0] != '' :
                 movies = my_models.MotionPicture.objects.filter(name__icontains=q,approved=True)
-                return render(request,'movieapp/search.html',{'movies':movies})
+                artists = my_models.Artist.objects.filter(name__icontains=q)
+                genre = my_models.MotionPicture.objects.filter(genre__icontains=q,approved=True)
+                return render(request,'movieapp/search.html',{'movies':movies,'artists':artists,'genre':genre})
 
         except IndexError:
             return redirect('home')
@@ -197,8 +200,11 @@ def rate_movie(request,movie_id):
             assert len(my_models.Rate.objects.filter(user=user,movie=movie))==0,"User already rated"
         except AssertionError:
             return redirect(reverse('movie_view',args=[movie_id]))
+        
         movie_rating = my_models.Rate(rating=rating,movie=movie,user=user)
         movie_rating.save()
+        movie.rating = my_models.Rate.objects.filter(movie = movie).aggregate(Avg('rating'))['rating__avg']
+        movie.save()
         return redirect(reverse('movie_view',args=[movie_id]))
     else:
         return redirect('home')
@@ -233,18 +239,42 @@ class MovieEditView(View):
     def get(self,request,movie_id):
         movie = my_models.MotionPicture.objects.get(movie_id=movie_id)
         try:
-            director = movie.artist_set.filter(artist_type='Director')
+            director = movie.artist_set.get(artist_type='Director')
         except my_models.Artist.DoesNotExist:
             director = None
         actors = movie.artist_set.filter(artist_type="Actor")
         form = my_forms.MotionPictureForm(instance=movie)
-        return render(request,'movieapp/movie_edit.html',{'form':form,'actors':actors,'director':director})
+        context = {}
+        context.update({'form':form})
+        if(len(actors)!=0):
+            context['actors'] = actors
+        if(director!=None):
+            context['director'] = director
+        print("----->",context)
+        return render(request,'movieapp/movie_edit.html',context)
     def post(self,request,movie_id):
-        form = my_forms.MotionPictureForm(request.POST,request.FILES)
+        if(request.FILES):
+            form = my_forms.MotionPictureForm(request.POST,request.FILES)
+        else:
+            form = my_forms.MotionPictureForm(request.POST)
+        
         usr = form.save(commit=False)
         usr.user = User.objects.get(username=request.user.username)
         usr.movie_id = movie_id
         usr.save()
+
+        movie = my_models.MotionPicture.objects.get(movie_id=movie_id)
+        movie.artist_set.clear()
+        director = my_models.Artist.objects.get(artist_id=request.POST.get('director-id'))
+        director.movies.add(movie)
+        director.save()
+        ids = request.POST.getlist('artist_ids[]')
+        for x in ids:
+            print(x)
+            artist = my_models.Artist.objects.get(artist_id=x)
+            
+            artist.movies.add(movie)
+            artist.save()
         return redirect(reverse('movie_view',args=[movie_id]))
 
 def review_delete(request):

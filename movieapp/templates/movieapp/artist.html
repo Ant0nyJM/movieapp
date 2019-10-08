@@ -7,6 +7,51 @@
 {% endblock %}
 {% block profile-content %}
 
+<div class="row">
+
+
+        <div class="col-xs-3">
+            {% if request.user.is_superuser %}
+
+            <ul class="nav nav-tabs tabs-left">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'pending' %}">Pending</a>
+                    </li>
+                    
+            </ul>
+
+            {% else %}
+
+            <ul class="nav nav-tabs tabs-left">
+                    
+                    
+                    <li class="nav-item">
+                            <a class="nav-link" href="{% url 'movie' %}">Your Movies</a>
+                    </li>
+                    <li class="nav-item">
+                            <a class="nav-link active" href="{% url 'artist' %}">Artists</a>
+                    </li>
+
+                    <li class="nav-item">
+                            <a class="nav-link" href="{% url 'user_reviews' %}">Your Reviews</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'movie_add' %}">Add Movie</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'artist_add' %}">Add Artist</a>
+                    </li>
+            </ul>
+
+            {% endif %}
+        </div>
+</div>
+
+
+
+
+
+        {% if artist %}
         <!-- <div class="col-xs-9"> -->
             {% for artist in artists %}
                 <div class="movie-card"><a href="{% url 'artist_view' artist.artist_id %}">
@@ -22,6 +67,12 @@
                 </a>
                 </div><!-- movie-card -->
             {% endfor %}
+        {% else %}
+            <div class="mt-4 mx-auto">
+            <p class="h4">You haven't added any artists yet.</p>
+        </div>
+
+        {% endif %}
             
         <!-- </div> -->
 

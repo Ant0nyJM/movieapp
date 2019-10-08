@@ -28,6 +28,12 @@ class MovieReviewForm(ModelForm):
         fields = ['review']
 
 class ArtistForm(ModelForm):
+    def __init__(self, *args, **kwargs):
+        # first call parent's constructor
+        super(ArtistForm, self).__init__(*args, **kwargs)
+        # there's a `fields` property now
+        self.fields['image'].required = False
+
     choices = (('Actor','Actor'),('Director','Director'))
     artist_type = ChoiceField(choices=choices)
     class Meta():

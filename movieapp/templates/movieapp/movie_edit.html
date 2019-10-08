@@ -1,6 +1,113 @@
 {% extends 'movieapp/base.html' %}
 {% load widget_tweaks %}
 {% block title %}Movie Edit{% endblock %}
+
+{% block scripts %}
+<script>
+
+    $(document).ready(function(){
+        //$('#artists_hid').val("|");
+        $.ajaxSetup({ cache: false });
+        $('#artist_search').keyup(function(){
+        $('#result').html('');
+        $('#state').val('');
+        var searchField = $('#artist_search').val();
+        var expression = new RegExp(searchField, "i");
+        //alert(searchField)
+        $.getJSON("{% url 'artist-autocomplete' %}",data="q="+searchField,function(data) {
+        //alert(data)
+        $.each(JSON.parse(data), function(key, value){
+        //alert(value+" -- "+expression);
+        
+            $('#result').append(`<li class="list-group-item link-class"><img class='m-1' style="width:2em;height:auto;" src="/media/${value.fields.image}"><span class="text-muted">`+value.fields.name+"("+value.pk+")"+'</span></li>');
+        
+        });   
+        });
+        });
+        
+        $('#result').on('click', 'li', function() {
+        var click_text = $(this).text();
+        //alert(click_text[0]);
+        $('#artist_search').val($.trim(click_text));
+        
+        $("#result").html('');
+        });
+    
+    
+        $('#director_search').keyup(function(){
+        $('#dir-result').html('');
+        var searchField = $('#director_search').val();
+        var expression = new RegExp(searchField, "i");
+        //alert(searchField)
+        $.getJSON("{% url 'director-autocomplete' %}",data="q="+searchField,function(data) {
+        //alert(data)
+        $.each(JSON.parse(data), function(key, value){
+        //alert(value+" -- "+expression);
+        
+            $('#dir-result').append(`<li class="list-group-item link-class"><img class='m-1' style="width:2em;height:auto;" src="/media/${value.fields.image}"><span class="text-muted">`+value.fields.name+"("+value.pk+")"+'</span></li>');
+        
+        });   
+        });
+        });
+    
+    
+        $('#dir-result').on('click', 'li', function() {
+        var click_text = $(this).text();
+        //alert(click_text[0]);
+        $('#director_search').val($.trim(click_text));
+        var id = click_text.split('(')[1].split(')')[0];
+        //alert(id);
+        $("#director_id").val(id);
+        $("#dir-result").html('');
+        });
+    
+    
+    
+    
+    
+    });
+    
+    
+    function addArtist(){
+    
+        var pk = $("#artist_search").val().split('(')[1].split(')')[0];
+        var present = false;
+        //console.log("hell");
+        $(".tag-hidden").each(function(){
+            //console.log($(this).val())
+            if($(this).val() === pk){
+                present = true;
+                return ;
+            }
+            
+            });
+        //alert("num-->"+pk);
+        //var hval = $('#artists_hid').attr('value');
+        //alert("val-->"+hval);
+        //var hval=hval+pk+"|";
+        //$('#artists_hid').val(hval);
+        if(present == false){
+        var tag = `<div class="tag label label-info m-1"><span>`+$("#artist_search").val().split('(')[0]+`</span><i class="fa fa-times m-1" onclick="deleteArtist(this)"><input class="tag-hidden" name='artist_ids[]' type="hidden" value=`+pk+`></div>`
+        $("#tags").append(tag);
+        }
+        //alert($('#artists_hid').attr('value'));
+    
+    }
+    
+    function deleteArtist(elem){
+        //alert($(elem).parent());
+        $(elem).parent().remove();
+    }
+        
+        
+        
+</script>
+{% endblock %}
+
+
+
+
+
 {% block content %}
 
 <div class="row">
@@ -24,7 +131,7 @@
                                             <!-- Username -->
                                             <label class="control-label"  for="name">Director</label>
                                             <div class="controls">
-                                                <input id="director_search" class="form-control" value="{{director.name}}" autocomplete="off">
+                                                <input id="director_search" class="form-control" type="text" value="{{director.name}}" autocomplete="off">
                                                 <ul class="list-group" id="dir-result"></ul>
                                                 <input type="hidden" name="director-id" id="director_id" value="{{director.artist_id}}">
                                             </div>
@@ -38,13 +145,13 @@
                                             <input id="artist_search" class="form-control" autocomplete="off">
                                             <ul class="list-group" id="result"></ul>
                                             <div id="tags" class="m-1">
-                                                {% for actor in actors%}
-
+                                                {% for actor in actors %}
 
                                                 <div class="tag label label-info m-1">
-                                                        <span>{{actor.name}}</span><i class="fa fa-times m-1" onclick="deleteArtist(this)">
+                                                        <span>{{actor.name}}</span>
+                                                        <i class="fa fa-times m-1" onclick="deleteArtist(this)"></i>
                                                         <input class="tag-hidden" name='artist_ids[]' type="hidden" value="{{actor.artist_id}}">
-                                                    </div>         
+                                                </div>         
 
 
                                                 {% endfor %}
@@ -100,7 +207,7 @@
                             <!-- Password -->
                             <label class="control-label"  for="image">Poster</label>
                             <div class="controls">
-                                    {% render_field form.image  %}
+                                    {% render_field form.image %}
                             </div>
                             </div>
                     

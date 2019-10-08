@@ -1,4 +1,4 @@
-{% extends 'movieapp/base.html' %}
+{% extends 'movieapp/newbase.html' %}
 
 {% block title %}Homepage{% endblock %}
 
@@ -31,5 +31,29 @@
 
         
 
+{% endblock %}
+
+
+{% block sidebar %}
+        <div class="col">
+            <div class="list-group">
+                <a class="list-group-item list-group-item-action list-group-item-primary">Highest Rated Movies</a>
+                {% for movie in rated_movies %}
+                    <a class="list-group-item list-group-item-action" href="{% url 'movie_view' movie.movie_id %}"><img src="{{movie.image.url}}" class="mx-1" style="height:5em;width:auto;">{{movie.name}} ({{ movie.rating }})</a>
+                {% endfor %}
+            </div>
+        
+
+        
+                <div class="list-group mt-4">
+                    <a class="list-group-item list-group-item-action list-group-item-primary">Releasing Soon</a>
+                    {% for movie in releasing_movies %}
+
+                        <a class="list-group-item list-group-item-action" href="{% url 'movie_view' movie.movie_id %}"><img src="{{movie.image.url}}" class="mx-1" style="height:5em;width:auto;">{{movie.name}} - {{ movie.release_date }}</a>
+                    {% endfor %}
+                </div>
+            
+        </div>
+    
 {% endblock %}
 

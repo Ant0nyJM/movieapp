@@ -51,8 +51,8 @@
                             </h4>({{ movie.release_date.year}})
                             
                         </span>
-                        <small><span class="search-result-sm-text m-1 p-1">Directed By: </span><span class="search-result-sm-text m-1 p-1">Cast :</span></small>
-                    </div>
+                        
+                    
                     {% if request.user.is_superuser %}
                     <div class="search-result-item">
                         <button class="btn btn-success p-2" onclick="approveMovie(this,'{{ movie.movie_id }}')">
@@ -64,6 +64,7 @@
                         </div>
                     </div>
                     {% endif %}
+                </div>
                 </div>
             
             {% endfor %}

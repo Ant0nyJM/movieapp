@@ -15,7 +15,8 @@ class MotionPicture(models.Model):
     description = models.TextField()
     user = models.ForeignKey(User,on_delete=models.DO_NOTHING,default=None)
     approved = models.BooleanField(default=False)
-    image = models.ImageField(upload_to='images/')
+    image = models.ImageField(upload_to='images/',blank=True)
+    rating = models.DecimalField(max_digits=3,decimal_places=1,default=0.00)
 
 class Artist(models.Model):
     def __str__(self):

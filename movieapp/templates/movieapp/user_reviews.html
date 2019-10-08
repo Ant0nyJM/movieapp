@@ -22,9 +22,45 @@ function deleteReview(id){
 
 {% block profile-content %}
 
-<!-- {% for review in user_reviews %}
-    {{review.review}} <a href="{% url 'review_edit' review.id %}">Edit Review</a> <button onclick="deleteReview({{review.id}})">Delete</button><br>
-{% endfor %} -->
+<div class="row">
+
+
+        <div class="col-xs-3">
+            {% if request.user.is_superuser %}
+
+            <ul class="nav nav-tabs tabs-left">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'pending' %}">Pending</a>
+                    </li>
+                    
+            </ul>
+
+            {% else %}
+
+            <ul class="nav nav-tabs tabs-left">
+                    
+                    
+                    <li class="nav-item">
+                            <a class="nav-link" href="{% url 'movie' %}">Your Movies</a>
+                    </li>
+                    <li class="nav-item">
+                            <a class="nav-link" href="{% url 'artist' %}">Artists</a>
+                    </li>
+
+                    <li class="nav-item">
+                            <a class="nav-link active" href="{% url 'user_reviews' %}">Your Reviews</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'movie_add' %}">Add Movie</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'artist_add' %}">Add Artist</a>
+                    </li>
+            </ul>
+
+            {% endif %}
+        </div>
+</div>
 
 <div class="row m-3">
         <br>
@@ -52,7 +88,7 @@ function deleteReview(id){
                 {% endfor%}
                 
             {% else %}
-            <p>No reviews for {{ movie.name }}</p>
+            <p class="h4">You haven't reviewed any movie yet</p>
             {% endif %}
         </div>
         
