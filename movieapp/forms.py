@@ -1,4 +1,4 @@
-from django.forms import ModelForm,DateInput,HiddenInput
+from django.forms import ModelForm,DateInput,HiddenInput,ChoiceField
 from django import forms
 from .models import MotionPicture,Review,Artist
 from django.contrib.auth.forms import UserCreationForm
@@ -6,6 +6,8 @@ from django.contrib.auth.models import User
 
 
 class MotionPictureForm(ModelForm):
+    choices = (('Horror','Horror'),('Comedy','Comedy'),('Action','Action'),('Drama','Drama'),('Adventure','Adventure'),('Documentary','Documentary'))
+    genre = ChoiceField(choices=choices)
     class Meta():
         model = MotionPicture
         fields = ['name','genre','release_date','description','image']
@@ -26,11 +28,14 @@ class MovieReviewForm(ModelForm):
         fields = ['review']
 
 class ArtistForm(ModelForm):
+    choices = (('Actor','Actor'),('Director','Director'))
+    artist_type = ChoiceField(choices=choices)
     class Meta():
         model = Artist
         fields = ['name','birthday','artist_type','description','image']
         widgets = {
              'birthday': DateInput(attrs={'type':'date'}),
+             
          }
 
 

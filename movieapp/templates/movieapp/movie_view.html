@@ -75,17 +75,33 @@ function deleteMovie(){
                       <dt>Release Date</dt>
                       <dd>{{ movie.release_date }}</dd>
                   </dl>
+                  
+                  <dl class="param param-feature">
+                        
+                        <dt>Director</dt>
+                        <dd>
+                            {% if director %}
+                            <a href="{% url 'artist_view' director.artist_id %}">
+
+                            {{ director.name }}
+                        </a>
+                            {% else %}
+                              No data available
+                            {% endif %}
+                        </dd>
+                       
+                    </dl>
+                    
                   <dl class="param param-feature">
                     <dt>Cast</dt>
                     <dd>
-                        {% if artists %}
-                            {% for artist in artists %}
+                        {% if actors %}
+                            {% for actor in actors %}
                                 {% if forloop.last %}
-                                    <a href="{% url 'artist_view' artist.artist_id %}">{{artist.name}}</a>
+                                    <a href="{% url 'artist_view' actor.artist_id %}">{{actor.name}}</a>
                                 {% else %}
-                                    <a href="{% url 'artist_view' artist.artist_id %}">{{artist.name}}</a>,
+                                    <a href="{% url 'artist_view' actor.artist_id %}">{{actor.name}}</a>,
                                 {% endif %}
-
                             
                             {% endfor %}
                         {% else %}
@@ -142,7 +158,11 @@ function deleteMovie(){
                                     </form>
                                 </dd>
                         </dl>
-                        {% endif %}               
+                    {% endif %}    
+                    
+                    {% else %}
+                    <span style="visibility:hidden">NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN</span>
+                
                     {% endif %}
                     {% if user.is_superuser or movie.user == user%}
                         <hr>

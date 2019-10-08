@@ -28,7 +28,7 @@ class MotionPictureAutocomplete(View):
         print("-- ",request.GET)
         try:
             if q[0]!='':
-                qs = qs.filter(name__icontains=q)
+                qs = qs.filter(name__icontains=q,artist_type="Actor")
             print(qs)
             return JsonResponse(serializers.serialize('json',qs),safe=False)
         except IndexError:
@@ -98,14 +98,18 @@ class MovieAddView(View):
         form = my_forms.MotionPictureForm(request.POST,request.FILES)
         usr = form.save(commit=False)
         usr.user = User.objects.get(username=request.user.username)
-        
         usr.save()
+        movie = my_models.MotionPicture.objects.get(movie_id=usr.pk)
+        director = my_models.Artist.objects.get(artist_id=request.POST.get('director-id'))
+        director.movies.add(movie)
+        director.save()
         ids = request.POST.getlist('artist_ids[]')
         for x in ids:
             print(x)
             artist = my_models.Artist.objects.get(artist_id=x)
-            movie = my_models.MotionPicture.objects.get(movie_id=usr.pk)
+            
             artist.movies.add(movie)
+            artist.save()
         return redirect('movie')
         
         
@@ -121,19 +125,35 @@ class MovieAddView(View):
 
 class MovieView(View):
     def get(self,request,movie_id):
+        context = {}
         movie = my_models.MotionPicture.objects.get(movie_id=movie_id)
         rating = my_models.Rate.objects.filter(movie = movie).aggregate(Avg('rating'))
         rating_len = len(my_models.Rate.objects.filter(movie = movie))
         reviews = my_models.Review.objects.filter(movie=movie)
-        artists = movie.artist_set.all()
+        actors = movie.artist_set.filter(artist_type="Actor")
+        print("------------.",actors)
+        try:
+            director = movie.artist_set.get(artist_type="Director")
+        except my_models.Artist.DoesNotExist:
+            director = None
+        print("----------",director)
+        if(director!=None):
+            context['director']= director
+
+        if(len(actors)!=0):
+            context['actors']=actors
         reviews_len = len(reviews)
         review_form = MovieReviewForm()
+        context.update({'movie':movie,'rating':rating,'rating_len':rating_len,'review_form':review_form,'reviews':reviews,'reviews_len':reviews_len})
+        print("888888",context)
         if request.user.is_authenticated:
             user = User.objects.get(username=request.user.username)
             not_rated = True if len(my_models.Rate.objects.filter(user=user,movie=movie))<1 else False
-            return render(request,'movieapp/movie_view.html',{'movie':movie,'rating':rating,'rating_len':rating_len,'not_rated':not_rated,'review_form':review_form,'reviews':reviews,'reviews_len':reviews_len,'artists':artists})
+            context['not_rated']=not_rated
+
+            return render(request,'movieapp/movie_view.html',context)#
         else:
-            return render(request,'movieapp/movie_view.html',{'movie':movie,'rating':rating,'rating_len':rating_len,'review_form':review_form,'reviews':reviews,'reviews_len':reviews_len,'artists':artists})
+            return render(request,'movieapp/movie_view.html',context)
 
 
 class PendingView(View):
@@ -212,8 +232,13 @@ def movie_delete(request):
 class MovieEditView(View):
     def get(self,request,movie_id):
         movie = my_models.MotionPicture.objects.get(movie_id=movie_id)
+        try:
+            director = movie.artist_set.filter(artist_type='Director')
+        except my_models.Artist.DoesNotExist:
+            director = None
+        actors = movie.artist_set.filter(artist_type="Actor")
         form = my_forms.MotionPictureForm(instance=movie)
-        return render(request,'movieapp/movie_edit.html',{'form':form})
+        return render(request,'movieapp/movie_edit.html',{'form':form,'actors':actors,'director':director})
     def post(self,request,movie_id):
         form = my_forms.MotionPictureForm(request.POST,request.FILES)
         usr = form.save(commit=False)
@@ -261,7 +286,49 @@ class ArtistView(View):
 
 
 
+def artist_delete(request):
+    artist = my_models.Artist.objects.get(artist_id=int(request.GET.get('artist_id')))
+    print("artost ====",artist.name)
+    artist.delete()
+    return JsonResponse({'deleted':'deleted'})
 
+
+def user_artists(request):
+    artists = my_models.Artist.objects.filter(user = request.user)
+    return render(request,'movieapp/artist.html',{'artists':artists})
+
+
+class DirectorAutocomplete(View):
+    def get(self,request):
+        # Don't forget to filter out results depending on the visitor !
+        
+
+        qs = my_models.Artist.objects.all()
+        q = request.GET.get('q','')
+        print("-- ",request.GET)
+        try:
+            if q[0]!='':
+                qs = qs.filter(name__icontains=q,artist_type='Director')
+            print(qs)
+            return JsonResponse(serializers.serialize('json',qs),safe=False)
+        except IndexError:
+            return JsonResponse({})
+
+
+
+class ArtistEditView(View):
+    def get(self,request,artist_id):
+        artist = my_models.Artist.objects.get(artist_id=artist_id)
+        form = my_forms.ArtistForm(instance= artist)
+        return render(request,'movieapp/artist_edit.html',{'form':form})
+
+    def post(self,request,artist_id):
+        form = my_forms.ArtistForm(request.POST,request.FILES)
+        usr = form.save(commit=False)
+        usr.user = User.objects.get(username=request.user.username)
+        usr.artist_id = artist_id
+        usr.save()
+        return redirect(reverse('artist_view',args=[artist_id]))
 
 
             

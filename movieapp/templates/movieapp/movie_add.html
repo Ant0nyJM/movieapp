@@ -34,7 +34,7 @@
     });
 
 $(document).ready(function(){
-    $('#artists_hid').val("|");
+    //$('#artists_hid').val("|");
  $.ajaxSetup({ cache: false });
  $('#artist_search').keyup(function(){
   $('#result').html('');
@@ -60,6 +60,39 @@ $(document).ready(function(){
   
   $("#result").html('');
  });
+
+
+ $('#director_search').keyup(function(){
+  $('#dir-result').html('');
+  var searchField = $('#director_search').val();
+  var expression = new RegExp(searchField, "i");
+  //alert(searchField)
+  $.getJSON("{% url 'director-autocomplete' %}",data="q="+searchField,function(data) {
+    //alert(data)
+   $.each(JSON.parse(data), function(key, value){
+    //alert(value+" -- "+expression);
+    
+     $('#dir-result').append(`<li class="list-group-item link-class"><img class='m-1' style="width:2em;height:auto;" src="/media/${value.fields.image}"><span class="text-muted">`+value.fields.name+"("+value.pk+")"+'</span></li>');
+    
+   });   
+  });
+ });
+
+
+ $('#dir-result').on('click', 'li', function() {
+  var click_text = $(this).text();
+  //alert(click_text[0]);
+  $('#director_search').val($.trim(click_text));
+  var id = click_text.split('(')[1].split(')')[0];
+  //alert(id);
+  $("#director_id").val(id);
+  $("#dir-result").html('');
+ });
+
+
+
+
+
 });
 
 
@@ -146,11 +179,22 @@ function deleteArtist(elem){
                                     <!-- </div> -->
                                 </div>
                                 <!-- </div> -->
-                                
+
+                                <div class="control-group">
+                                        <!-- Username -->
+                                        <label class="control-label"  for="name">Director</label>
+                                        <div class="controls">
+                                            <input id="director_search" class="form-control" autocomplete="off">
+                                            <ul class="list-group" id="dir-result"></ul>
+                                            <input type="hidden" name="director-id" id="director_id" value="">
+                                        </div>
+                                </div>                                
+
                                     
-                                
+                                <label for="artist_search" class="control-label">Cast</label>
                                 <div class="form-row">
-                                    <div class="form-group col-md-8">
+                                    <div class="form-group col-md-8 mt-2">
+                                        
                                         <input id="artist_search" class="form-control" autocomplete="off">
                                         <ul class="list-group" id="result"></ul>
                                         <div id="tags" class="m-1">

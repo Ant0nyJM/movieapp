@@ -1,0 +1,28 @@
+{% extends 'movieapp/user_profile2.html' %}
+{% load static %}
+{% block title %}Movie{% endblock %}
+{% block style %}
+<link rel="stylesheet" href="{% static 'movieapp/css/newhome.css' %}" >
+<link rel='stylesheet prefetch' href='https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css'>
+{% endblock %}
+{% block profile-content %}
+
+        <!-- <div class="col-xs-9"> -->
+            {% for artist in artists %}
+                <div class="movie-card"><a href="{% url 'artist_view' artist.artist_id %}">
+                <div class="movie-header" style="background: url({{artist.image.url}});background-size:cover">
+                    <div class="header-icon-container">
+                            
+                    </div>
+                    
+                </div>
+                <h3 class="movie-title">{{ artist.name }}</h3>
+                
+                    
+                </a>
+                </div><!-- movie-card -->
+            {% endfor %}
+            
+        <!-- </div> -->
+
+{% endblock %}

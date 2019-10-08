@@ -19,6 +19,49 @@
                                 </div>
                             </div>
                             <!-- <div class="form-inline"> -->
+
+                                    <div class="control-group">
+                                            <!-- Username -->
+                                            <label class="control-label"  for="name">Director</label>
+                                            <div class="controls">
+                                                <input id="director_search" class="form-control" value="{{director.name}}" autocomplete="off">
+                                                <ul class="list-group" id="dir-result"></ul>
+                                                <input type="hidden" name="director-id" id="director_id" value="{{director.artist_id}}">
+                                            </div>
+                                    </div>                                
+    
+                                        
+                                    <label for="artist_search" class="control-label">Cast</label>
+                                    <div class="form-row">
+                                        <div class="form-group col-md-8 mt-2">
+                                            
+                                            <input id="artist_search" class="form-control" autocomplete="off">
+                                            <ul class="list-group" id="result"></ul>
+                                            <div id="tags" class="m-1">
+                                                {% for actor in actors%}
+
+
+                                                <div class="tag label label-info m-1">
+                                                        <span>{{actor.name}}</span><i class="fa fa-times m-1" onclick="deleteArtist(this)">
+                                                        <input class="tag-hidden" name='artist_ids[]' type="hidden" value="{{actor.artist_id}}">
+                                                    </div>         
+
+
+                                                {% endfor %}
+    
+                                            </div>
+                                        </div>
+                                        <div class="form-group col-md-4">
+                                            <button class="btn btn-info" type="button" onclick="addArtist()">Add</button>
+                                            <!-- <input type="hidden" name="artists" id="artists_hid" value="|"> -->
+                                        </div>
+                        
+                                    </div>
+
+
+
+
+
                             <div class="form-group row p-3">
                                 <!-- <div class="control-group"> -->
                                 <!-- Username -->

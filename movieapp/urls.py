@@ -23,11 +23,14 @@ urlpatterns = [
                 path('profile/review/edit/<int:review_id>/',views.ReviewEditView.as_view(),name="review_edit"),
                 path('profile/artist/add/',views.ArtistAddView.as_view(),name='artist_add'),
                 path('artist/<int:artist_id>/',views.ArtistView.as_view(),name='artist_view'),
+                path('profile/artist/delete/',views.artist_delete,name='artist_delete'),
+                path('profile/artist/',views.user_artists,name="artist"),
+                path('profile/artist/edit/<int:artist_id>',views.ArtistEditView.as_view(),name="artist_edit"),
 
 
-                path('artist/',views.artist_search),
+                
                 path('artist-autocomplete/',views.MotionPictureAutocomplete.as_view(),name='artist-autocomplete'),
-
+                path('director-autocomplete/',views.DirectorAutocomplete.as_view(),name='director-autocomplete'),
                 
                 path('jqac/',views.json_data,name="ac"),
                 path('test/',views.test)

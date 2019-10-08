@@ -1,14 +1,14 @@
-{% extends 'movieapp/user_profile2.html' %}
-{% load widget_tweaks  %}
-{% block title %}Add Actor{% endblock %}
+{% extends 'movieapp/base.html' %}
+{% load widget_tweaks %}
+{% block title %}Artist Edit{% endblock %}
+{% block content %}
 
-{% block profile-content %}
 <div class="row">
 
         <div class="col-sm-9 mx-auto ">
                 
                 <form class="p-3 mt-5 form-horizontal" enctype="multipart/form-data" method="POST">
-                        <p class="h1 text-center">Add Artist</p>
+                        <p class="h1 text-center">Edit Artist</p>
                     {% csrf_token %}
                         <fieldset>
                             <div class="control-group">
@@ -25,24 +25,25 @@
                                 
                                 <!-- <div class="controls"> -->
                                     <div class="col-xs-6">
-                                        <label class="control-label"  for="artist_type">Occupation</label>
-                                        <!-- <select name="artist_type" class="form-control">
-                                            <option value="Actor">Actor</option>
-                                            <option value="Director">Director</option>
-                                        </select> -->
-                                        {% render_field form.artist_type class+='form-control' %}
+                                        <label class="control-label"  for="genre">Type</label>
+                                            {% render_field form.artist_type class+="form-control" %}
                                     </div>
                                         
                                     <div class="col-xs-6 ml-5">
-                                        <label class="control-label" for="birthday">Birthday</label>
+                                        <label class="control-label" for="release_date">Birthday</label>
                                                 {% render_field form.birthday class+="form-control" %}
                                     </div>
                                         
-                               
+                                <!-- </div> -->
+                                
+                                
+                                
+
+
+                                <!-- </div> -->
                             </div>
                             <!-- </div> -->
                             
-                                                    
                     
                             <div class="control-group">
                             <!-- Password-->
@@ -63,15 +64,12 @@
                             <div class="control-group">
                             <!-- Button -->
                             <div class="controls">
-                                <button class="btn btn-success btn-block">Add Artist</button>
+                                <button class="btn btn-success btn-block">Edit</button>
                             </div>
                             </div>
                         </fieldset>
                     </form>
         </div>
     </div>
-
-
-
 
 {% endblock %}
