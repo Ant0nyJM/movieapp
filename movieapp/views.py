@@ -191,7 +191,7 @@ class SearchView(View):
             if q[0] != '' :
                 movies = my_models.MotionPicture.objects.filter(name__icontains=q,approved=True)
                 artists = my_models.Artist.objects.filter(name__icontains=q)
-                genre = my_models.MotionPicture.objects.filter(genre__icontains=q,approved=True)
+                genre = my_models.MotionPicture.objects.filter(genre__iexact=q,approved=True)
                 return render(request,'movieapp/search.html',{'movies':movies,'artists':artists,'genre':genre})
 
         except IndexError:
@@ -258,6 +258,7 @@ class MovieEditView(View):
             context['director'] = director
         print("----->",context)
         return render(request,'movieapp/movie_edit.html',context)
+
     def post(self,request,movie_id):
         if(request.FILES):
             form = my_forms.MotionPictureForm(request.POST,request.FILES)
@@ -266,11 +267,13 @@ class MovieEditView(View):
         
         usr = form.save(commit=False)
         usr.user = User.objects.get(username=request.user.username)
+        movie = my_models.MotionPicture.objects.get(movie_id=movie_id)
         usr.movie_id = movie_id
-        usr.approved = True
+        if(movie.approved):
+            usr.approved = True
         usr.save()
 
-        movie = my_models.MotionPicture.objects.get(movie_id=movie_id)
+        
         movie.artist_set.clear()
         director = my_models.Artist.objects.get(artist_id=request.POST.get('director-id'))
         director.movies.add(movie)

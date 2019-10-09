@@ -160,17 +160,25 @@ function deleteMovie(){
                                     </form>
                                 </dd>
                         </dl>
+                        
                     {% endif %}    
                     
                     {% else %}
-                    <span style="visibility:hidden">NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN</span>
+                    
                 
                     {% endif %}
-                    {% if user.is_superuser or movie.user == user%}
+
+                    {% if user.is_superuser or movie.user == user %}
                         <hr>
+                        
+                        
                         <a class="btn btn-warning p-2" href="{% url 'movie_edit' movie.movie_id %}">Edit Movie<a>
                         <button class="btn btn-danger p-2" onclick="deleteMovie()">Delete Movie</button>
-                    {% endif%}
+                        
+                            <!-- <span>Movie has not been approved</span> -->
+                        
+                    {% endif %}
+                        <span style="visibility:hidden">NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN</span>
                     
               </article>
 

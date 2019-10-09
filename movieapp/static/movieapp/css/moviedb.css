@@ -10,14 +10,7 @@
     flex-direction: column;
   }
 
-  .search-result-sm-text {
 
-    border-radius: 10px;
-    border-width: 2px;
-    border-style : solid;
-    border-color: aliceblue;
-
-  }
 
   .caret-off::before {
     display: none;

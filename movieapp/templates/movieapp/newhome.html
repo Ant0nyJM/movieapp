@@ -39,7 +39,7 @@
             <div class="list-group">
                 <a class="list-group-item list-group-item-action list-group-item-primary p-2">Highest Rated Movies</a>
                 {% for movie in rated_movies %}
-                    <a class="list-group-item list-group-item-action p-2 mr-2" href="{% url 'movie_view' movie.movie_id %}"><span class="mr-2">{{ forloop.counter }}</span>{% if movie.image %}<img src="{{movie.image.url}}" class="mx-2" style="height:2.8em;width:auto;">{% endif %}<div class="d-inline-flex justify-content-around"><div class="m-2">{{movie.name}}</div><div class="m-2">{{ movie.rating }}</div></div></a>
+                    <a class="list-group-item list-group-item-action p-2 mr-2" href="{% url 'movie_view' movie.movie_id %}"><span class="mr-2">{{ forloop.counter }}</span>{% if movie.image %}<img src="{{movie.image.url}}" class="mx-2" style="height:2.8em;width:auto;">{% endif %}<div class="d-inline-flex justify-content-around"><div class="m-2"><small>{{movie.name}}</small></div><div class="m-2"><small>{{ movie.rating }}</small></div></div></a>
                 {% endfor %}
             </div>
         
@@ -49,7 +49,7 @@
                     <a class="list-group-item list-group-item-action list-group-item-primary">Releasing Soon</a>
                     {% for movie in releasing_movies %}
 
-                        <a class="list-group-item list-group-item-action" href="{% url 'movie_view' movie.movie_id %}"><span class="mr-2">{{ forloop.counter }}</span>{% if movie.image %}<img src="{{movie.image.url}}" class="mx-1" style="height:2.8em;width:auto;">{% endif %}{{movie.name}} - {{ movie.release_date }}</a>
+                        <a class="list-group-item list-group-item-action" href="{% url 'movie_view' movie.movie_id %}"><span class="mr-2">{{ forloop.counter }}</span>{% if movie.image %}<img src="{{movie.image.url}}" class="mx-1" style="height:2.8em;width:auto;">{% endif %}<small>{{movie.name}} - {{ movie.release_date }}</small></a>
                     {% endfor %}
                 </div>
             
