@@ -442,5 +442,5 @@ def list_movie_remove(request):
 
 def list_delete(request):
     lis = my_models.List.objects.get(id=request.GET.get('list_id'))
-    print(lis.name)
+    lis.delete()
     return JsonResponse({'deleted':'deleted'})
