@@ -13,7 +13,7 @@ from django.core import serializers
 
 import json
 
-
+from django.utils import timezone
 from .models import MotionPicture
 
 
@@ -58,7 +58,8 @@ class HomeView(View):
         #return render(request,'movieapp/base.html')
         movies = my_models.MotionPicture.objects.filter(approved=True)
         rated_movies = movies.order_by('-rating')[:5]
-        releasing_movies = movies.order_by('release_date')[:5]
+        movies2 = movies.filter(release_date__gt=timezone.now(),release_date__lt=timezone.now()+timezone.timedelta(days=30))
+        releasing_movies = movies2.order_by('release_date')[:5]
         return render(request,'movieapp/newhome.html',{'movies':movies,'rated_movies':rated_movies,'releasing_movies':releasing_movies})
 
 class SignupView(View):
@@ -85,8 +86,12 @@ class UserProfileView(View):
 class UserMovieView(View):
     def get(self,request):
         orig_user = User.objects.get(username=request.user.username)
-        movies = my_models.MotionPicture.objects.filter(user=orig_user)
-        return render(request,'movieapp/movie.html',{'movies':movies})
+        
+        if orig_user.is_superuser:
+            return render(request,'movieapp/pending.html')
+        else:
+            movies = my_models.MotionPicture.objects.filter(user=orig_user)
+            return render(request,'movieapp/movie.html',{'movies':movies})
 
 class MovieAddView(View):
 
