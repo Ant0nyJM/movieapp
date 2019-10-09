@@ -88,7 +88,8 @@ class UserMovieView(View):
         orig_user = User.objects.get(username=request.user.username)
         
         if orig_user.is_superuser:
-            return render(request,'movieapp/pending.html')
+            pending = my_models.MotionPicture.objects.filter(approved=False)
+            return render(request,'movieapp/pending.html',{'pending':pending})
         else:
             movies = my_models.MotionPicture.objects.filter(user=orig_user)
             return render(request,'movieapp/movie.html',{'movies':movies})
@@ -266,6 +267,7 @@ class MovieEditView(View):
         usr = form.save(commit=False)
         usr.user = User.objects.get(username=request.user.username)
         usr.movie_id = movie_id
+        usr.approved = True
         usr.save()
 
         movie = my_models.MotionPicture.objects.get(movie_id=movie_id)

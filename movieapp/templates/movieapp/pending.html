@@ -43,7 +43,7 @@
         {% if pending %}
             {% for movie in pending %}
                 <div class="search-result-div m-2 md-5">
-                    <a href="{% url 'movie_view' movie.movie_id %}"><img class="search-result-item m-1" src="{{ movie.image.url }}"  style="height:7.0rem;width:auto;" ></a>
+                    <a href="{% url 'movie_view' movie.movie_id %}">{% if movie.image %}<img class="search-result-item m-1" src="{{ movie.image.url }}"  style="height:7.0rem;width:auto;" >{% endif %}</a>
                     <div class="search-result-item">
                         <span class="search-result-item">
                             <h4 class="h3-responsive m-1">
@@ -55,12 +55,12 @@
                     
                     {% if request.user.is_superuser %}
                     <div class="search-result-item">
-                        <button class="btn btn-success p-2" onclick="approveMovie(this,'{{ movie.movie_id }}')">
-                            Approve
-                            <div class="aprv-status" role="status"></div>
-                        </button>
+                       
                         <div class="aprvd">
-
+                                <button class="btn btn-success p-2" onclick="approveMovie(this,'{{ movie.movie_id }}')">
+                                        Approve
+                                        <div class="aprv-status" role="status"></div>
+                                    </button>
                         </div>
                     </div>
                     {% endif %}
