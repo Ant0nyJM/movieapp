@@ -28,6 +28,9 @@ urlpatterns = [
                 path('profile/artist/edit/<int:artist_id>',views.ArtistEditView.as_view(),name="artist_edit"),
                 path('profile/lists/',views.lists_view,name="lists_view"),
                 path('profile/list/create/',views.ListCreateView.as_view(),name="list_create"),
+                path('profile/list/<int:list_id>/',views.ListView.as_view(),name="list_view"),
+                path('profile/list/movie/remove/',views.list_movie_remove,name="list_movie_remove"),
+                path('profile/list/delete/',views.list_delete,name="list_delete"),
 
                 
                 path('artist-autocomplete/',views.MotionPictureAutocomplete.as_view(),name='artist-autocomplete'),

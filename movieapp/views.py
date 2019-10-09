@@ -388,3 +388,42 @@ class ListCreateView(View):
     def get(self,request):
         form = my_forms.ListForm()
         return render(request,'movieapp/list_create.html',{'form':form})
+    def post(self,request):
+        print("Request parametres",str(request.POST))
+
+
+        form = my_forms.ListForm(request.POST)
+        usr = form.save(commit=False)
+        usr.user = User.objects.get(username=request.user.username)
+        usr.save()
+        
+        ids = request.POST.getlist('movie_ids[]')
+        for x in ids:
+            print(x)
+            movie = my_models.MotionPicture.objects.get(movie_id=x)
+            print("-------mvie id",movie.name)
+            usr.movies.add(movie)
+            usr.save()
+        return redirect(reverse('list_view',args=[usr.id]))
+
+
+class ListView(View):
+    def get(self,request,list_id):
+        lis = my_models.List.objects.get(id=list_id)
+        return render(request,'movieapp/list_view.html',{'list':lis})
+
+
+def list_movie_remove(request):
+    print("params ----->",str(request.GET))
+    movie = my_models.MotionPicture.objects.get(movie_id=request.GET.get('movie_id'))
+    print(movie.name)
+    lis = my_models.List.objects.get(id=request.GET.get('list_id'))
+    lis.movies.remove(movie)
+    print(lis.name)
+    return JsonResponse({'deleted':'deleted'})
+
+
+def list_delete(request):
+    lis = my_models.List.objects.get(id=request.GET.get('list_id'))
+    print(lis.name)
+    return JsonResponse({'deleted':'deleted'})

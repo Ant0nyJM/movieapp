@@ -1,11 +1,55 @@
 {% extends 'movieapp/user_profile2.html' %}
 {% block title %}User Lists{% endblock %}
 
+{% block scripts %}
+<script type="text/javascript">
+function deleteList(id){
+    //alert(id);
+    if(confirm("This action will delete the list ")){
+        $.ajax({
+            url : "{% url 'list_delete' %}",
+            method : 'get',
+            data : {'list_id':id},
+            success : function(retData){
+                if(retData['deleted']==='deleted'){
+                    alert("List has been deleted");
+                    location = "{% url 'lists_view' %}";
+                }
+            },
+        })
+    }
+}
+</script>
+
+
+{% endblock %}
 {% block profile-content %}
 
 {% if lists %}
+    {% for list in lists %}
 
-{% else %}
+    <div class="row p-3 m-2 border shadow bg-white">
+            <div class="container" >
+
+            <div class="row">
+                <p class="h4"><a href="{% url 'list_view' list.id %}">{{ list.name }}</a></p>
+            </div>
+            
+            <div class="row">
+                    Movies: 
+                    <div style="word-wrap: break-word;"><p>{% for movie in list.movies.all %} <a href="{% url 'movie_view' movie.movie_id %}">{{movie.name}}</a>,{% endfor %}</p></div>
+                    <br>
+                    <hr>
+                    <button class="btn btn-danger p-1" onclick="deleteList({{list.id}})">Delete</button>
+                </div>
+            </div>
+        </div>
+
+
+
+
+    {% endfor%}
+    {% else %}
 
     No Lists Present
     

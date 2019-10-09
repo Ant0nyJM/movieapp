@@ -1,0 +1,100 @@
+{% extends 'movieapp/user_profile2.html' %}
+{% block title %}Your Lists{% endblock %}
+{% block scripts %}
+<script type="text/javascript">
+
+function removeMovie(id){
+    //alert(id);
+    if(confirm("This action will remove the movie from the list ")){
+        $.ajax({
+            url : "{% url 'list_movie_remove' %}",
+            method : 'get',
+            data : {'list_id':"{{list.id}}",'movie_id':id},
+            success : function(retData){
+                if(retData['deleted']==='deleted'){
+                    alert("Movie has been removed");
+                    location = "{% url 'list_view' list.id %}";
+                }
+            },
+        })
+    }
+}
+
+</script>
+
+{% endblock %}
+
+{% block profile-content %}
+
+    <p class="h4">{{ list.name }}</p>
+    <div class="row m-3">
+        <br>
+        <br>
+        <div class="container p-4">
+            {% if list.movies %}
+                {% for movie in list.movies.all %}
+                    
+                    <div class="container">
+                    <div class="row shadow my-3 md-5" >
+                        <div class="d-inline-flex">
+                        <a href="{% url 'movie_view' movie.movie_id %}"><img class="search-result-item m-1" src="{{movie.image.url}}"  style="height:7.0rem;width:auto;" ></a>
+                        <div class="search-result-item">
+                            <span class="search-result-item">
+                                <h4 class="h3-responsive m-1">
+                                    <a href="{% url 'movie_view' movie.movie_id %}">{{ movie.name }}({{ movie.release_date.year}})</a>
+                                </h4>
+                                
+                            </span>
+                            <small class="mt-2">
+                                <div class="m-1 mb-1">
+                                <span class="search-result-sm-text p-1">Directed By: 
+                                    {% for c in movie.artist_set.all %}
+                                        {% if c.artist_type == 'Director' %} 
+                                            <a href="{% url 'artist_view' c.artist_id %}">{{ c.name }}</a>
+                                        {% endif %}
+                                    {% endfor %}  
+                                </span></div>
+                                <div class="m-1 mt-1">
+                                <span class="search-result-sm-text p-1">
+                                    Cast : 
+                                    {% for c in movie.artist_set.all %}
+                                        {% if c.artist_type == 'Actor' %} 
+                                            {% if forloop.last %}
+                                            <a href="{% url 'artist_view' c.artist_id %}">{{ c.name }}</a>
+                                            {% else %}
+                                                <a href="{% url 'artist_view' c.artist_id %}">{{ c.name }}</a>,
+                                            {% endif %}
+                                            {% endif %}
+                                    {% endfor %}
+                                </span>
+                                </div>
+                            </small>
+                        </div>
+                        
+                    </div>
+                    
+                    <button class="btn btn-danger btn-block py-0 p-1" onclick="removeMovie({{movie.movie_id}})">Delete From List</button>
+                    </div>
+                    
+                </div>
+
+
+
+
+                    
+                {% endfor%}
+                
+            {% else %}
+            <p class="h4">This list does not have any movies yet</p>
+            {% endif %}
+        </div>
+        
+
+  </div>
+
+
+
+
+
+
+{% endblock%}

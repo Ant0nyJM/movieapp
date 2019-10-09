@@ -83,7 +83,7 @@ function addArtist(){
   //var hval=hval+pk+"|";
   //$('#artists_hid').val(hval);
   if(present == false){
-  var tag = `<div class="tag label label-info m-1"><span>`+$("#artist_search").val().split('(')[0]+`</span><i class="fa fa-times m-1" onclick="deleteArtist(this)"><input class="tag-hidden" name='artist_ids[]' type="hidden" value=`+pk+`></div>`
+  var tag = `<div class="tag label label-info m-1"><span>`+$("#artist_search").val().split('(')[0]+`</span><i class="fa fa-times m-1" onclick="deleteArtist(this)"><input class="tag-hidden" name='movie_ids[]' type="hidden" value=`+pk+`></div>`
   $("#tags").append(tag);
   }
   //alert($('#artists_hid').attr('value'));
