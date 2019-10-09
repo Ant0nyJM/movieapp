@@ -77,10 +77,14 @@ class SignupView(View):
 
 class UserProfileView(View):
     def get(self,request):
-        if request.user.is_superuser:
-            return render(request,'movieapp/admin_profile.html')
+        orig_user = User.objects.get(username=request.user.username)
+        
+        if orig_user.is_superuser:
+            pending = my_models.MotionPicture.objects.filter(approved=False)
+            return render(request,'movieapp/pending.html',{'pending':pending})
         else:
-            return render(request,'movieapp/user_profile2.html')
+            movies = my_models.MotionPicture.objects.filter(user=orig_user)
+            return render(request,'movieapp/movie.html',{'movies':movies})
 
 
 class UserMovieView(View):
@@ -88,8 +92,8 @@ class UserMovieView(View):
         orig_user = User.objects.get(username=request.user.username)
         
         if orig_user.is_superuser:
-            pending = my_models.MotionPicture.objects.filter(approved=False)
-            return render(request,'movieapp/pending.html',{'pending':pending})
+            movies = my_models.MotionPicture.objects.filter(approved=True)
+            return render(request,'movieapp/movie.html',{'movies':movies})
         else:
             movies = my_models.MotionPicture.objects.filter(user=orig_user)
             return render(request,'movieapp/movie.html',{'movies':movies})
@@ -334,7 +338,10 @@ def artist_delete(request):
 
 
 def user_artists(request):
-    artists = my_models.Artist.objects.filter(user = request.user)
+    if request.user.is_superuser:
+        artists = my_models.Artist.objects.all()
+    else:
+        artists = my_models.Artist.objects.filter(user = request.user)
     return render(request,'movieapp/artist.html',{'artists':artists})
 
 
