@@ -1,6 +1,6 @@
 from django.forms import ModelForm,DateInput,HiddenInput,ChoiceField
 from django import forms
-from .models import MotionPicture,Review,Artist
+from .models import MotionPicture,Review,Artist,List
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 
@@ -45,5 +45,8 @@ class ArtistForm(ModelForm):
          }
 
 
-
+class ListForm(ModelForm):
+    class Meta():
+        model = List
+        fields = ['name']
 

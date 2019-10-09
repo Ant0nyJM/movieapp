@@ -344,6 +344,22 @@ class DirectorAutocomplete(View):
         except IndexError:
             return JsonResponse({})
 
+class MovieAutocomplete(View):
+    def get(self,request):
+        # Don't forget to filter out results depending on the visitor !
+        
+
+        qs = my_models.MotionPicture.objects.all()
+        q = request.GET.get('q','')
+        print("-- ",request.GET)
+        try:
+            if q[0]!='':
+                qs = qs.filter(name__icontains=q,approved=True)
+            print(qs)
+            return JsonResponse(serializers.serialize('json',qs),safe=False)
+        except IndexError:
+            return JsonResponse({})
+
 
 
 class ArtistEditView(View):
@@ -362,4 +378,13 @@ class ArtistEditView(View):
 
 
             
-        
+def lists_view(request):        
+    user = User.objects.get(username=request.user.username)
+    lists = my_models.List.objects.filter(user=user)
+    return render(request,'movieapp/lists_view.html',{'lists':lists})
+
+
+class ListCreateView(View):
+    def get(self,request):
+        form = my_forms.ListForm()
+        return render(request,'movieapp/list_create.html',{'form':form})

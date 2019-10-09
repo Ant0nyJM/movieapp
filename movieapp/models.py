@@ -43,3 +43,12 @@ class Review(models.Model):
     review = models.TextField()
     movie = models.ForeignKey(MotionPicture,on_delete=models.CASCADE)
     user = models.ForeignKey(User,on_delete=models.CASCADE)
+
+
+
+class List(models.Model):
+    def __str__(self):
+        return str(self.name)
+    name = models.CharField(max_length=40)
+    user = models.ForeignKey(User,on_delete=models.CASCADE)
+    movies = models.ManyToManyField(MotionPicture)
