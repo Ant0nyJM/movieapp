@@ -1,7 +1,40 @@
 {% extends 'movieapp/user_profile2.html' %}
-{% block title %}Your Lists{% endblock %}
+{% load static %}
+{% block title %}List - {{ list.name }}{% endblock %}
 {% block scripts %}
 <script type="text/javascript">
+$(document).ready(function(){
+
+$('#movie_search').keyup(function(){
+  $('#mov-result').html('');
+  var searchField = $('#movie_search').val();
+  var expression = new RegExp(searchField, "i");
+  //alert(searchField)
+  $.getJSON("{% url 'movie-autocomplete' %}",data="q="+searchField,function(data) {
+    //alert(data)
+   $.each(JSON.parse(data), function(key, value){
+    //alert(value+" -- "+expression);
+    
+     $('#mov-result').append(`<li class="list-group-item link-class"><img class='m-1' style="width:2em;height:auto;" src="/media/${value.fields.image}"><span class="text-muted">`+value.fields.name+"("+value.pk+")"+'</span></li>');
+    
+   });   
+  });
+ });
+
+
+ $('#mov-result').on('click', 'li', function() {
+  var click_text = $(this).text();
+  //alert(click_text[0]);
+  $('#movie_search').val($.trim(click_text));
+  var id = click_text.split('(')[1].split(')')[0];
+  //alert(id);
+  $("#movie_id").val(id);
+  $("#mov-result").html('');
+ });
+
+
+});
+
 
 function removeMovie(id){
     //alert(id);
@@ -19,9 +52,42 @@ function removeMovie(id){
         })
     }
 }
-
-function showMovieSearch(){
-
+function addMovieToList(btn){
+    btn.disabled = true
+    list_id = "{{ list.id }}"
+    movie_id = $("#movie_id").val()
+    $.ajax({
+        url : "{% url 'add-movie-to-list' %}",
+        method : 'get',
+        data : {'list_id':list_id,'movie_id':movie_id},
+        success : function(retData){
+            if(retData['status']==='added'){
+                alert('Movie has been added');
+                location.reload();
+            }
+            if(retData['status']==='present'){
+                btn.disabled = false;
+                alert('Movie already present');
+                
+            }
+        },
+    });
+}
+function showMovieSearch(btn){
+    $("#movie-add").toggle(function(){
+        //alert($(btn).text())
+        if($(btn).text()== 'Close'){
+            $(btn).removeClass('btn-danger');
+            $(btn).addClass('btn-primary');
+            $(btn).text('Add new movie')
+        }
+        else {
+            $(btn).removeClass('btn-primary');
+            $(btn).addClass('btn-danger');
+            $(btn).text('Close')
+        }
+        //alert($(btn))
+    });
 }
 
 </script>
@@ -30,26 +96,37 @@ function showMovieSearch(){
 
 {% block profile-content %}
 
-    <p class="h4">{{ list.name }}</p>
+    
     <div class="row m-3">
+            
         <br>
         <br>
         <div class="container p-4">
+                <p class="h4">{{ list.name }} - {{ list.movies.all|length }} movie{{ list.movies.all|pluralize}} in list</p>
             {% if list.movies %}
                 {% for movie in list.movies.all %}
                     
-                    <div class="container">
-                    <div class="row shadow my-3 md-5" >
-                        <div class="d-inline-flex">
-                        <a href="{% url 'movie_view' movie.movie_id %}"><img class="search-result-item m-1" src="{{movie.image.url}}"  style="height:7.0rem;width:auto;" ></a>
-                        <div class="search-result-item">
-                            <span class="search-result-item">
-                                <h4 class="h3-responsive m-1">
-                                    <a href="{% url 'movie_view' movie.movie_id %}">{{ movie.name }}({{ movie.release_date.year}})</a>
-                                </h4>
-                                
-                            </span>
-                            <small class="mt-2">
+                         
+<div class="container">
+        <div class="shadow my-3 md-5" >
+            <div class="row">
+                <div class="col-md-2 p-1">
+                    <a href="{% url 'movie_view' movie.movie_id %}"><img class="search-result-item m-1" src="{{movie.image.url}}"  style="height:7.0rem;width:auto;" ></a>
+                </div>
+                <div class="col-md-8 p-1">
+                    <div class="row">
+
+                        <span class="search-result-item">
+                            <p class="h3 m-1">
+                                <a href="{% url 'movie_view' movie.movie_id %}">{{ movie.name }}({{ movie.release_date.year}})</a>
+                            </p>
+                        </span>
+
+                    </div>
+
+                    <div class="row">
+
+                        <small class="mt-2">
                                 <div class="m-1 mb-1">
                                 <span class="search-result-sm-text p-1">Directed By: 
                                     {% for c in movie.artist_set.all %}
@@ -70,26 +147,60 @@ function showMovieSearch(){
                                             {% endif %}
                                             {% endif %}
                                     {% endfor %}
+                                </span><br>
+                                <span class="search-result-sm-text p-1">
+                                    Description : 
+                                    {{ movie.description }}
                                 </span>
                                 </div>
                             </small>
-                        </div>
+
+                    </div>
+
+                </div>
+            
+                <div class="col-md-2 mr-auto">
+                
+                    
                         
+                    
+                        
+                            <button class="btn btn-danger float-right p-1" onclick="removeMovie({{movie.movie_id}})"><img style="height:2rem;width:auto;" src="https://cdn1.iconfinder.com/data/icons/round-ui/123/47-512.png"></button>
+                    
+                        </div>                
+                
+            </div>
+            </div>
+            
+        </div>
+        
+        
+
+                    
+                {% endfor%}
+                <div class="row" id="movie-add" style="display:none;">
+                    <div class="col-md-3">
+
+                            <p  class="h5">Search for movie </p>
+                    </div>
+                    <div class="col-md-6">
+                        
+                            <input id="movie_search" type="text" class="form-control input-lg" autocomplete="off">
+                            <ul class="list-group" id="mov-result"></ul>
+                            <input type="hidden" name="movie-id" id="movie_id" value="">
+                        
+
+                    </div>
+                    <div class="col-md-3">
+
+                        <input type="button" class="btn btn-primary mt-auto" onclick="addMovieToList(this)" value="Add">
                     </div>
                     
-                    <button class="btn btn-danger btn-block py-0 p-1" onclick="removeMovie({{movie.movie_id}})">Delete From List</button>
-                    </div>
                     
                 </div>
-
-                <form >
-                    
-                </form>
-
-
-                    <button class="btn btn-primary" type="button" onclick="showMovieSearch()">Add new movie</button>
-                {% endfor%}
-                
+                <div class="row">
+                <button class="btn btn-primary mx-auto" type="button" onclick="showMovieSearch(this)" >Add new movie</button>
+                </div>
             {% else %}
             <p class="h4">This list does not have any movies yet</p>
             {% endif %}

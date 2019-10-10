@@ -31,11 +31,13 @@ urlpatterns = [
                 path('profile/list/<int:list_id>/',views.ListView.as_view(),name="list_view"),
                 path('profile/list/movie/remove/',views.list_movie_remove,name="list_movie_remove"),
                 path('profile/list/delete/',views.list_delete,name="list_delete"),
-
+                
                 
                 path('artist-autocomplete/',views.MotionPictureAutocomplete.as_view(),name='artist-autocomplete'),
                 path('director-autocomplete/',views.DirectorAutocomplete.as_view(),name='director-autocomplete'),
                 path('movie-autocomplete/',views.MovieAutocomplete.as_view(),name='movie-autocomplete'),
+                path('add-movie-to-list/',views.add_movie_to_list,name="add-movie-to-list"),
+
                 
                 path('jqac/',views.json_data,name="ac"),
                 path('test/',views.test)

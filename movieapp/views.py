@@ -253,7 +253,7 @@ class MovieEditView(View):
         except my_models.Artist.DoesNotExist:
             director = None
         actors = movie.artist_set.filter(artist_type="Actor")
-        form = my_forms.MotionPictureForm(instance=movie)
+        form = my_forms.MotionPictureImageForm(instance=movie)
         context = {}
         context.update({'form':form})
         if(len(actors)!=0):
@@ -264,8 +264,10 @@ class MovieEditView(View):
         return render(request,'movieapp/movie_edit.html',context)
 
     def post(self,request,movie_id):
+        
         if(request.FILES):
-            form = my_forms.MotionPictureForm(request.POST,request.FILES)
+            print("=--============")
+            form = my_forms.MotionPictureImageForm(request.POST,request.FILES)
         else:
             form = my_forms.MotionPictureForm(request.POST)
         
@@ -444,3 +446,12 @@ def list_delete(request):
     lis = my_models.List.objects.get(id=request.GET.get('list_id'))
     lis.delete()
     return JsonResponse({'deleted':'deleted'})
+
+def add_movie_to_list(request):
+    lis = my_models.List.objects.get(id=request.GET.get('list_id'))
+    movie = my_models.MotionPicture.objects.get(movie_id=request.GET.get('movie_id'))
+    if(len(lis.movies.filter(movie_id=movie.movie_id))==0):
+        lis.movies.add(movie)
+        return JsonResponse({'status':'added'})
+    else:
+        return JsonResponse({'status':'present'})

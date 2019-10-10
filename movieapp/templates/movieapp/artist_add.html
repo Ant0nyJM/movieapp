@@ -1,6 +1,6 @@
 {% extends 'movieapp/user_profile2.html' %}
 {% load widget_tweaks  %}
-{% block title %}Add Actor{% endblock %}
+{% block title %}Add Artist{% endblock %}
 
 {% block profile-content %}
 
@@ -28,7 +28,9 @@
                     <li class="nav-item">
                             <a class="nav-link" href="{% url 'artist' %}">Artists</a>
                     </li>
-
+                    <li class="nav-item">
+                            <a class="nav-link" href="{% url 'lists_view' %}">Your Lists</a>
+                    </li>
                     <li class="nav-item">
                             <a class="nav-link" href="{% url 'user_reviews' %}">Your Reviews</a>
                     </li>

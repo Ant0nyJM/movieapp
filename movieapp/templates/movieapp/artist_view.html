@@ -41,9 +41,11 @@ function deleteArtist(){
                     <article class="gallery-wrap">
                         <div class="img-big-wrap">
                             
-                                
+                                {% if artist.image %}
                                 <img class="" src="{{artist.image.url}}" style="margin-left: 15%;margin-top: 2%;max-width: 350px;width:100%;height:auto;">
-                            
+                                {% else %}
+                                    No image provided for artist
+                                {% endif %}
                         </div>
                         
                     </article>
