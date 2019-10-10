@@ -106,8 +106,8 @@ function deleteArtist(){
                     <dl class="param param-feature">
                         {% if user.is_superuser or artist.user == user%}
                         <hr>
-                        <a class="btn btn-warning" href="{% url 'artist_edit' artist.artist_id %}">Edit Artist</a>
-                        <button class="btn btn-danger" onclick="deleteArtist()">Delete Artist</button>
+                        <a class="btn btn-warning p-2" href="{% url 'artist_edit' artist.artist_id %}">Edit Artist</a>
+                        <button class="btn btn-danger p-2" onclick="deleteArtist()">Delete Artist</button>
                     {% endif%}
                     </dl>  
                   <!-- item-property-hor .// -->
