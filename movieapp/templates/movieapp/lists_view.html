@@ -1,4 +1,4 @@
-{% extends 'movieapp/user_profile2.html' %}
+{% extends 'movieapp/user_profile3.html' %}
 {% block title %}User Lists{% endblock %}
 
 {% block scripts %}
@@ -31,7 +31,7 @@ function deleteList(id){
         <div class="col-xs-3">
             {% if request.user.is_superuser %}
 
-            <ul class="nav nav-tabs tabs-left">
+            <ul class="nav nav-tabs">
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'pending' %}">Pending</a>
                     </li>
@@ -40,7 +40,7 @@ function deleteList(id){
 
             {% else %}
 
-            <ul class="nav nav-tabs tabs-left">
+            <ul class="nav nav-tabs">
                     
                     
                     <li class="nav-item">

@@ -1,4 +1,4 @@
-{% extends 'movieapp/user_profile2.html' %}
+{% extends 'movieapp/user_profile3.html' %}
 {% load static %}
 {% block title %}{{ request.user.username }} - Admin {% endblock %}
 
@@ -15,10 +15,7 @@
                 success : function(retData){
                     if(retData['approved'] === 'true'){
                         //alert(retData['msg']);
-                        setTimeout(function(){
-                            $(bt).children(".aprv-status").removeClass('spinner-border spinner-border-sm');
-                            $(bt).parent().children(".aprvd").html('<i class="fas fa-check fa-sm"></i>');
-                        },1000);
+                        alert('Movie has been approved');
                         
                         setTimeout(function(){
                              location.reload();
@@ -26,7 +23,7 @@
                         
                     }
                     else{
-                        alert("not approved");
+                        alert("Movie Not approved");
                     }
                     
 
@@ -37,13 +34,13 @@
     </script>
 {% endblock %}
 {% block profile-content %}
-<div class="row">
+<div class="row mb-5">
 
 
         <div class="col-xs-3">
             {% if request.user.is_superuser %}
 
-            <ul class="nav nav-tabs tabs-left">
+            <ul class="nav nav-tabs">
                     <li class="nav-item">
                         <a class="nav-link active" href="{% url 'pending' %}">Pending</a>
                     </li>
@@ -86,35 +83,91 @@
     <div class="col-xs-9">
         {% if pending %}
             {% for movie in pending %}
-                <div class="search-result-div m-2 md-5">
-                    <a href="{% url 'movie_view' movie.movie_id %}">{% if movie.image %}<img class="search-result-item m-1" src="{{ movie.image.url }}"  style="height:7.0rem;width:auto;" >{% endif %}</a>
-                    <div class="search-result-item">
-                        <span class="search-result-item">
-                            <h4 class="h3-responsive m-1">
-                                <a href="{% url 'movie_view' movie.movie_id %}">{{ movie.name }}</a>
-                            </h4>({{ movie.release_date.year}})
-                            
-                        </span>
-                        
+                
+
+                <div class="container">
                     
-                    {% if request.user.is_superuser %}
-                    <div class="search-result-item">
-                       
-                        <div class="aprvd">
-                                <button class="btn btn-success p-2" onclick="approveMovie(this,'{{ movie.movie_id }}')">
-                                        Approve
-                                        <div class="aprv-status" role="status"></div>
-                                    </button>
+                        <div class="col-md-10">
+                            <div class="shadow my-3 md-5" >
+                            <div class="row">
+                                <div class="col-md-1">
+                                    <a href="{% url 'movie_view' movie.movie_id %}">{%if movie.image %}<img class="search-result-item m-1" src="{{movie.image.url}}"  style="height:7.0rem;width:auto;" >{% endif %}</a>
+                                </div>
+                                <div class="col-md-1">
+
+                                </div>
+                                <div class="col-md-8">
+                                    <div class="row">
+
+                                        <span class="search-result-item">
+                                            <p class="h3 m-1">
+                                                <a href="{% url 'movie_view' movie.movie_id %}">{{ movie.name }}({{ movie.release_date.year}})</a>
+                                            </p>
+                                        </span>
+
+                                    </div>
+
+                                    <div class="row">
+
+                                        <small class="mt-2">
+                                                <div class="m-1 mb-1">
+                                                <span class="search-result-sm-text p-1">Directed By: 
+                                                    {% for c in movie.artist_set.all %}
+                                                        {% if c.artist_type == 'Director' %} 
+                                                            <a href="{% url 'artist_view' c.artist_id %}">{{ c.name }}</a>
+                                                        {% endif %}
+                                                    {% endfor %}  
+                                                </span></div>
+                                                <div class="m-1 mt-1">
+                                                <span class="search-result-sm-text p-1">
+                                                    Cast : 
+                                                    {% for c in movie.artist_set.all %}
+                                                        {% if c.artist_type == 'Actor' %} 
+                                                            {% if forloop.last %}
+                                                            <a href="{% url 'artist_view' c.artist_id %}">{{ c.name }}</a>
+                                                            {% else %}
+                                                                <a href="{% url 'artist_view' c.artist_id %}">{{ c.name }}</a>,
+                                                            {% endif %}
+                                                            {% endif %}
+                                                    {% endfor %}
+                                                </span><br>
+                                                <span class="search-result-sm-text p-1">
+                                                    Description : 
+                                                    {{ movie.description }}
+                                                </span>
+                                                </div>
+                                            </small>
+
+                                    </div>
+
+                                </div>
+                            
+                                <div class="col-md-2">
+                                <button class="btn btn-link float-right p-1" onclick="approveMovie(this,'{{ movie.movie_id }}')"><img style="height:2rem;width:auto;" src="https://www.freepngimg.com/thumb/green_tick/27889-3-green-tick-thumb.png"></button>
+                                    
+                                </div>                
+                                
+                            </div>
                         </div>
+                        </div>
+                        <div class="col-md-2">
+
+                        </div>
+                        
                     </div>
-                    {% endif %}
-                </div>
-                </div>
+
+
+
+
+
+
+
+
             
             {% endfor %}
         {% else %}
-        <div class="container mx-auto">
-            <p class="h4 mt-6">No movies pending for approval</p>
+        <div class="container mx-auto mt-6">
+            <p class="h4">No movies pending for approval</p>
         </div>
         {% endif %}
 

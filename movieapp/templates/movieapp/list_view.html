@@ -110,10 +110,10 @@ function showMovieSearch(btn){
 <div class="container">
         <div class="shadow my-3 md-5" >
             <div class="row">
-                <div class="col-md-2 p-1">
-                    <a href="{% url 'movie_view' movie.movie_id %}"><img class="search-result-item m-1" src="{{movie.image.url}}"  style="height:7.0rem;width:auto;" ></a>
+                <div class="col-md-2">
+                    <a href="{% url 'movie_view' movie.movie_id %}">{% if movie.image %}<img class="search-result-item m-1" src="{{movie.image.url}}"  style="height:7.0rem;width:auto;" >{% endif %}</a>
                 </div>
-                <div class="col-md-8 p-1">
+                <div class="col-md-8">
                     <div class="row">
 
                         <span class="search-result-item">
@@ -161,13 +161,9 @@ function showMovieSearch(btn){
             
                 <div class="col-md-2 mr-auto">
                 
+                    <button class="btn btn-danger float-right p-1" onclick="removeMovie({{movie.movie_id}})"><img style="height:2rem;width:auto;" src="https://cdn1.iconfinder.com/data/icons/round-ui/123/47-512.png"></button>
                     
-                        
-                    
-                        
-                            <button class="btn btn-danger float-right p-1" onclick="removeMovie({{movie.movie_id}})"><img style="height:2rem;width:auto;" src="https://cdn1.iconfinder.com/data/icons/round-ui/123/47-512.png"></button>
-                    
-                        </div>                
+                </div>                
                 
             </div>
             </div>

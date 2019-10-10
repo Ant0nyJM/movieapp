@@ -112,9 +112,12 @@ class MovieAddView(View):
         usr.user = User.objects.get(username=request.user.username)
         usr.save()
         movie = my_models.MotionPicture.objects.get(movie_id=usr.pk)
-        director = my_models.Artist.objects.get(artist_id=request.POST.get('director-id'))
-        director.movies.add(movie)
-        director.save()
+        try:
+            director = my_models.Artist.objects.get(artist_id=request.POST.get('director-id'))
+            director.movies.add(movie)
+            director.save()
+        except ValueError:
+            pass
         ids = request.POST.getlist('artist_ids[]')
         for x in ids:
             print(x)
@@ -281,9 +284,12 @@ class MovieEditView(View):
 
         
         movie.artist_set.clear()
-        director = my_models.Artist.objects.get(artist_id=request.POST.get('director-id'))
-        director.movies.add(movie)
-        director.save()
+        try:
+            director = my_models.Artist.objects.get(artist_id=request.POST.get('director-id'))
+            director.movies.add(movie)
+            director.save()
+        except ValueError:
+            pass
         ids = request.POST.getlist('artist_ids[]')
         for x in ids:
             print(x)
