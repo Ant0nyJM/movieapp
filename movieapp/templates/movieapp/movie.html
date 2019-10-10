@@ -10,7 +10,7 @@
 <div class="row">
 
 
-        <div class="col-xs-3">
+        <div>
             {% if request.user.is_superuser %}
 
             <ul class="nav nav-tabs tabs-left">
@@ -59,7 +59,10 @@
 
 
 
-        <!-- <div class="col-xs-9"> -->
+
+
+
+        
             {% if movies %}
             {% for movie in movies %}
                 <div class="movie-card"><a href="{% url 'movie_view' movie.movie_id %}">
@@ -80,7 +83,6 @@
                     <p class="h4">You haven't added any movies yet.</p>
                 </div>
             {% endif %}
-            
-        <!-- </div> -->
+
 
 {% endblock %}

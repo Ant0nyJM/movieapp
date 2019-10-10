@@ -127,7 +127,7 @@ function deleteMovie(){
                         {% else %}
                         
                         <p>Average rating of <b>{{movie.rating|floatformat:1}}</b> based on {{rating_len}} user{{rating_len|pluralize}}</p>
-                        {% if not no_rating and user.is_authenticated %}
+                        {% if not not_rated and user.is_authenticated %}
                         <small>You have rated this movie</small>
                         {% endif %}
                     </bold>

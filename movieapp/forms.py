@@ -10,21 +10,10 @@ class MotionPictureForm(ModelForm):
     genre = ChoiceField(choices=choices)
     class Meta():
         model = MotionPicture
-        fields = ['name','genre','release_date','description']
-        widgets = {
-             'release_date': DateInput(attrs={'type':'date'}),
-         }
-
-class MotionPictureImageForm(ModelForm):
-    choices = (('Horror','Horror'),('Comedy','Comedy'),('Action','Action'),('Drama','Drama'),('Adventure','Adventure'),('Documentary','Documentary'))
-    genre = ChoiceField(choices=choices)
-    class Meta():
-        model = MotionPicture
         fields = ['name','genre','release_date','description','image']
         widgets = {
              'release_date': DateInput(attrs={'type':'date'}),
          }
-
 
 class CustomUserCreationForm(UserCreationForm):
     class Meta():

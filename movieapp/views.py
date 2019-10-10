@@ -253,7 +253,7 @@ class MovieEditView(View):
         except my_models.Artist.DoesNotExist:
             director = None
         actors = movie.artist_set.filter(artist_type="Actor")
-        form = my_forms.MotionPictureImageForm(instance=movie)
+        form = my_forms.MotionPictureForm(instance=movie)
         context = {}
         context.update({'form':form})
         if(len(actors)!=0):
@@ -267,7 +267,7 @@ class MovieEditView(View):
         
         if(request.FILES):
             print("=--============")
-            form = my_forms.MotionPictureImageForm(request.POST,request.FILES)
+            form = my_forms.MotionPictureForm(request.POST,request.FILES)
         else:
             form = my_forms.MotionPictureForm(request.POST)
         
