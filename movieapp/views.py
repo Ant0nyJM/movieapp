@@ -4,6 +4,7 @@ from django.views import View
 #from django.contrib.auth.forms import UserCreationForm
 from .forms import CustomUserCreationForm,MovieReviewForm
 from django.contrib.auth.models import User
+from django.contrib.auth.forms import UserChangeForm
 from . import models as my_models
 from . import forms as my_forms
 
@@ -461,3 +462,17 @@ def add_movie_to_list(request):
         return JsonResponse({'status':'added'})
     else:
         return JsonResponse({'status':'present'})
+
+class ProfileEditView(View):
+    def get(self,request):
+        user = request.user
+        form = UserChangeForm(instance=user)
+        return render(request,'movieapp/profile.html',{'form':form})
+    
+    def post(self,request):
+        form = UserChangeForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('profile')
+        else:
+            return render(request,'profile_edit',{'form':form})

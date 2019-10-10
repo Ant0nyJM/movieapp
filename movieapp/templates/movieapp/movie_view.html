@@ -42,7 +42,7 @@ function deleteMovie(){
                                 {% if movie.image %}
                                 <img class="img-responsive fit-image" src="{{movie.image.url}}" style="margin-left: 15%;margin-top: 2%;">
                                 {% else %}
-                                No image for this movie
+                                    <img src="{% static 'movieapp/images/noimage.png' %}" style="margin-left: 15%;margin-top: 2%;max-width: 350px;width:100%;height:auto;">
                                 {% endif%}
                         </div>
                         

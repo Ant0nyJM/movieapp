@@ -44,7 +44,7 @@ function deleteArtist(){
                                 {% if artist.image %}
                                 <img class="" src="{{artist.image.url}}" style="margin-left: 15%;margin-top: 2%;max-width: 350px;width:100%;height:auto;">
                                 {% else %}
-                                    No image provided for artist
+                                    <img src="{% static 'movieapp/images/noimage.png' %}" style="margin-left: 15%;margin-top: 2%;max-width: 350px;width:100%;height:auto;">
                                 {% endif %}
                         </div>
                         

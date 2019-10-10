@@ -1,0 +1,67 @@
+{% extends 'movieapp/user_profile3.html' %}
+{% load widget_tweaks %}
+{% block title %}Add Movie{% endblock %}
+
+{% block profile-content %}
+
+
+
+<div class="row">
+
+        <div class="col-sm-9 mx-auto ">
+                
+                <form class="p-3 mt-5 form-horizontal" method="POST">
+                        <p class="h1 text-center">Edit Profile</p>
+                    {% csrf_token %}
+                        <fieldset>
+                            <div class="control-group">
+                                <!-- Username -->
+                                <label class="control-label"  for="name">Username</label>
+                                <div class="controls">
+                                        {% render_field form.username class+="form-control" %}
+                                </div>
+                            </div>
+
+                            <div class="control-group">
+                                <!-- Username -->
+                                <label class="control-label"  for="name">First Name</label>
+                                <div class="controls">
+                                        {% render_field form.first_name class+="form-control" %}
+                                </div>
+                            </div>
+
+                            <div class="control-group">
+                                <!-- Username -->
+                                <label class="control-label"  for="name">Last Name</label>
+                                <div class="controls">
+                                        {% render_field form.last_name class+="form-control" %}
+                                </div>
+                            </div>
+        
+                            <div class="control-group">
+                                <!-- Username -->
+                                <label class="control-label"  for="name">Email Id</label>
+                                <div class="controls">
+                                        {% render_field form.email class+="form-control" %}
+                                </div>
+                            </div>
+                            
+                    
+                            <div class="control-group">
+                                <!-- Button -->
+                                <div class="controls">
+                                    <input class="btn btn-success btn-block" value="Save">
+                                </div>
+                            </div>
+
+                        </fieldset>
+                    </form>
+        </div>
+    </div>
+
+
+
+
+
+
+{% endblock %}

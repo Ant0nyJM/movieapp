@@ -31,6 +31,7 @@ urlpatterns = [
                 path('profile/list/<int:list_id>/',views.ListView.as_view(),name="list_view"),
                 path('profile/list/movie/remove/',views.list_movie_remove,name="list_movie_remove"),
                 path('profile/list/delete/',views.list_delete,name="list_delete"),
+                path('profile/edit/',views.ProfileEditView.as_view(),name='profile_edit'),
                 
                 
                 path('artist-autocomplete/',views.MotionPictureAutocomplete.as_view(),name='artist-autocomplete'),
