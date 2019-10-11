@@ -8,7 +8,13 @@
             <p>{{ movies|length }} result{{ movies|pluralize }} found in Movies</p>
             {% for movie in movies %}
                 <div class="search-result-div shadow my-3 md-5" style="width:100%">
-                    <a href="{% url 'movie_view' movie.movie_id %}"><img class="search-result-item m-1" src="{{movie.image.url}}"  style="height:7.0rem;width:auto;" ></a>
+                    <a href="{% url 'movie_view' movie.movie_id %}">
+                            {% if movie.image %}
+                            <img class="search-result-item m-1" src="{{movie.image.url}}"  style="height:7.0rem;width:auto;" >
+                            {% else %}
+                            <img class="search-result-item m-1" src="{% static 'movieapp/images/noimage.jpg' %}"  style="height:7.0rem;width:auto;" >
+                            {% endif%}
+                    </a>
                     <div class="search-result-item">
                         <span class="search-result-item">
                             <h4 class="h3-responsive m-1">
@@ -52,7 +58,13 @@
             <p>{{ artists|length }} result{{ artists|pluralize }} found in Artists</p>
             {% for artist in artists %}
                 <div class="search-result-div shadow my-3 md-5" style="width:70%">
-                    <a href="{% url 'artist_view' artist.artist_id %}"><img class="search-result-item m-1" src="{{artist.image.url}}"  style="height:7.0rem;width:auto;" ></a>
+                    <a href="{% url 'artist_view' artist.artist_id %}">
+                        {% if artist.image %}
+                        <img class="search-result-item m-1" src="{{artist.image.url}}"  style="height:7.0rem;width:auto;" >
+                        {% else %}
+                        <img class="search-result-item m-1" src="{%static 'movieapp/images/noimage.jpg' %}"  style="height:7.0rem;width:auto;" >
+                        {% endif %}
+                    </a>
                     <div class="search-result-item">
                         <span class="search-result-item">
                             <h4 class="h3-responsive m-1">
@@ -85,7 +97,13 @@
             <p>{{ genre|length }} result{{ genre|pluralize }} found in  Genre</p>
             {% for movie in genre %}
                 <div class="search-result-div shadow my-3 md-5" style="width:100%">
-                    <a href="{% url 'movie_view' movie.movie_id %}"><img class="search-result-item m-1" src="{{movie.image.url}}"  style="height:7.0rem;width:auto;" ></a>
+                    <a href="{% url 'movie_view' movie.movie_id %}">
+                        {% if movie.image %}
+                        <img class="search-result-item m-1" src="{{movie.image.url}}"  style="height:7.0rem;width:auto;" >
+                        {% else %}
+                        <img class="search-result-item m-1" src="{% static 'movieapp/images/noimage.jpg' %}"  style="height:7.0rem;width:auto;" >
+                        {% endif%}
+                    </a>
                     <div class="search-result-item">
                         <span class="search-result-item">
                             <h4 class="h3-responsive m-1">

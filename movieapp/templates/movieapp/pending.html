@@ -91,7 +91,13 @@
                             <div class="shadow my-3 md-5" >
                             <div class="row">
                                 <div class="col-md-1">
-                                    <a href="{% url 'movie_view' movie.movie_id %}">{%if movie.image %}<img class="search-result-item m-1" src="{{movie.image.url}}"  style="height:7.0rem;width:auto;" >{% endif %}</a>
+                                    <a href="{% url 'movie_view' movie.movie_id %}">
+                                        {%if movie.image %}
+                                            <img class="search-result-item m-1" src="{{movie.image.url}}"  style="height:7.0rem;width:auto;" >
+                                        {% else %}
+                                            <img class="search-result-item m-1" src="{% static 'movieapp/images/noimage.jpg' %}"  style="height:7.0rem;width:auto;" >
+                                        {% endif %}
+                                    </a>
                                 </div>
                                 <div class="col-md-1">
 

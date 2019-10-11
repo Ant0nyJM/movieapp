@@ -181,7 +181,7 @@ function deleteArtist(elem){
     </form> -->
     <div class="row">
 
-            <div class="col-sm-9 mx-auto ">
+            <div class="col-sm-6 mx-auto ">
                     
                     <form class="p-3 mt-5 form-horizontal" enctype="multipart/form-data" method="POST">
                             <p class="h1 text-center">Add Movie</p>
@@ -198,20 +198,19 @@ function deleteArtist(elem){
                                 <div class="form-group row p-3">
                                     <!-- <div class="control-group"> -->
                                     <!-- Username -->
-                                    
                                     <!-- <div class="controls"> -->
-                                        <div class="col-xs-6">
+                                        <div class="col-sm-6 pl-0">
                                             <label class="control-label"  for="genre">Genre</label>
                                                 {% render_field form.genre class+="form-control" %}
                                         </div>
                                             
-                                        <div class="col-xs-6 ml-5">
+                                        <div class="col-sm-6 pr-0">
                                             <label class="control-label" for="release_date">Release Date</label>
                                                     {% render_field form.release_date class+="form-control" %}
                                         </div>
                                             
                                     <!-- </div> -->
-                                    
+                                
                                     
                                     
 
@@ -233,7 +232,7 @@ function deleteArtist(elem){
                                     
                                 <label for="artist_search" class="control-label">Cast</label>
                                 <div class="form-row">
-                                    <div class="form-group col-md-8 mt-2">
+                                    <div class="form-group col-sm-9 mt-2">
                                         
                                         <input id="artist_search" class="form-control" autocomplete="off">
                                         <ul class="list-group" id="result"></ul>
@@ -242,7 +241,7 @@ function deleteArtist(elem){
 
                                         </div>
                                     </div>
-                                    <div class="form-group col-md-4">
+                                    <div class="form-group col-sm-3">
                                         <button class="btn btn-info" type="button" onclick="addArtist()">Add</button>
                                         <!-- <input type="hidden" name="artists" id="artists_hid" value="|"> -->
                                     </div>

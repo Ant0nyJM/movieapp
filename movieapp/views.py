@@ -268,16 +268,19 @@ class MovieEditView(View):
         return render(request,'movieapp/movie_edit.html',context)
 
     def post(self,request,movie_id):
-        
+        movie = my_models.MotionPicture.objects.get(movie_id=movie_id)
         if(request.FILES):
             print("=--============")
             form = my_forms.MotionPictureForm(request.POST,request.FILES)
+            usr = form.save(commit=False)
         else:
             form = my_forms.MotionPictureForm(request.POST)
+            usr = form.save(commit=False)
+            usr.image = movie.image
         
-        usr = form.save(commit=False)
+        
         usr.user = User.objects.get(username=request.user.username)
-        movie = my_models.MotionPicture.objects.get(movie_id=movie_id)
+        
         usr.movie_id = movie_id
         if(movie.approved):
             usr.approved = True
@@ -395,8 +398,15 @@ class ArtistEditView(View):
         return render(request,'movieapp/artist_edit.html',{'form':form})
 
     def post(self,request,artist_id):
-        form = my_forms.ArtistForm(request.POST,request.FILES)
-        usr = form.save(commit=False)
+        artist = my_models.Artist.objects.get(artist_id=artist_id)
+        if(request.FILES):
+            form = my_forms.ArtistForm(request.POST,request.FILES)
+            usr = form.save(commit=False)
+        else:
+            form = my_forms.ArtistForm(request.POST)
+            usr = form.save(commit=False)
+            usr.image = artist.image
+            
         usr.user = User.objects.get(username=request.user.username)
         usr.artist_id = artist_id
         usr.save()
@@ -465,7 +475,7 @@ def add_movie_to_list(request):
 
 class ProfileEditView(View):
     def get(self,request):
-        user = request.user
+        user = User.objects.get(username=request.user.username)
         form = UserChangeForm(instance=user)
         return render(request,'movieapp/profile.html',{'form':form})
     
@@ -475,4 +485,4 @@ class ProfileEditView(View):
             form.save()
             return redirect('profile')
         else:
-            return render(request,'profile_edit',{'form':form})s
+            return render(request,'profile_edit',{'form':form})
