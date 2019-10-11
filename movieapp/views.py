@@ -4,7 +4,6 @@ from django.views import View
 #from django.contrib.auth.forms import UserCreationForm
 from .forms import CustomUserCreationForm,MovieReviewForm
 from django.contrib.auth.models import User
-from django.contrib.auth.forms import UserChangeForm
 from . import models as my_models
 from . import forms as my_forms
 
@@ -17,6 +16,7 @@ import json
 from django.utils import timezone
 from .models import MotionPicture
 
+from django.contrib import messages
 
 
 class MotionPictureAutocomplete(View):
@@ -72,6 +72,7 @@ class SignupView(View):
         form = CustomUserCreationForm(request.POST)
         if form.is_valid():
             form.save()
+            messages.success(request,'Account Created')
             return redirect('login')
         
         return render(request,'movieapp/signup.html',{'form':form})
@@ -476,13 +477,18 @@ def add_movie_to_list(request):
 class ProfileEditView(View):
     def get(self,request):
         user = User.objects.get(username=request.user.username)
-        form = UserChangeForm(instance=user)
+        form = my_forms.NewUserChangeForm(instance=user)
         return render(request,'movieapp/profile.html',{'form':form})
     
     def post(self,request):
-        form = UserChangeForm(request.POST)
+        form = my_forms.NewUserChangeForm(request.POST)
+        user = request.user
         if form.is_valid():
-            form.save()
+            usr = form.save(commit=False)
+            usr.pk = user.pk
+            usr.username = user.username
+            usr.password = user.password
+            usr.save()
             return redirect('profile')
         else:
-            return render(request,'profile_edit',{'form':form})
+            return render(request,'movieapp/profile.html',{'form':form})

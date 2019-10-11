@@ -30,12 +30,30 @@
     
 
 <div class="container">
+    <div class="row">
+            <div class="col-sm-5 mx-auto text-center mt-5">
+                <p class="h3"><a href="{% url 'home' %}">MovieDB</a></p>
+            </div>
+    </div>
+    <div class="row">
+            <div id="toast-overlay" class="mx-auto">
+                {% for message in messages %}
+                <div class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+  
+                        <div class="toast-body">
+                            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                        </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        
     {% block content %}
     <div class="row">
 
         <div class="col-sm-5 mx-auto ">
                 
-                <form class="border border-light p-3 mt-5 form-horizontal" action='' method="POST">
+                <form class="border border-light p-3 mt-2 form-horizontal" action='' method="POST">
                         <p class="h1 text-center">Signup</p>
                     {% csrf_token %}
                         <fieldset>

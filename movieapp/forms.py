@@ -1,7 +1,7 @@
-from django.forms import ModelForm,DateInput,HiddenInput,ChoiceField
+from django.forms import ModelForm,DateInput,HiddenInput,ChoiceField,EmailField
 from django import forms
 from .models import MotionPicture,Review,Artist,List
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.forms import UserCreationForm,UserChangeForm
 from django.contrib.auth.models import User
 
 
@@ -16,6 +16,7 @@ class MotionPictureForm(ModelForm):
          }
 
 class CustomUserCreationForm(UserCreationForm):
+    email = EmailField(required=True)
     class Meta():
         model = User
         fields = ['username','email']
@@ -48,4 +49,10 @@ class ListForm(ModelForm):
     class Meta():
         model = List
         fields = ['name']
+
+
+class NewUserChangeForm(UserChangeForm):
+    class Meta():
+        model = User
+        fields = ['first_name','last_name','email']
 

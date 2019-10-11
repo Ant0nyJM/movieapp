@@ -1,6 +1,6 @@
 {% extends 'movieapp/user_profile3.html' %}
 {% load widget_tweaks %}
-{% block title %}Add Movie{% endblock %}
+{% block title %}Edit Profile{% endblock %}
 
 {% block profile-content %}
 
@@ -8,19 +8,12 @@
 
 <div class="row">
 
-        <div class="col-sm-9 mx-auto ">
+        <div class="col-sm-6 mx-auto ">
                 
                 <form class="p-3 mt-5 form-horizontal" method="POST">
                         <p class="h1 text-center">Edit Profile</p>
                     {% csrf_token %}
                         <fieldset>
-                            <div class="control-group">
-                                <!-- Username -->
-                                <label class="control-label"  for="name">Username</label>
-                                <div class="controls">
-                                        {% render_field form.username class+="form-control" %}
-                                </div>
-                            </div>
 
                             <div class="control-group">
                                 <!-- Username -->
@@ -45,16 +38,33 @@
                                         {% render_field form.email class+="form-control" %}
                                 </div>
                             </div>
-                            
-                    
+
+
                             <div class="control-group">
-                                <!-- Button -->
-                                <div class="controls">
-                                    <input class="btn btn-success btn-block" value="Save">
-                                </div>
+                                    <div class="controls">
+                                        <button class="btn btn-success btn-block" type="submit" >Save</button>
+                                    </div>
                             </div>
+                            
+                                
+                            
 
                         </fieldset>
+                        {% if form.errors %}
+                            {% for field in form %}
+                                {% for error in field.errors %}
+                                    <div class="alert alert-danger">
+                                        <small>{{ error|escape }}</small>
+                                    </div>
+                                {% endfor %}
+                            {% endfor %}
+
+                            {% for error in form.non_field_errors %}
+                                <div class="alert alert-danger">
+                                    <small>{{ error|escape }}</small>
+                                </div>
+                            {% endfor %}
+                    {% endif %}
                     </form>
         </div>
     </div>
