@@ -162,9 +162,12 @@ class MovieView(View):
         context.update({'movie':movie,'rating_len':rating_len,'review_form':review_form,'reviews':reviews,'reviews_len':reviews_len})
         print("888888",context)
         if request.user.is_authenticated:
+
+            user_lists = my_models.List.objects.filter(user=request.user)
             user = User.objects.get(username=request.user.username)
             not_rated = True if len(my_models.Rate.objects.filter(user=user,movie=movie))<1 else False
             context['not_rated']=not_rated
+            context['user_lists']=user_lists
 
             return render(request,'movieapp/movie_view.html',context)#
         else:

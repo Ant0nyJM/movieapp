@@ -26,6 +26,21 @@ function deleteMovie(){
     
 
 }
+function addToList(){
+    $.ajax({
+        url : "{%  url 'add-movie-to-list' %}",
+        method : 'get',
+        data : {'movie_id':"{{ movie.movie_id }}",'list_id':$("#list_id").val()},
+        success : function(retData){
+            if(retData['status']==='added'){
+                alert("added to list");
+            }
+            else{
+                alert("already present");
+            }
+        },
+    });
+}
 </script>
 
 {% endblock %}
@@ -45,7 +60,18 @@ function deleteMovie(){
                                     <img src="{% static 'movieapp/images/noimage.png' %}" style="margin-left: 15%;margin-top: 2%;max-width: 350px;width:100%;height:auto;">
                                 {% endif%}
                         </div>
-                        
+                        <hr>
+                        <div class="container text-center mt-3">
+                            {% if user_lists %}
+                                <p class="h6">Add to list </p>
+                                <select id="list_id">
+                                    {% for list in user_lists %}
+                                    <option value="{{list.id}}">{{list.name}}</option>
+                                    {% endfor %}
+                                </select>
+                                <button class="btn btn-primary p-1" type="button" onclick="addToList()">Add Movie</button>
+                            {% endif %}
+                        </div>
                     </article>
                     <!-- gallery-wrap .end// -->
                 </aside>
