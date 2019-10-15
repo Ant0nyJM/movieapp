@@ -6,8 +6,6 @@
     <script type="text/javascript">
         function approveMovie(bt,mid){
             $(bt).children(".aprv-status").addClass('spinner-border spinner-border-sm')
-            console.log();
-            bt.disabled = true;
             $(".btn-link").each(function(index,btn){
                 //alert($(this))
                 $(this).attr('disabled',true);
@@ -28,6 +26,10 @@
                     }
                     else{
                         alert("Movie Not approved");
+                        $(".btn-link").each(function(index,btn){
+                            //alert($(this))
+                            $(this).attr('disabled',false);
+                        });
                     }
                     
 
@@ -64,6 +66,68 @@
             })
 
         }
+
+
+        function deleteMovie(btn,mid){
+            if(confirm('This action will delete the movie.')){
+                    $(".btn-link").each(function(index,btn){
+                            //alert($(this))
+                            $(this).attr('disabled',true);
+                        });
+                        alert(mid)
+                    $.ajax({
+                        url : "{% url 'movie_delete' %}",
+                        method : 'get',
+                        data : {'movie_id':mid},
+                        success: function(retData){
+                            if(retData['deleted']==='deleted'){
+                                $(".btn-link").each(function(index,btn){
+                                    //alert($(this))
+                                    $(this).attr('disabled',false);
+                                });
+                                location.reload();
+                            }
+                        }
+                    });
+            }
+            
+
+        }
+
+
+
+
+        function deleteArtist(btn,aid){
+
+    
+
+            if(confirm('This action will delete the artist.')){
+                $(".btn-link").each(function(index,btn){
+                        //alert($(this))
+                        $(this).attr('disabled',true);
+                    });
+                $.ajax({
+                url : "{% url 'artist_delete' %}",
+                method : 'get',
+                data : {'artist_id':aid},
+                success : function(retData){
+                    if(retData['deleted']=== 'deleted'){
+                        $(".btn-link").each(function(index,btn){
+                            //alert($(this))
+                            $(this).attr('disabled',false);
+                        });
+                        location.reload();
+                    }
+
+                }    });     
+            }
+
+
+            }
+
+
+
+
     </script>
 {% endblock %}
 {% block profile-content %}
@@ -88,26 +152,31 @@
 
             {% else %}
 
-            <ul class="nav nav-tabs tabs-left">
+            <ul class="nav nav-tabs">
                     
                     
-                    <li class="nav-item">
-                            <a class="nav-link active" href="{% url 'movie' %}">Your Movies</a>
-                    </li>
-                    <li class="nav-item">
-                            <a class="nav-link" href="{% url 'artist' %}">Artists</a>
-                    </li>
-
-                    <li class="nav-item">
-                            <a class="nav-link" href="{% url 'user_reviews' %}">Your Reviews</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'movie_add' %}">Add Movie</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'artist_add' %}">Add Artist</a>
-                    </li>
-            </ul>
+                <li class="nav-item">
+                        <a class="nav-link" href="{% url 'movie' %}">Your Movies</a>
+                </li>
+                <li class="nav-item">
+                        <a class="nav-link" href="{% url 'artist' %}">Artists</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" href="{% url 'pending' %}">Pending</a>
+                </li>
+                <li class="nav-item">
+                        <a class="nav-link" href="{% url 'lists_view' %}">Your Lists</a>
+                </li>
+                <li class="nav-item">
+                        <a class="nav-link" href="{% url 'user_reviews' %}">Your Reviews</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'movie_add' %}">Add Movie</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'artist_add' %}">Add Artist</a>
+                </li>
+        </ul>
 
             {% endif %}
         </div>
@@ -185,7 +254,7 @@
                                 <div class="col-md-2">
                                 <div class="row float-right">
                                 <button class="btn btn-link p-1 mr-0" onclick="approveMovie(this,'{{ movie.movie_id }}')"><img style="height:2rem;width:auto;" src="https://www.freepngimg.com/thumb/green_tick/27889-3-green-tick-thumb.png"></button>
-                                <button class="btn btn-link p-1 ml-0 mr-4" onclick="approveMovie(this,'{{ movie.movie_id }}')"><img style="height:1.6rem;width:auto;" src="http://www.pngall.com/wp-content/uploads/2016/04/Red-Cross-Mark-PNG.png"></button>
+                                <button class="btn btn-link p-1 ml-0 mr-4" onclick="deleteMovie(this,'{{ movie.movie_id }}')"><img style="height:1.6rem;width:auto;" src="http://www.pngall.com/wp-content/uploads/2016/04/Red-Cross-Mark-PNG.png"></button>
                                 </div></div>                
                                 
                             </div>
@@ -273,11 +342,15 @@
                                 </div>
 
                             </div>
-                        
+                            
                             <div class="col-md-2">
-                            <button class="btn btn-link float-right p-1" onclick="approveArtist(this,'{{ artist.artist_id }}')"><img style="height:2rem;width:auto;" src="https://www.freepngimg.com/thumb/green_tick/27889-3-green-tick-thumb.png"></button>
-                                
-                            </div>                
+                                <div class="row float-right">
+                                    <button class="btn btn-link float-right p-1" onclick="approveArtist(this,'{{ artist.artist_id }}')"><img style="height:2rem;width:auto;" src="https://www.freepngimg.com/thumb/green_tick/27889-3-green-tick-thumb.png"></button>
+                                    <button class="btn btn-link p-1 ml-0 mr-4" onclick="deleteArtist(this,'{{ artist.artist_id }}')"><img style="height:1.6rem;width:auto;" src="http://www.pngall.com/wp-content/uploads/2016/04/Red-Cross-Mark-PNG.png"></button>
+                                </div>
+                            </div>  
+
+
                             
                         </div>
                     </div>
