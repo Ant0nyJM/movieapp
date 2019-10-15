@@ -11,22 +11,71 @@
 
 {% block content %}
 
-
-    {% for movie in movies %}
-        
-         <div class="movie-card">
-             <a href="{% url 'movie_view' movie.movie_id %}">
-                <div class="movie-header" style="{% if movie.image %}background: url({{movie.image.url}});background-size:cover;{% else %}background: url({% static 'movieapp/images/noimage.jpg' %});background-position: center; {% endif %}">
-                    <div class="header-icon-container">
-                            
-                    </div>
-                    
-                </div>
-                <h3 class="movie-title">{{ movie.name }}</h3>
-            </a>
-        </div><!-- movie-card -->
     
-    {% endfor %}
+
+    
+        {% for movie in movies %}
+            
+            <div class="movie-card">
+                <a href="{% url 'movie_view' movie.movie_id %}">
+                    <div class="movie-header" style="{% if movie.image %}background: url({{movie.image.url}});background-size:cover;{% else %}background: url({% static 'movieapp/images/noimage.jpg' %});background-position: center; {% endif %}">
+                        <div class="header-icon-container">
+                                
+                        </div>
+                        
+                    </div>
+                    <h3 class="movie-title">{{ movie.name }}</h3>
+                </a>
+            </div><!-- movie-card -->
+
+            
+
+        
+        {% endfor %}
+    
+    
+
+    <div class="pagination pt-5">
+        <!-- <div class="row"> -->
+            <div class="col-sm-4">
+                    <span>
+                            {% if movies.has_previous %}
+                                <a class="mx-2" href="?page=1">&laquo; first</a>
+                                <a class="mx-2"href="?page={{ movies.previous_page_number  }}">previous</a>
+                            {% endif %}
+                        </span>
+
+            </div>
+            <div class="col-sm-4">
+
+                    <span class="current">
+                            <a disabled="disabled">Page {{ movies.number }} of {{ movies.paginator.num_pages }}</a>
+                        </span>
+
+
+            </div>
+            <div class="col-sm-4">
+
+                    <span>
+                            {% if movies.has_next %}
+                            <a class="mx-2" href="?page={{ movies.next_page_number }}">next</a>
+                            <a class="mx-2" href="?page={{ movies.paginator.num_pages }}">last &raquo;</a>
+                        {% endif %}
+                        </span>
+
+
+            </div>
+
+        <!-- </div> -->
+        
+            
+            
+    
+            
+            
+            
+    </div>
+            
 
 
         

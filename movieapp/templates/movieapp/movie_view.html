@@ -252,7 +252,7 @@ function addToList(){
         
 
   </div>
-  {% if user.is_authenticated %}
+  {% if user.is_authenticated and not current_user_reviewed %}
 <div class="row mr-auto my-3">
     <p class="h4 font-weight-bold">Write a review</p>
     <br>

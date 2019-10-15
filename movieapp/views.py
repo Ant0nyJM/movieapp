@@ -17,7 +17,7 @@ import json
 from django.utils import timezone
 from .models import MotionPicture
 
-
+from django.core.paginator import Paginator
 
 class MotionPictureAutocomplete(View):
     def get(self,request):
@@ -57,9 +57,12 @@ class HomeView(View):
 
     def get(self,request):
         #return render(request,'movieapp/base.html')
-        movies = my_models.MotionPicture.objects.filter(approved=True)
-        rated_movies = movies.order_by('-rating')[:5]
-        movies2 = movies.filter(release_date__gt=timezone.now(),release_date__lt=timezone.now()+timezone.timedelta(days=30))
+        movies_list = my_models.MotionPicture.objects.filter(approved=True)
+        paginator = Paginator(movies_list,6)
+        page = request.GET.get('page',1)
+        movies = paginator.get_page(page)
+        rated_movies = movies_list.order_by('-rating')[:5]
+        movies2 = movies_list.filter(release_date__gt=timezone.now(),release_date__lt=timezone.now()+timezone.timedelta(days=30))
         releasing_movies = movies2.order_by('release_date')[:5]
         return render(request,'movieapp/newhome.html',{'movies':movies,'rated_movies':rated_movies,'releasing_movies':releasing_movies})
 
@@ -157,8 +160,9 @@ class MovieView(View):
         if(len(actors)!=0):
             context['actors']=actors
         reviews_len = len(reviews)
+        current_user_reviewed = True if len(movie.review_set.filter(movie_id=movie_id)) > 0 else False
         review_form = MovieReviewForm()
-        context.update({'movie':movie,'rating_len':rating_len,'review_form':review_form,'reviews':reviews,'reviews_len':reviews_len})
+        context.update({'movie':movie,'rating_len':rating_len,'review_form':review_form,'reviews':reviews,'reviews_len':reviews_len,'current_user_reviewed':current_user_reviewed})
         print("888888",context)
         if request.user.is_authenticated:
             movs = my_models.List.objects.exclude(movies=movie)
