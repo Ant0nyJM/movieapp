@@ -8,6 +8,10 @@
             $(bt).children(".aprv-status").addClass('spinner-border spinner-border-sm')
             console.log();
             bt.disabled = true;
+            $(".btn-link").each(function(index,btn){
+                //alert($(this))
+                $(this).attr('disabled',true);
+            });
             $.ajax({
                 url : "{% url 'pending' %}",
                 method : 'post',
@@ -179,9 +183,10 @@
                                 </div>
                             
                                 <div class="col-md-2">
-                                <button class="btn btn-link float-right p-1" onclick="approveMovie(this,'{{ movie.movie_id }}')"><img style="height:2rem;width:auto;" src="https://www.freepngimg.com/thumb/green_tick/27889-3-green-tick-thumb.png"></button>
-                                    
-                                </div>                
+                                <div class="row float-right">
+                                <button class="btn btn-link p-1 mr-0" onclick="approveMovie(this,'{{ movie.movie_id }}')"><img style="height:2rem;width:auto;" src="https://www.freepngimg.com/thumb/green_tick/27889-3-green-tick-thumb.png"></button>
+                                <button class="btn btn-link p-1 ml-0 mr-4" onclick="approveMovie(this,'{{ movie.movie_id }}')"><img style="height:1.6rem;width:auto;" src="http://www.pngall.com/wp-content/uploads/2016/04/Red-Cross-Mark-PNG.png"></button>
+                                </div></div>                
                                 
                             </div>
                         </div>
