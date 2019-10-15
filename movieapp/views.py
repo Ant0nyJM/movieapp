@@ -361,7 +361,7 @@ def artist_delete(request):
 
 def user_artists(request):
     if request.user.is_superuser:
-        artists = my_models.Artist.objects.all()
+        artists = my_models.Artist.objects.filter(approved=True)
     else:
         artists = my_models.Artist.objects.filter(user = request.user)
     return render(request,'movieapp/artist.html',{'artists':artists})
