@@ -28,7 +28,8 @@ class Artist(models.Model):
     description = models.TextField(default="")
     user = models.ForeignKey(User,on_delete=models.DO_NOTHING,default=None)
     image = models.ImageField(upload_to='images/')
-    movies = models.ManyToManyField(MotionPicture)   
+    movies = models.ManyToManyField(MotionPicture)
+    approved = models.BooleanField(default=False)   
 
 class Rate(models.Model):
     def __str__(self):

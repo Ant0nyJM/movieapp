@@ -82,8 +82,7 @@ class UserProfileView(View):
         orig_user = User.objects.get(username=request.user.username)
         
         if orig_user.is_superuser:
-            pending = my_models.MotionPicture.objects.filter(approved=False)
-            return render(request,'movieapp/pending.html',{'pending':pending})
+            return redirect(reverse('pending'))
         else:
             movies = my_models.MotionPicture.objects.filter(user=orig_user)
             return render(request,'movieapp/movie.html',{'movies':movies})
@@ -163,9 +162,12 @@ class MovieView(View):
         context.update({'movie':movie,'rating_len':rating_len,'review_form':review_form,'reviews':reviews,'reviews_len':reviews_len})
         print("888888",context)
         if request.user.is_authenticated:
+            movs = my_models.List.objects.exclude(movies=movie)
+            user_lists = movs.filter(user=request.user)
             user = User.objects.get(username=request.user.username)
             not_rated = True if len(my_models.Rate.objects.filter(user=user,movie=movie))<1 else False
             context['not_rated']=not_rated
+            context['user_lists']=user_lists
 
             return render(request,'movieapp/movie_view.html',context)#
         else:
@@ -180,17 +182,25 @@ class PendingView(View):
         if request.user.is_superuser:
 
             pending = my_models.MotionPicture.objects.filter(approved=False)
+            pending_art = my_models.Artist.objects.filter(approved=False)
+            print(str(pending_art))
         else:
             pending = my_models.MotionPicture.objects.filter(user=request.user,approved=False)
-        return render(request,'movieapp/pending.html',{'pending':pending})
+            pending_art = my_models.Artist.objects.filter(user=request.user,approved=False)
+        return render(request,'movieapp/pending.html',{'pending':pending,'pending_art':pending_art})
 
     def post(self,request):
         print(request.POST)
-        print('------------------------------',request.POST.get('movie_id'))
-        movie = my_models.MotionPicture.objects.get(movie_id=request.POST.get('movie_id'))
-        movie.approved = True
-        movie.save()
-        return JsonResponse({'approved':'true','msg':'{} is approved'.format(movie.name)})
+        if 'artist_id' in request.POST:
+            artist = my_models.Artist.objects.get(artist_id=request.POST.get('artist_id'))
+            artist.approved = True
+            artist.save()
+            return JsonResponse({'approved':'true','msg':'{} is approved'.format(artist.name)})
+        if 'movie_id' in request.POST:
+            movie = my_models.MotionPicture.objects.get(movie_id=request.POST.get('movie_id'))
+            movie.approved = True
+            movie.save()
+            return JsonResponse({'approved':'true','msg':'{} is approved'.format(movie.name)})
 
 class SearchView(View):
     def get(self,request):
@@ -199,7 +209,7 @@ class SearchView(View):
         try:
             if q[0] != '' :
                 movies = my_models.MotionPicture.objects.filter(name__icontains=q,approved=True)
-                artists = my_models.Artist.objects.filter(name__icontains=q)
+                artists = my_models.Artist.objects.filter(name__icontains=q,approved=True)
                 genre = my_models.MotionPicture.objects.filter(genre__iexact=q,approved=True)
                 return render(request,'movieapp/search.html',{'movies':movies,'artists':artists,'genre':genre})
 
