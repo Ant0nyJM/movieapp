@@ -33,10 +33,11 @@ function addToList(){
         data : {'movie_id':"{{ movie.movie_id }}",'list_id':$("#list_id").val()},
         success : function(retData){
             if(retData['status']==='added'){
-                alert("added to list");
+                alert("Movie added to list");
+                reload();
             }
             else{
-                alert("already present");
+                alert("Movie already present in list");
             }
         },
     });

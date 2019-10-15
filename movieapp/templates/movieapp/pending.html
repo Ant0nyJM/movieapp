@@ -31,6 +31,35 @@
             })
 
         }
+
+
+        function approveArtist(bt,aid){
+            $(bt).children(".aprv-status").addClass('spinner-border spinner-border-sm')
+            console.log();
+            bt.disabled = true;
+            $.ajax({
+                url : "{% url 'pending' %}",
+                method : 'post',
+                data : {'artist_id':aid},
+                success : function(retData){
+                    if(retData['approved'] === 'true'){
+                        //alert(retData['msg']);
+                        alert('Artist has been approved');
+                        
+                        setTimeout(function(){
+                             location.reload();
+                        },1000);
+                        
+                    }
+                    else{
+                        alert("Artist Not approved");
+                    }
+                    
+
+                },
+            })
+
+        }
     </script>
 {% endblock %}
 {% block profile-content %}
@@ -82,6 +111,7 @@
 
     <div class="col-xs-9">
         {% if pending %}
+            <p class="h4">Movies</p>
             {% for movie in pending %}
                 
 
@@ -171,11 +201,105 @@
 
             
             {% endfor %}
+            <hr>
         {% else %}
         <div class="container mx-auto mt-6">
             <p class="h4">No movies pending for approval</p>
         </div>
+        <hr>
         {% endif %}
+
+
+        {% if pending_art %}
+        <p class="h4">Artists</p>
+        {% for artist in pending_art %}
+            
+
+            <div class="container">
+                
+                    <div class="col-md-10">
+                        <div class="shadow my-3 md-5" >
+                        <div class="row">
+                            <div class="col-md-1">
+                                <a href="{% url 'artist_view' artist.artist_id %}">
+                                    {%if artist.image %}
+                                        <img class="search-result-item m-1" src="{{artist.image.url}}"  style="height:7.0rem;width:auto;" >
+                                    {% else %}
+                                        <img class="search-result-item m-1" src="{% static 'movieapp/images/noimage.jpg' %}"  style="height:7.0rem;width:auto;" >
+                                    {% endif %}
+                                </a>
+                            </div>
+                            <div class="col-md-1">
+
+                            </div>
+                            <div class="col-md-8">
+                                <div class="row">
+
+                                    <span class="search-result-item">
+                                        <p class="h3 m-1">
+                                            <a href="{% url 'artist_view' artist.artist_id %}">{{ artist.name }}</a>
+                                        </p>
+                                    </span>
+
+                                </div>
+
+                                <div class="row">
+
+                                    <small class="mt-2">
+                                        
+                                            <div class="m-1 mt-1">
+                                            <span class="search-result-sm-text p-1">
+                                                Movies : 
+                                                {% for c in artist.movie_set.all %}
+                                                        {% if forloop.last %}
+                                                        <a href="{% url 'movie_view' c.movie_id %}">{{ c.name }}</a>
+                                                        {% else %}
+                                                            <a href="{% url 'movie_view' c.movie_id %}">{{ c.name }}</a>,
+                                                        {% endif %}
+                                                {% endfor %}
+                                            </span><br>
+                                            <span class="search-result-sm-text p-1">
+                                                Description : 
+                                                {{ artist.description }}
+                                            </span>
+                                            </div>
+                                        </small>
+
+                                </div>
+
+                            </div>
+                        
+                            <div class="col-md-2">
+                            <button class="btn btn-link float-right p-1" onclick="approveArtist(this,'{{ artist.artist_id }}')"><img style="height:2rem;width:auto;" src="https://www.freepngimg.com/thumb/green_tick/27889-3-green-tick-thumb.png"></button>
+                                
+                            </div>                
+                            
+                        </div>
+                    </div>
+                    </div>
+                    <div class="col-md-2">
+
+                    </div>
+                    
+                </div>
+
+
+
+
+
+
+
+
+        
+        {% endfor %}
+    {% else %}
+    <div class="container mx-auto mt-6">
+        <p class="h4">No artists pending for approval</p>
+    </div>
+    {% endif %}
+
+
+
 
     </div>
 
