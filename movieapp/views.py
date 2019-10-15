@@ -404,23 +404,28 @@ class MovieAutocomplete(View):
 class ArtistEditView(View):
     def get(self,request,artist_id):
         artist = my_models.Artist.objects.get(artist_id=artist_id)
-        form = my_forms.ArtistForm(instance= artist)
+        form = my_forms.ArtistEditForm(instance= artist)
         return render(request,'movieapp/artist_edit.html',{'form':form})
 
     def post(self,request,artist_id):
+        print("^^^^^^^^^^^^^^^^^^^^^^^^ ",request.POST)
         artist = my_models.Artist.objects.get(artist_id=artist_id)
-        if(request.FILES):
-            form = my_forms.ArtistForm(request.POST,request.FILES)
-            usr = form.save(commit=False)
-        else:
-            form = my_forms.ArtistForm(request.POST)
-            usr = form.save(commit=False)
-            usr.image = artist.image
-            
-        usr.user = User.objects.get(username=request.user.username)
-        usr.artist_id = artist_id
-        usr.save()
-        return redirect(reverse('artist_view',args=[artist_id]))
+        try:
+            if(request.FILES):
+                form = my_forms.ArtistEditForm(request.POST,request.FILES)
+                usr = form.save(commit=False)
+            else:
+                form = my_forms.ArtistEditForm(request.POST)
+                usr = form.save(commit=False)
+                usr.image = artist.image
+            usr.artist_type = artist.artist_type
+            usr.user = User.objects.get(username=request.user.username)
+            usr.artist_id = artist_id
+            usr.save()
+            return redirect(reverse('artist_view',args=[artist_id]))
+        except ValueError:
+            return render(request,'movieapp/artist_edit.html',{'form':form})
+        
 
 
             

@@ -43,6 +43,24 @@ class ArtistForm(ModelForm):
              
          }
 
+class ArtistEditForm(ModelForm):
+    def __init__(self, *args, **kwargs):
+        # first call parent's constructor
+        super(ArtistEditForm, self).__init__(*args, **kwargs)
+        # there's a `fields` property now
+        self.fields['image'].required = False
+        self.fields['artist_type'].required = False
+
+    choices = (('Actor','Actor'),('Director','Director'))
+    artist_type = ChoiceField(choices=choices)
+    class Meta():
+        model = Artist
+        fields = ['name','birthday','artist_type','description','image']
+        widgets = {
+             'birthday': DateInput(attrs={'type':'date'}),
+             
+         }
+
 
 class ListForm(ModelForm):
     class Meta():
