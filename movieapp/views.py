@@ -421,6 +421,8 @@ class ArtistEditView(View):
             usr.artist_type = artist.artist_type
             usr.user = User.objects.get(username=request.user.username)
             usr.artist_id = artist_id
+            if(artist.approved == True):
+                usr.approved = True
             usr.save()
             return redirect(reverse('artist_view',args=[artist_id]))
         except ValueError:
