@@ -205,12 +205,13 @@ class PendingView(View):
                 try:
                     pending_art_list = my_models.Artist.objects.filter(approved=False,name__icontains=query)
                 except NameError:
-                    pending_art_list = my_models.Artist.objects.filter(approved=False,name__icontains=query)
+                    pending_art_list = my_models.Artist.objects.filter(approved=False)
                 if not request.user.is_superuser:
                     pending_art_list = pending_art_list.filter(user=request.user)
                 paginator = Paginator(pending_art_list,5)
                 page = request.GET.get('page',1)
                 pending_art = paginator.get_page(page)
+                print("-----------------------------",len(pending_art))
                 return render(request,'movieapp/pending.html',{'pending_art':pending_art,'categories':categories,'selected':model})
                 
             if model == 'Movies':

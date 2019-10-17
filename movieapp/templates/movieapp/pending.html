@@ -207,13 +207,13 @@
             
         
         <div>
-            {% if pending %}
+        {% if pending %}
         <div id="tab-movies">
             
             {% if pending|length != 0 %}
-            <div class="container">
-                    <p class="h4">Movies</p>
-            </div>
+                <div class="container">
+                        <p class="h4">Movies</p>
+                </div>
                 
                 {% for movie in pending %}
                     
