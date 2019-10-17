@@ -33,7 +33,7 @@
     {% block content %}
     <div class="row">
 
-        <div class="col-sm-5 mx-auto ">
+        <div class="col-sm-6 mx-auto ">
                 
                 <form class="border border-light p-3 mt-5 form-horizontal" action='' method="POST">
                         <p class="h1 text-center">Signup</p>
@@ -46,7 +46,20 @@
                                     {% render_field form.username class+="form-control" %}
                             </div>
                             </div>
-                    
+
+                            <div class="form-row">
+                                <div class="form-group col-sm-6">
+                                    <label class="control-label" for="first_name">First Name</label>
+                                    {% render_field form.first_name class+="form-control" %}
+                                    
+                                </div>
+                                <div class="form-group col-sm-6">
+                                    <label class="control-label"  for="last_name">Last Name</label>
+                                    {% render_field form.last_name class+="form-control" %}
+                                </div>
+                
+                            </div>
+
                             <div class="control-group">
                              <!-- E-mail -->
                             <label class="control-label" for="email">E-mail</label>

@@ -39,18 +39,25 @@ $(document).ready(function(){
    $.each(JSON.parse(data), function(key, value){
     //alert(value+" -- "+expression);
     
-     $('#result').append(`<li class="list-group-item link-class"><img class='m-1' style="width:2em;height:auto;" src="/media/${value.fields.image}"><span class="text-muted">`+value.fields.name+"("+value.pk+")"+'</span></li>');
+     $('#result').append(`<li class="list-group-item link-class"><img class='m-1' style="width:2em;height:auto;" src="/media/${value.fields.image}"><span class="text-muted">`+value.fields.name+"</span><p hidden='hidden'>"+value.pk+"</p>"+'</li>');
     
    });   
   });
  });
  
  $('#result').on('click', 'li', function() {
-  var click_text = $(this).text();
-  //alert(click_text[0]);
-  $('#artist_search').val($.trim(click_text));
+    var img = $(this).children('img').attr('src');
+    console.log($(this).children('img').attr('src'));
+    var name = $(this).children('span').text();
+    console.log(name)
+    var pk = $(this).children('p').text();
+    console.log(pk);
+    //alert(click_text[0]);
   
   $("#result").html('');
+  addArtist(img,name,pk);
+  $('#artist_search').val('');
+  $('#artist_search').focus();
  });
 
 
@@ -64,29 +71,34 @@ $(document).ready(function(){
 });
 
 
-function addArtist(){
+function addArtist(img,name,pk){
 
-    var pk = $("#artist_search").val().split('(')[1].split(')')[0];
     var present = false;
-    //console.log("hell");
     $(".tag-hidden").each(function(){
-        //console.log($(this).val())
         if($(this).val() === pk){
             present = true;
             return ;
         }
         
         });
-  //alert("num-->"+pk);
-  //var hval = $('#artists_hid').attr('value');
-  //alert("val-->"+hval);
-  //var hval=hval+pk+"|";
-  //$('#artists_hid').val(hval);
-  if(present == false){
-  var tag = `<div class="tag label label-info m-1"><span>`+$("#artist_search").val().split('(')[0]+`</span><i class="fa fa-times m-1" onclick="deleteArtist(this)"><input class="tag-hidden" name='movie_ids[]' type="hidden" value=`+pk+`></div>`
-  $("#tags").append(tag);
-  }
-  //alert($('#artists_hid').attr('value'));
+
+    if(present == false){
+
+    var tag = `<div class="p-1">
+                    <img class='m-1' style="width:2em;height:auto;" src="${img}">
+                    <span class="text-muted">`+name+`</span>
+                    <i class="fa fa-times m-1" onclick="deleteArtist(this)">
+                    <input class="tag-hidden" name='movie_ids[]' type="hidden" value=`+pk+`>
+                </div>`;
+    $("#tags").append(tag);
+
+    }
+   
+//   if(present == false){
+//   var tag = `<div class="tag label label-info m-1"><span>`+$("#artist_search").val().split('(')[0]+`</span><i class="fa fa-times m-1" onclick="deleteArtist(this)"><input class="tag-hidden" name='movie_ids[]' type="hidden" value=`+pk+`></div>`
+//   $("#tags").append(tag);
+//   }
+//   //alert($('#artists_hid').attr('value'));
 
 }
 
@@ -123,7 +135,7 @@ function deleteArtist(elem){
                             <p class="h1 text-center">Create List</p>
                         {% csrf_token %}
                             <fieldset>
-                                <div class="control-group">
+                                <div class="control-group mb-3">
                                     <!-- Username -->
                                     <label class="control-label"  for="name">Name</label>
                                     <div class="controls">
@@ -136,18 +148,14 @@ function deleteArtist(elem){
                                     
                                 <label for="artist_search" class="control-label">Add Movies to the list</label>
                                 <div class="form-row">
-                                    <div class="form-group col-md-8 mt-2">
+                                    <div class="form-group col mt-2">
                                         
-                                        <input id="artist_search" class="form-control" autocomplete="off" placeholder="Type a movie name, select a result and click add">
+                                        <input id="artist_search" class="form-control" autocomplete="off" placeholder="Type a movie name and select a result. Multiple movies can be added">
                                         <ul class="list-group" id="result"></ul>
-                                        <div id="tags" class="m-1">
+                                        <div id="tags" class="d-flex flex-wrap m-1">
                                             
 
                                         </div>
-                                    </div>
-                                    <div class="form-group col-md-4">
-                                        <button class="btn btn-info" type="button" onclick="addArtist()">Add</button>
-                                        <!-- <input type="hidden" name="artists" id="artists_hid" value="|"> -->
                                     </div>
                     
                                 </div>

@@ -11,7 +11,7 @@ class MotionPicture(models.Model):
     mp_type = models.CharField(max_length=15,default='Movie')
     name = models.CharField(max_length=140)
     genre = models.CharField(max_length=15)
-    release_date = models.DateField()
+    release_date = models.DateField(default=timezone.now().date())
     description = models.TextField()
     user = models.ForeignKey(User,on_delete=models.DO_NOTHING,default=None)
     approved = models.BooleanField(default=False)
@@ -24,7 +24,7 @@ class Artist(models.Model):
     artist_id = models.AutoField(primary_key=True)
     artist_type = models.CharField(max_length=15,default="Actor")
     name = models.CharField(max_length=50,null=False)
-    birthday = models.DateField(null=False,default=timezone.now().date())
+    birthday = models.DateField(null=False,default=None)
     description = models.TextField(default="")
     user = models.ForeignKey(User,on_delete=models.DO_NOTHING,default=None)
     image = models.ImageField(upload_to='images/')
@@ -53,3 +53,17 @@ class List(models.Model):
     name = models.CharField(max_length=40)
     user = models.ForeignKey(User,on_delete=models.CASCADE)
     movies = models.ManyToManyField(MotionPicture)
+
+
+
+class Category(models.Model):
+    def __str__(self):
+        return str(self.name)
+    name = models.CharField(max_length=50)
+
+
+class CategoryLabel(models.Model):
+    def __str__(self):
+        return str(self.name)
+    name = models.CharField(max_length=50)
+    category = models.ForeignKey(Category,on_delete=models.CASCADE)

@@ -1,12 +1,14 @@
 from django.forms import ModelForm,DateInput,HiddenInput,ChoiceField
 from django import forms
-from .models import MotionPicture,Review,Artist,List
+from .models import MotionPicture,Review,Artist,List,Category
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 
 
 class MotionPictureForm(ModelForm):
-    choices = (('Horror','Horror'),('Comedy','Comedy'),('Action','Action'),('Drama','Drama'),('Adventure','Adventure'),('Documentary','Documentary'))
+    choices_list = Category.objects.get(name='Movies').categorylabel_set.all()
+    choices = tuple([ (x.name,x.name) for x in choices_list ])
+    
     genre = ChoiceField(choices=choices)
     class Meta():
         model = MotionPicture
@@ -16,9 +18,16 @@ class MotionPictureForm(ModelForm):
          }
 
 class CustomUserCreationForm(UserCreationForm):
+    def __init__(self, *args, **kwargs):
+        # first call parent's constructor
+        super(CustomUserCreationForm, self).__init__(*args, **kwargs)
+        # there's a `fields` property now
+        self.fields['email'].required = True
+        self.fields['first_name'].required = True
+        self.fields['last_name'].required = True
     class Meta():
         model = User
-        fields = ['username','email']
+        fields = ['username','email','first_name','last_name']
 
 
 class MovieReviewForm(ModelForm):
@@ -33,7 +42,8 @@ class ArtistForm(ModelForm):
         # there's a `fields` property now
         self.fields['image'].required = False
 
-    choices = (('Actor','Actor'),('Director','Director'))
+    choices_list = Category.objects.get(name='Artists').categorylabel_set.all()
+    choices = tuple([ (x.name,x.name) for x in choices_list ])
     artist_type = ChoiceField(choices=choices)
     class Meta():
         model = Artist
@@ -51,7 +61,8 @@ class ArtistEditForm(ModelForm):
         self.fields['image'].required = False
         self.fields['artist_type'].required = False
 
-    choices = (('Actor','Actor'),('Director','Director'))
+    choices_list = Category.objects.get(name='Artists').categorylabel_set.all()
+    choices = tuple([ (x.name,x.name) for x in choices_list ])
     artist_type = ChoiceField(choices=choices)
     class Meta():
         model = Artist

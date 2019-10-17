@@ -29,7 +29,7 @@ class MotionPictureAutocomplete(View):
         print("-- ",request.GET)
         try:
             if q[0]!='':
-                qs = qs.filter(name__icontains=q,artist_type="Actor")
+                qs = qs.filter(name__icontains=q,artist_type="Actor",approved=True)
             print(qs)
             return JsonResponse(serializers.serialize('json',qs),safe=False)
         except IndexError:
@@ -182,15 +182,59 @@ class PendingView(View):
     def dispatch(self, *args, **kwargs):
         return super().dispatch(*args, **kwargs)
     def get(self,request):
-        if request.user.is_superuser:
+        # if request.user.is_superuser:
 
-            pending = my_models.MotionPicture.objects.filter(approved=False)
-            pending_art = my_models.Artist.objects.filter(approved=False)
-            print(str(pending_art))
+        #     pending = my_models.MotionPicture.objects.filter(approved=False)
+        #     pending_art = my_models.Artist.objects.filter(approved=False)
+        #     print(str(pending_art))
+        # else:
+        #     pending = my_models.MotionPicture.objects.filter(user=request.user,approved=False)
+        #     pending_art = my_models.Artist.objects.filter(user=request.user,approved=False)
+        categories = my_models.Category.objects.all()
+        
+
+        if 'query' in request.GET:
+            query = request.GET.get('query')
+        
+
+
+        
+        if 'show_model' in request.GET:
+            model = request.GET.get('show_model')
+            if model == 'Artists':
+                try:
+                    pending_art_list = my_models.Artist.objects.filter(approved=False,name__icontains=query)
+                except NameError:
+                    pending_art_list = my_models.Artist.objects.filter(approved=False,name__icontains=query)
+                if not request.user.is_superuser:
+                    pending_art_list = pending_art_list.filter(user=request.user)
+                paginator = Paginator(pending_art_list,5)
+                page = request.GET.get('page',1)
+                pending_art = paginator.get_page(page)
+                return render(request,'movieapp/pending.html',{'pending_art':pending_art,'categories':categories,'selected':model})
+                
+            if model == 'Movies':
+                try:
+                    pending_list = my_models.MotionPicture.objects.filter(approved=False,name__icontains=query)
+                except NameError:
+                    pending_list = my_models.MotionPicture.objects.filter(approved=False)
+                if not request.user.is_superuser:
+                    pending_list = pending_list.filter(user=request.user)
+                paginator = Paginator(pending_list,5)
+                page = request.GET.get('page',1)
+                pending = paginator.get_page(page)
+                return render(request,'movieapp/pending.html',{'pending':pending,'categories':categories,'selected':model})
         else:
-            pending = my_models.MotionPicture.objects.filter(user=request.user,approved=False)
-            pending_art = my_models.Artist.objects.filter(user=request.user,approved=False)
-        return render(request,'movieapp/pending.html',{'pending':pending,'pending_art':pending_art})
+            try:
+                pending_list = my_models.MotionPicture.objects.filter(approved=False,name__icontains=query)
+            except NameError:
+                pending_list = my_models.MotionPicture.objects.filter(approved=False)
+            if not request.user.is_superuser:
+                pending_list = pending_list.filter(user=request.user)
+            paginator = Paginator(pending_list,5)
+            page = request.GET.get('page',1)
+            pending = paginator.get_page(page)
+            return render(request,'movieapp/pending.html',{'pending':pending,'categories':categories})
 
     def post(self,request):
         print(request.POST)
@@ -381,7 +425,7 @@ class DirectorAutocomplete(View):
         print("-- ",request.GET)
         try:
             if q[0]!='':
-                qs = qs.filter(name__icontains=q,artist_type='Director')
+                qs = qs.filter(name__icontains=q,artist_type='Director',approved=True)
             print(qs)
             return JsonResponse(serializers.serialize('json',qs),safe=False)
         except IndexError:
