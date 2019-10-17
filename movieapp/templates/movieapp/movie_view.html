@@ -48,53 +48,49 @@ function addToList(){
 {% block content%}
 
 <div class="row">
-<div class="card p-3">
+<div class="card p-2">
       <div class="row">
-          <div class="col-sm-5">
-              <aside>
-                    <article class="gallery-wrap">
-                        <div class="img-big-wrap">
-                            
+          <div class="col-sm-6 p-1 d-flex" style="height:80%;">
+              
+              <div class="row" style="width:inherit;">
+                <div class="container">
+                    <article class="gallery-wrap" style="width:inherit;">
+                        <div class="img-big-wrap d-flex justify-content-center pt-2" style="width:inherit;">
                                 {% if movie.image %}
-                                <img class="img-responsive fit-image" src="{{movie.image.url}}" style="margin-left: 15%;margin-top: 2%;">
+                                <img class="img-responsive" src="{{movie.image.url}}" style="max-width:inherit;max-height:inherit;;width:90%;height:auto;">
                                 {% else %}
-                                    <img src="{% static 'movieapp/images/noimage.png' %}" style="margin-left: 15%;margin-top: 2%;max-width: 350px;width:100%;height:auto;">
+                                    <img src="{% static 'movieapp/images/noimage.png' %}" style="width:100%;height:auto;">
                                 {% endif%}
                         </div>
-                        <hr>
-                        <div class="container text-center mt-3">
-                            {% if user_lists %}
-                                <p class="h6">Add to list </p>
-                                <select id="list_id">
-                                    {% for list in user_lists %}
-                                    <option value="{{list.id}}">{{list.name}}</option>
-                                    {% endfor %}
-                                </select>
-                                <button class="btn btn-primary p-1" type="button" onclick="addToList()">Add Movie</button>
-                            {% endif %}
-                        </div>
+
+                        
                     </article>
+                </div>
+                </div>
+                <div class="row">
                     <!-- gallery-wrap .end// -->
-                </aside>
+                    <div class="container text-center mt-3">
+                        {% if user_lists %}
+                            <p class="h6">Add to list </p>
+                            <select id="list_id">
+                                {% for list in user_lists %}
+                                <option value="{{list.id}}">{{list.name}}</option>
+                                {% endfor %}
+                            </select>
+                            <button class="btn btn-primary p-1" type="button" onclick="addToList()">Add Movie</button>
+                        {% endif %}
+                    </div>
+                </div>
+                
             </div>
-          <div class="col-sm-7">
+          <div class="col-sm-6 p-1">
 
           
           <aside>
-              <article class="card-body p-5 m-2">
+              <article class="card-body p-1 m-1">
                   <h2 class="title mb-3">{{ movie.name }}</h2>
   
-                  <!-- price-detail-wrap .// -->
-                  <!-- <dl class="item-property">
-                      <dt>Director</dt>
-                      <dd>
-                          <p>adfadsfadsfadsf</p>
-                      </dd>
-                  </dl>
-                  <dl class="param param-feature">
-                      <dt>Cast</dt>
-                      <dd>dfgdfgdfg,dfgdgdgdf,dfgdfgdfg,dfgdfgdf,dfgdgd</dd>
-                  </dl> -->
+                 
                   <dl class="param param-feature">
                         <dt>Genre</dt>
                         <dd>{{ movie.genre }}</dd>
@@ -105,41 +101,8 @@ function addToList(){
                       <dd>{{ movie.release_date }}</dd>
                   </dl>
                   
-                  <dl class="param param-feature">
-                        
-                        <dt>Director</dt>
-                        <dd>
-                            {% if director %}
-                            <a href="{% url 'artist_view' director.artist_id %}">
 
-                            {{ director.name }}
-                        </a>
-                            {% else %}
-                              No data available
-                            {% endif %}
-                        </dd>
-                       
-                    </dl>
-                    
-                  <dl class="param param-feature">
-                    <dt>Cast</dt>
-                    <dd>
-                        {% if actors %}
-                            {% for actor in actors %}
-                                {% if forloop.last %}
-                                    <a href="{% url 'artist_view' actor.artist_id %}">{{actor.name}}</a>
-                                {% else %}
-                                    <a href="{% url 'artist_view' actor.artist_id %}">{{actor.name}}</a>,
-                                {% endif %}
-                            
-                            {% endfor %}
-                        {% else %}
-                            No data available
-                        {% endif %}
-                        
 
-                    </dd>
-                    </dl>
                   <!-- item-property-hor .// -->
                   <dl class="param param-feature">
                       <dt>Description</dt>
@@ -216,6 +179,36 @@ function addToList(){
         </div>
       </div>
       <!-- row.// -->
+      <div class="row">
+          <div class="col">
+            <div class="row">
+                <p class="h4">Directed by</p><hr>
+                {% if director %}
+                    <a href="{% url 'artist_view' director.artist_id %}">{{ director.name }}</a>
+                {% else %}
+                    No data available
+                {% endif %}
+            </div>
+            <div class="row">
+                <p class="h4">Cast</p><hr>
+                {% if actors %}
+                    {% for actor in actors %}
+                        {% if forloop.last %}
+                            <a href="{% url 'artist_view' actor.artist_id %}">{{actor.name}}</a>
+                        {% else %}
+                            <a href="{% url 'artist_view' actor.artist_id %}">{{actor.name}}</a>,
+                        {% endif %}
+                    
+                    {% endfor %}
+                {% else %}
+                    No data available
+                {% endif %}
+
+            </div>
+
+          </div>
+          
+      </div>
       
         
       

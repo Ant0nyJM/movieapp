@@ -18,7 +18,7 @@
             
             <div class="movie-card">
                 <a href="{% url 'movie_view' movie.movie_id %}">
-                    <div class="movie-header" style="{% if movie.image %}background: url({{movie.image.url}});background-size:cover;{% else %}background: url({% static 'movieapp/images/noimage.jpg' %});background-position: center; {% endif %}">
+                    <div class="movie-header" style="{% if movie.image %}background: url({{movie.image.url}});background-size:100% auto;background-repeat:no-repeat;background-position:center;{% else %}background: url({% static 'movieapp/images/noimage.jpg' %});background-position:center;{% endif %}">
                         <div class="header-icon-container">
                                 
                         </div>

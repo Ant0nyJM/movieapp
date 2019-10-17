@@ -36,8 +36,25 @@ function deleteArtist(){
 <div class="row">
 <div class="card p-3">
       <div class="row">
-          <div class="col-sm-5">
-              <aside>
+          <div class="col-sm-6 p-1 d-flex align-items-center">
+
+                <div class="row" style="width:inherit;">
+                        <article class="gallery-wrap" style="width:inherit;">
+                            <div class="img-big-wrap d-flex justify-content-center pt-2" style="width:inherit;">
+                                    {% if artist.image %}
+                                    <img class="img-responsive" src="{{artist.image.url}}" style="max-width:inherit;width:90%;height:auto;">
+                                    {% else %}
+                                        <img src="{% static 'movieapp/images/noimage.png' %}" style="width:100%;height:auto;">
+                                    {% endif%}
+                            </div>
+    
+                            
+                        </article>
+                    </div>
+
+
+
+              <!-- <aside>
                     <article class="gallery-wrap">
                         <div class="img-big-wrap">
                             
@@ -49,14 +66,13 @@ function deleteArtist(){
                         </div>
                         
                     </article>
-                    <!-- gallery-wrap .end// -->
-                </aside>
+                </aside> -->
             </div>
-          <div class="col-sm-7">
+          <div class="col-sm-6">
 
           
           <aside>
-              <article class="card-body p-5 m-2">
+              <article class="card-body p-1 m-1">
                   <h2 class="title mb-3">{{ artist.name }}</h2>
   
                   <!-- price-detail-wrap .// -->
