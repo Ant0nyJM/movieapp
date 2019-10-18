@@ -1,0 +1,149 @@
+{% extends 'movieapp/pending.html' %}
+{% block pending  %}
+{% load static %}
+{% if pending|length != 0 %}
+        <div id="tab-movies">
+            
+            
+                <div class="container">
+                        <p class="h4">Movies</p>
+                </div>
+                
+                {% for movie in pending %}
+                    
+
+                    <div class="container">
+                        
+                            <div class="col-md-10">
+                                <div class="shadow my-3 md-5" >
+                                <div class="row">
+                                    <div class="col-md-1">
+                                        <a href="{% url 'movie_view' movie.movie_id %}">
+                                            {%if movie.image %}
+                                                <img class="search-result-item m-1" src="{{movie.image.url}}"  style="height:7.0rem;width:auto;" >
+                                            {% else %}
+                                                <img class="search-result-item m-1" src="{% static 'movieapp/images/noimage.jpg' %}"  style="height:7.0rem;width:auto;" >
+                                            {% endif %}
+                                        </a>
+                                    </div>
+                                    <div class="col-md-1">
+
+                                    </div>
+                                    <div class="col-md-8">
+                                        <div class="row">
+
+                                            <span class="search-result-item">
+                                                <p class="h3 m-1">
+                                                    <a href="{% url 'movie_view' movie.movie_id %}">{{ movie.name }}({{ movie.release_date.year}})</a>
+                                                </p>
+                                            </span>
+
+                                        </div>
+
+                                        <div class="row">
+
+                                            <small class="mt-2">
+                                                    <div class="m-1 mb-1">
+                                                    <span class="search-result-sm-text p-1">Directed By: 
+                                                        {% for c in movie.artist_set.all %}
+                                                            {% if c.artist_type == 'Director' %} 
+                                                                <a href="{% url 'artist_view' c.artist_id %}">{{ c.name }}</a>
+                                                            {% endif %}
+                                                        {% endfor %}  
+                                                    </span></div>
+                                                    <div class="m-1 mt-1">
+                                                    <span class="search-result-sm-text p-1">
+                                                        Cast : 
+                                                        {% for c in movie.artist_set.all %}
+                                                            {% if c.artist_type == 'Actor' %} 
+                                                                {% if forloop.last %}
+                                                                <a href="{% url 'artist_view' c.artist_id %}">{{ c.name }}</a>
+                                                                {% else %}
+                                                                    <a href="{% url 'artist_view' c.artist_id %}">{{ c.name }}</a>,
+                                                                {% endif %}
+                                                                {% endif %}
+                                                        {% endfor %}
+                                                    </span><br>
+                                                    <span class="search-result-sm-text p-1">
+                                                        Description : 
+                                                        {{ movie.description }}
+                                                    </span>
+                                                    </div>
+                                                </small>
+
+                                        </div>
+
+                                    </div>
+                                
+                                    <div class="col-md-2">
+                                        {% if request.user.is_superuser%}
+                                    <div class="row float-right">
+                                    <button class="btn btn-link p-1 mr-0" onclick="approveMovie(this,'{{ movie.movie_id }}')"><img style="height:2rem;width:auto;" src="https://www.freepngimg.com/thumb/green_tick/27889-3-green-tick-thumb.png"></button>
+                                    <button class="btn btn-link p-1 ml-0 mr-4" onclick="deleteMovie(this,'{{ movie.movie_id }}')"><img style="height:1.6rem;width:auto;" src="http://www.pngall.com/wp-content/uploads/2016/04/Red-Cross-Mark-PNG.png"></button>
+                                    </div>
+                                        {% endif %}
+                                </div>                
+                                    
+                                </div>
+                            </div>
+                            </div>
+                            <div class="col-md-2">
+
+                            </div>
+                            
+                        </div>
+
+
+
+
+
+
+
+
+                
+                {% endfor %}
+
+
+                <div class="pagination pt-5">
+                        <!-- <div class="row"> -->
+                            <div class="col-sm-4">
+                                    <span>
+                                            {% if pending.has_previous %}
+                                                <a class="mx-2" href="?page=1&show_model=Movies&query={{ request.GET.query}}">&laquo; first</a>
+                                                <a class="mx-2"href="?page={{ pending.previous_page_number  }}&show_model=Movies&query={{ request.GET.query}}">previous</a>
+                                            {% endif %}
+                                        </span>
+                
+                            </div>
+                            <div class="col-sm-4">
+                
+                                    <span class="current">
+                                            <a disabled="disabled">Page {{ pending.number }} of {{ pending.paginator.num_pages }}</a>
+                                        </span>
+                
+                
+                            </div>
+                            <div class="col-sm-4">
+                
+                                    <span>
+                                            {% if pending.has_next %}
+                                            <a class="mx-2" href="?page={{ pending.next_page_number }}&show_model=Movies&query={{ request.GET.query}}">next</a>
+                                            <a class="mx-2" href="?page={{ pending.paginator.num_pages }}&show_model=Movies&query={{ request.GET.query}}">last &raquo;</a>
+                                        {% endif %}
+                                        </span>
+                
+                
+                            </div> 
+                    </div>
+                </div>
+
+{% else %}
+    <div class="container">
+        <p class="h4">No movies pending for approval</p>
+    </div>
+{% endif %}
+            
+            
+        
+{% endblock %}
+        

@@ -212,7 +212,7 @@ class PendingView(View):
                 page = request.GET.get('page',1)
                 pending_art = paginator.get_page(page)
                 print("-----------------------------",len(pending_art))
-                return render(request,'movieapp/pending.html',{'pending_art':pending_art,'categories':categories,'selected':model})
+                return render(request,'movieapp/pending_artists.html',{'pending_art':pending_art,'categories':categories,'selected':model})
                 
             if model == 'Movies':
                 try:
@@ -224,7 +224,8 @@ class PendingView(View):
                 paginator = Paginator(pending_list,5)
                 page = request.GET.get('page',1)
                 pending = paginator.get_page(page)
-                return render(request,'movieapp/pending.html',{'pending':pending,'categories':categories,'selected':model})
+                print("-----------------------------",len(pending))
+                return render(request,'movieapp/pending_movies.html',{'pending':pending,'categories':categories,'selected':model})
         else:
             try:
                 pending_list = my_models.MotionPicture.objects.filter(approved=False,name__icontains=query)
@@ -235,7 +236,8 @@ class PendingView(View):
             paginator = Paginator(pending_list,5)
             page = request.GET.get('page',1)
             pending = paginator.get_page(page)
-            return render(request,'movieapp/pending.html',{'pending':pending,'categories':categories})
+            print("-----------------------------",len(pending))
+            return render(request,'movieapp/pending_movies.html',{'pending':pending,'categories':categories})
 
     def post(self,request):
         print(request.POST)

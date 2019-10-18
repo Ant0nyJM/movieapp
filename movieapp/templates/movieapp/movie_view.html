@@ -211,15 +211,21 @@ function addToList(){
                         </thead>
                         <tbody>
                             {% if actors %}
-                                {% for actor in actors %}
-                                    <tr class="p-1">
-                                        <td><a href="{% url 'artist_view' actor.artist_id %}">{% if actor.image %}<img src="{{ actor.image.url }}" style="width:3em;height:auto;">{% else %}<img src="{% static 'movieapp/images/noimage.png' %}" style="width:3em;height:auto;">{% endif %}</a></td>
-                                        <td style="vertical-align: middle;"><h5><a href="{% url 'artist_view' actor.artist_id %}">{{actor.name}}</a></h5></td>
-                                        <td style="vertical-align: middle;"><h5>{{ actor.artist_type }}</h5></td>
-                                    </tr>
+                                {% if actors|length != 0 %}
+                                    {% for actor in actors %}
+                                        <tr class="p-1">
+                                            <td><a href="{% url 'artist_view' actor.artist_id %}">{% if actor.image %}<img src="{{ actor.image.url }}" style="width:3em;height:auto;">{% else %}<img src="{% static 'movieapp/images/noimage.png' %}" style="width:3em;height:auto;">{% endif %}</a></td>
+                                            <td style="vertical-align: middle;"><h5><a href="{% url 'artist_view' actor.artist_id %}">{{actor.name}}</a></h5></td>
+                                            <td style="vertical-align: middle;"><h5>{{ actor.artist_type }}</h5></td>
+                                        </tr>
+                                        
                                     
-                                
-                                {% endfor %}
+                                    {% endfor %}
+                                    {% else %}
+                                        <tr style="text-align:center;">
+                                            <td colspan="3"><p class="h6">No data available</p></td>
+                                        </tr>
+                                    {% endif %}
                             {% else %}
                                 <tr style="text-align:center;">
                                     <td colspan="3"><p class="h6">No data available</p></td>
@@ -230,18 +236,20 @@ function addToList(){
                     
 
                 </div>
-                <div class="row">
-                        {% if user.is_superuser or movie.user == user %}
-                        <hr>
+                {% if user.is_superuser or movie.user == user %}
+                    <div class="row">
+                            
+                            <hr>
+                            
+                            
+                            <a class="btn btn-warning p-2" href="{% url 'movie_edit' movie.movie_id %}">Edit Movie<a>
+                            <button class="btn btn-danger p-2" onclick="deleteMovie()">Delete Movie</button>
+                            
+                                <!-- <span>Movie has not been approved</span> -->
+                            
                         
-                        
-                        <a class="btn btn-warning p-2" href="{% url 'movie_edit' movie.movie_id %}">Edit Movie<a>
-                        <button class="btn btn-danger p-2" onclick="deleteMovie()">Delete Movie</button>
-                        
-                            <!-- <span>Movie has not been approved</span> -->
-                        
-                    {% endif %}
-                </div>
+                    </div>
+                {% endif %}
             </div>
 
           </div>
