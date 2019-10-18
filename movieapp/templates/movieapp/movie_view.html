@@ -191,18 +191,35 @@ function addToList(){
             </div>
             <div class="row">
                 <p class="h4">Cast</p><hr>
-                {% if actors %}
-                    {% for actor in actors %}
-                        {% if forloop.last %}
-                            <a href="{% url 'artist_view' actor.artist_id %}">{{actor.name}}</a>
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th scope="col">Image</th>
+                            <th scope="col">Name</th>
+                            <th scope="col">Role</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% if actors %}
+                            {% for actor in actors %}
+                                <tr>
+                                <td><img src="{{ actor.image.url }}" style="width:2em;height:auto;"></td>
+                                <td><a href="{% url 'artist_view' actor.artist_id %}">{{actor.name}}</a></td>
+                                <td>{{ actor.type }}</td>
+                            </tr>
+                                
+                            
+                            {% endfor %}
                         {% else %}
-                            <a href="{% url 'artist_view' actor.artist_id %}">{{actor.name}}</a>,
+                            <tr>
+                                <td>N-</td>
+                                <td>No data available</td>
+                                <td>No data available</td>
+                            </tr>
                         {% endif %}
-                    
-                    {% endfor %}
-                {% else %}
-                    No data available
-                {% endif %}
+                    </tbody>
+                </table>
+                
 
             </div>
 
