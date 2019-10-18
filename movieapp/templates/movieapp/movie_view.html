@@ -73,10 +73,11 @@ function addToList(){
                     </article>
                 
                 </div>
+                {% if user_lists %}
                 <div class="row">
                     <!-- gallery-wrap .end// -->
                     <div class="container text-center mt-3">
-                        {% if user_lists %}
+                        
                             <p class="h6">Add to list </p>
                             <select id="list_id">
                                 {% for list in user_lists %}
@@ -84,10 +85,10 @@ function addToList(){
                                 {% endfor %}
                             </select>
                             <button class="btn btn-primary p-1" type="button" onclick="addToList()">Add Movie</button>
-                        {% endif %}
+                        
                     </div>
                 </div>
-                
+                {% endif %}
             </div>
           <div class="col-sm-6 p-1">
 

@@ -7,6 +7,14 @@ from django.utils import timezone
 class MotionPicture(models.Model):
     def __str__(self):
         return self.name
+    def get_director(self):
+        artist = self.artist_set.get(artist_type='Director')
+        return artist.name
+    get_director.short_description = 'Director'
+
+
+
+
     movie_id = models.AutoField(primary_key=True)
     mp_type = models.CharField(max_length=15,default='Movie')
     name = models.CharField(max_length=140)
