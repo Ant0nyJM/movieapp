@@ -1,7 +1,7 @@
 {% extends 'movieapp/base.html' %}
 {% load widget_tweaks %}
 {% block title %}Movie Edit{% endblock %}
-
+{% load static %}
 {% block scripts %}
 <script>
 
@@ -192,7 +192,11 @@ function addArtist(img,name,pk){
 
                                                         
                                                 <div class="p-1">
+                                                    {% if actor.image %}
                                                     <img class='m-1' style="width:2em;height:auto;" src="{{ actor.image.url }}">
+                                                    {% else %}
+                                                    <img class='m-1' style="width:2em;height:auto;" src="{% static 'movieapp/images/noimage.jpg' %}">
+                                                    {% endif %}
                                                     <span class="text-muted">{{ actor.name }}</span>
                                                     <i class="fa fa-times m-1" onclick="deleteArtist(this)"></i>
                                                     <input class="tag-hidden" name='artist_ids[]' type="hidden" value="{{actor.artist_id}}">

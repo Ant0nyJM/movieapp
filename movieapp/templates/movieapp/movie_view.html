@@ -5,6 +5,11 @@
 
 {% block style %}
 <link rel="stylesheet" href="{% static 'movieapp/css/movie_view.css'%}">
+<style type="text/css">
+
+
+
+</style>
 {% endblock %}
 
 {% block scripts %}
@@ -46,26 +51,27 @@ function addToList(){
 
 {% endblock %}
 {% block content%}
-
+<div class="col">
 <div class="row">
-<div class="card p-2">
+<div class="card p-2 mx-auto">
+    <div class="col">
       <div class="row">
-          <div class="col-sm-6 p-1 d-flex" style="height:80%;">
+          <div class="col-sm-6 p-1 d-flex flex-column align-self-center" style="height:80%;">
               
               <div class="row" style="width:inherit;">
-                <div class="container">
+                
                     <article class="gallery-wrap" style="width:inherit;">
                         <div class="img-big-wrap d-flex justify-content-center pt-2" style="width:inherit;">
                                 {% if movie.image %}
-                                <img class="img-responsive" src="{{movie.image.url}}" style="max-width:inherit;max-height:inherit;;width:90%;height:auto;">
+                                <img class="img-responsive" src="{{movie.image.url}}" style="max-width:inherit;width:60%;height:auto;">
                                 {% else %}
-                                    <img src="{% static 'movieapp/images/noimage.png' %}" style="width:100%;height:auto;">
+                                    <img class="img-responsive"  src="{% static 'movieapp/images/noimage2.jpg' %}" style="max-width:inherit;width:60%;height:auto;">
                                 {% endif%}
                         </div>
 
                         
                     </article>
-                </div>
+                
                 </div>
                 <div class="row">
                     <!-- gallery-wrap .end// -->
@@ -88,16 +94,37 @@ function addToList(){
           
           <aside>
               <article class="card-body p-1 m-1">
-                  <h2 class="title mb-3">{{ movie.name }}</h2>
-  
+                  <h1 class="title mb-3">{{ movie.name }}</h2>
+                  <dl class="param param-feature">
+                        <dt><p class="h5">Directed By</p></dt>
+                        <dd>
+                            <table class="table table-borderless p-1">
+                                
+                                <tbody>
+                                    {% if director %}
+                                        <tr>
+                                            <td><a href="{% url 'artist_view' director.artist_id %}">{% if director.image %}<img src="{{ director.image.url }}" style="width:3em;height:auto;">{% else %}<img src="{% static 'movieapp/images/noimage.png' %}" style="width:3em;height:auto;">{% endif %}</a></td>
+                                            <td style="vertical-align: middle;"><h6><a href="{% url 'artist_view' director.artist_id %}">{{ director.name }}</a></h6></td>
+                                        </tr>
+                                        {% else %}
+                                        <tr style="text-align:center;">
+                                            <td colspan="2">No data available</td>
+                                        </tr>
+                                    {% endif %}
+                                </tbody>
+                            </table>
+
+                        </dd>
+                  </dl>
+                  
                  
                   <dl class="param param-feature">
-                        <dt>Genre</dt>
+                        <dt><p class="h5">Genre</p></dt>
                         <dd>{{ movie.genre }}</dd>
                   </dl>
                   <!-- item-property-hor .// -->
                   <dl class="param param-feature">
-                      <dt>Release Date</dt>
+                      <dt><p class="h5">Release Date</p></dt>
                       <dd>{{ movie.release_date }}</dd>
                   </dl>
                   
@@ -105,7 +132,7 @@ function addToList(){
 
                   <!-- item-property-hor .// -->
                   <dl class="param param-feature">
-                      <dt>Description</dt>
+                      <dt><p class="h5">Description</p></dt>
                       <dd>{{ movie.description }}</dd>
                   </dl>
                   
@@ -158,16 +185,7 @@ function addToList(){
                 
                     {% endif %}
 
-                    {% if user.is_superuser or movie.user == user %}
-                        <hr>
-                        
-                        
-                        <a class="btn btn-warning p-2" href="{% url 'movie_edit' movie.movie_id %}">Edit Movie<a>
-                        <button class="btn btn-danger p-2" onclick="deleteMovie()">Delete Movie</button>
-                        
-                            <!-- <span>Movie has not been approved</span> -->
-                        
-                    {% endif %}
+                    
                         <span style="visibility:hidden">NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN</span>
                     
               </article>
@@ -180,53 +198,55 @@ function addToList(){
       </div>
       <!-- row.// -->
       <div class="row">
-          <div class="col">
-            <div class="row">
-                <p class="h4">Directed by</p><hr>
-                {% if director %}
-                    <a href="{% url 'artist_view' director.artist_id %}">{{ director.name }}</a>
-                {% else %}
-                    No data available
-                {% endif %}
-            </div>
-            <div class="row">
-                <p class="h4">Cast</p><hr>
-                <table class="table table-striped">
-                    <thead>
-                        <tr>
-                            <th scope="col">Image</th>
-                            <th scope="col">Name</th>
-                            <th scope="col">Role</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% if actors %}
-                            {% for actor in actors %}
-                                <tr>
-                                <td><img src="{{ actor.image.url }}" style="width:2em;height:auto;"></td>
-                                <td><a href="{% url 'artist_view' actor.artist_id %}">{{actor.name}}</a></td>
-                                <td>{{ actor.type }}</td>
-                            </tr>
-                                
-                            
-                            {% endfor %}
-                        {% else %}
-                            <tr>
-                                <td>N-</td>
-                                <td>No data available</td>
-                                <td>No data available</td>
-                            </tr>
-                        {% endif %}
-                    </tbody>
-                </table>
+          <div class="col-sm-11 mx-auto">
+              <div class="container">
                 
+                <div class="row">
+                    <table class="table table-striped p-1">
+                        <thead>
+                            <tr>
+                                <th scope="col" colspan="3"><p class="h4">Cast</p></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% if actors %}
+                                {% for actor in actors %}
+                                    <tr class="p-1">
+                                        <td><a href="{% url 'artist_view' actor.artist_id %}">{% if actor.image %}<img src="{{ actor.image.url }}" style="width:3em;height:auto;">{% else %}<img src="{% static 'movieapp/images/noimage.png' %}" style="width:3em;height:auto;">{% endif %}</a></td>
+                                        <td style="vertical-align: middle;"><h5><a href="{% url 'artist_view' actor.artist_id %}">{{actor.name}}</a></h5></td>
+                                        <td style="vertical-align: middle;"><h5>{{ actor.artist_type }}</h5></td>
+                                    </tr>
+                                    
+                                
+                                {% endfor %}
+                            {% else %}
+                                <tr style="text-align:center;">
+                                    <td colspan="3"><p class="h6">No data available</p></td>
+                                </tr>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                    
 
+                </div>
+                <div class="row">
+                        {% if user.is_superuser or movie.user == user %}
+                        <hr>
+                        
+                        
+                        <a class="btn btn-warning p-2" href="{% url 'movie_edit' movie.movie_id %}">Edit Movie<a>
+                        <button class="btn btn-danger p-2" onclick="deleteMovie()">Delete Movie</button>
+                        
+                            <!-- <span>Movie has not been approved</span> -->
+                        
+                    {% endif %}
+                </div>
             </div>
 
           </div>
           
       </div>
-      
+    </div>
         
       
   </div>
@@ -235,13 +255,12 @@ function addToList(){
   <!-- card.// -->
 
   <div class="row mr-auto mt-4">
-        <p class="h4 font-weight-bold">Reviews({{reviews_len}})</p>
-        <br>
-        <br>
+
         <div class="container p-4">
             {% if reviews_len == 0%}
                 <p>No reviews for {{ movie.name }}</p>
             {% else %}
+                <p class="h4 m-2 font-weight-bold">Reviews({{reviews_len}})</p>
                 {% for review in reviews %}
                     <div class="row p-3 m-2 border shadow bg-white">
                         <div class="container">
@@ -284,7 +303,7 @@ function addToList(){
 </div>  
 {% endif %}
 
-
+</div>
 
 
 

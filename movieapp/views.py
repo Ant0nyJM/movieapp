@@ -397,7 +397,7 @@ class ArtistAddView(View):
 class ArtistView(View):
     def get(self,request,artist_id):
         artist = my_models.Artist.objects.get(artist_id=artist_id)
-        return render(request,'movieapp/artist_view.html',{'artist':artist})
+        return render(request,'movieapp/artist_view2.html',{'artist':artist})
 
 
 

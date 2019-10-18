@@ -1,0 +1,166 @@
+{% extends 'movieapp/base3.html' %}
+{% load static %}
+{% load widget_tweaks %}
+{% block title %}{{ artist.name }}{% endblock %}
+
+{% block style %}
+<link rel="stylesheet" href="{% static 'movieapp/css/movie_view.css'%}">
+<style type="text/css">
+
+
+
+</style>
+{% endblock %}
+
+{% block scripts %}
+<script type="text/javascript">
+
+    function deleteArtist(){
+    
+        
+    
+        if(confirm('This action will delete the artist.')){
+            $.ajax({
+            url : "{% url 'artist_delete'%}",
+            method : 'get',
+            data : {'artist_id':'{{artist.artist_id}}'},
+            success : function(retData){
+                if(retData['deleted']=== 'deleted'){
+                    alert("Artist has been deleted");
+                    location = "{% url 'artist' %}";
+                }
+    
+            }    });     
+        }
+    
+    
+    }
+    
+</script>
+
+{% endblock %}
+{% block content%}
+
+<div class="row">
+<div class="card p-2">
+    <div class="col">
+      <div class="row">
+          <div class="col-sm-6 p-1 d-flex flex-column" style="height:80%;">
+              
+              <div class="row" style="width:inherit;">
+                
+                    <article class="gallery-wrap" style="width:inherit;">
+                        <div class="img-big-wrap d-flex justify-content-center pt-2" style="width:inherit;">
+                                {% if artist.image %}
+                                <img class="img-responsive" src="{{artist.image.url}}" style="max-width:inherit;width:60%;height:auto;">
+                                {% else %}
+                                    <img src="{% static 'movieapp/images/noimage2.jpg' %}" style="max-width:inherit;width:60%;height:auto;">
+                                {% endif%}
+                        </div>
+
+                        
+                    </article>
+                
+                </div>
+                
+            </div>
+          <div class="col-sm-6 p-1">
+
+          
+          <aside>
+              <article class="card-body p-1 pt-4 m-1">
+
+                  <h1 class="title mb-3">{{ artist.name }}</h2>
+                  
+                  
+                  <dl class="param param-feature">
+                        <dt><p class="h5">Type</p></dt>
+                        <dd>{{ artist.artist_type }}</dd>
+                  </dl>
+                  <!-- item-property-hor .// -->
+                  <dl class="param param-feature">
+                      <dt><p class="h5">Birthday</p></dt>
+                      <dd>{{ artist.birthday }}</dd>
+                  </dl>
+                  
+
+
+                  <!-- item-property-hor .// -->
+                  <dl class="param param-feature">
+                      <dt><p class="h5">Description</p></dt>
+                      <dd>{{ artist.description }}</dd>
+                  </dl>
+                  
+                    <dl class="param param-feature">
+                        
+                    </dl>  
+                        <span style="visibility:hidden">NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN</span>
+                    
+              </article>
+
+              
+              <!-- card-body.// -->
+          </aside>
+          <!-- col.// -->
+        </div>
+      </div>
+      <!-- row.// -->
+      <div class="row">
+          <div class="col-sm-11 mx-auto">
+              <div class="container">
+                
+                <div class="row">
+                    <table class="table table-striped p-1">
+                        <thead>
+                            <tr>
+                                <th scope="col" colspan="3"><p class="h4">Movies</p></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% if artist.movies|length != 0 %}
+                                {% for movie in artist.movies.all %}
+                                    <tr class="p-1">
+                                        <td><a href="{% url 'movie_view' movie.movie_id %}">{% if movie.image %}<img src="{{ movie.image.url }}" style="width:3em;height:auto;">{% else %}<img src="{% static 'movieapp/images/noimage.png' %}" style="width:3em;height:auto;">{% endif %}</a></td>
+                                        <td style="vertical-align: middle;"><h5><a href="{% url 'movie_view' movie.movie_id %}">{{movie.name}}</a></h5></td>
+                                        <td style="vertical-align: middle;"><h5>{{ movie.genre }}</h5></td>
+                                    </tr>
+                                    
+                                
+                                {% endfor %}
+                            {% else %}
+                                <tr style="text-align:center;">
+                                    <td colspan="3"><p class="h6">No data available</p></td>
+                                </tr>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                    
+
+                </div>
+            </div>
+
+          </div>
+          
+      </div>
+      <div class="row">
+            {% if user.is_superuser or artist.user == user%}
+                <hr>
+                <a class="btn btn-warning p-2" href="{% url 'artist_edit' artist.artist_id %}">Edit Artist</a>
+                <button class="btn btn-danger p-2" onclick="deleteArtist()">Delete Artist</button>
+            {% endif%}
+      </div>
+    </div>
+        
+      
+  </div>
+
+</div>
+  <!-- card.// -->
+
+
+
+
+
+
+
+{% endblock %}
