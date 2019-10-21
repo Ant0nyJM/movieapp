@@ -4,6 +4,8 @@
 
 {% block scripts%}
     <script type="text/javascript">
+    var delete_artist = false;
+    var delete_movie = false;
         function approveMovie(bt,mid){
             $(bt).children(".aprv-status").addClass('spinner-border spinner-border-sm')
             $(".btn-link").each(function(index,btn){
@@ -41,7 +43,6 @@
 
         function approveArtist(bt,aid){
             $(bt).children(".aprv-status").addClass('spinner-border spinner-border-sm')
-            console.log();
             bt.disabled = true;
             $.ajax({
                 url : "{% url 'pending' %}",
@@ -67,63 +68,98 @@
 
         }
 
+function setDeleteMovieTrue(){
+    delete_movie = true;
+    $("#movieModal").modal('hide');
+}
 
-        function deleteMovie(btn,mid){
-            if(confirm('This action will delete the movie.')){
-                    $(".btn-link").each(function(index,btn){
-                            //alert($(this))
-                            $(this).attr('disabled',true);
-                        });
-                        //alert(mid);
-                    $.ajax({
-                        url : "{% url 'movie_delete' %}",
-                        method : 'get',
-                        data : {'movie_id':mid},
-                        success: function(retData){
-                            if(retData['deleted']==='deleted'){
-                                $(".btn-link").each(function(index,btn){
-                                    //alert($(this))
-                                    $(this).attr('disabled',false);
-                                });
-                                location.reload();
-                            }
-                        }
-                    });
-            }
-            
+function deleteMovie(btn,mid){
+    $("#movieModal").modal();
+    $("#movieModal").on('hidden.bs.modal',function(){
+        if(delete_movie){
+            delete_movie = false;
+            alert("dd");
 
-        }
+            $(".btn-link").each(function(index,btn){
+                    //alert($(this))
+                    $(this).attr('disabled',true);
+                });
 
-
-
-
-        function deleteArtist(btn,aid){
-
-    
-
-            if(confirm('This action will delete the artist.')){
-                $(".btn-link").each(function(index,btn){
-                        //alert($(this))
-                        $(this).attr('disabled',true);
-                    });
-                $.ajax({
-                url : "{% url 'artist_delete' %}",
+            $.ajax({
+                url : "{% url 'movie_delete' %}",
                 method : 'get',
-                data : {'artist_id':aid},
-                success : function(retData){
-                    if(retData['deleted']=== 'deleted'){
+                data : {'movie_id':mid},
+                success: function(retData){
+                    if(retData['deleted']==='deleted'){
                         $(".btn-link").each(function(index,btn){
-                            //alert($(this))
                             $(this).attr('disabled',false);
                         });
-                        location.reload();
+                        
+                        $("#modMsg").text("Movie deleted");
+                        $("#messageModal").modal();
+                        setTimeout(function(){
+                            location.reload();
+                        },1000);
                     }
+                }
+            });
 
-                }    });     
-            }
 
 
-            }
+        }
+    });
+            
+    
+    
+
+}
+
+
+function setDeleteArtistTrue(){
+    delete_artist = true;
+    $("#artistModal").modal('hide');
+}
+
+function deleteArtist(btn,aid){
+
+
+    $("#artistModal").modal();
+    $("#artistModal").on('hidden.bs.modal',function(){
+        if(delete_artist){
+            delete_artist = false;
+
+            $(".btn-link").each(function(index,btn){
+                //alert($(this))
+                $(this).attr('disabled',true);
+            });
+            $.ajax({
+            url : "{% url 'artist_delete' %}",
+            method : 'get',
+            data : {'artist_id':aid},
+            success : function(retData){
+                if(retData['deleted']=== 'deleted'){
+                    $(".btn-link").each(function(index,btn){
+                        //alert($(this))
+                        $(this).attr('disabled',false);
+                    });
+                    $("#modMsg").text("Artist deleted");
+                    $("#messageModal").modal();
+                    setTimeout(function(){
+                        location.reload();
+                    },1000);
+                }
+
+            }    });   
+
+
+        }
+    });
+    
+          
+    
+
+
+    }
 
 
 
@@ -131,6 +167,52 @@
     </script>
 {% endblock %}
 {% block profile-content %}
+
+
+<div class="modal" id="movieModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+                <p>This action will delete the movie.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" onclick="setDeleteMovieTrue()">Delete</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal" id="artistModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+                <p>This action will delete the artist</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" onclick="setDeleteArtistTrue()">Delete</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal" id="messageModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+                <p id="modMsg"></p>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
 <div class="row mb-5">
 
 

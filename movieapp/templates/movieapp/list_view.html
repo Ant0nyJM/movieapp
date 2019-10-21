@@ -36,21 +36,41 @@ $('#movie_search').keyup(function(){
 });
 
 
+var remove_movie = false;
+function setRemoveMovieTrue(){
+    remove_movie = true;
+    $("#exampleModal").modal('hide');
+}
+
+
 function removeMovie(id){
     //alert(id);
-    if(confirm("This action will remove the movie from the list ")){
-        $.ajax({
-            url : "{% url 'list_movie_remove' %}",
-            method : 'get',
-            data : {'list_id':"{{list.id}}",'movie_id':id},
-            success : function(retData){
-                if(retData['deleted']==='deleted'){
-                    alert("Movie has been removed");
-                    location = "{% url 'list_view' list.id %}";
-                }
-            },
-        })
-    }
+    $("#exampleModal").modal();
+    $("#exampleModal").on('hidden.bs.modal',function(){
+
+        if(remove_movie){
+            remove_movie = false;
+            $.ajax({
+                url : "{% url 'list_movie_remove' %}",
+                method : 'get',
+                data : {'list_id':"{{list.id}}",'movie_id':id},
+                success : function(retData){
+                    if(retData['deleted']==='deleted'){
+                        
+                        $("#modMsg").text("Movie has been removed from list");
+                        $("#messageModal").modal();
+                        setTimeout(function(){
+                            $("#messageModal").modal('hide');
+                            location = "{% url 'list_view' list.id %}";
+                        },1000);
+                    }
+                },
+            })
+        }
+
+    });
+        
+    
 }
 function addMovieToList(btn){
     btn.disabled = true
@@ -95,6 +115,32 @@ function showMovieSearch(btn){
 {% endblock %}
 
 {% block profile-content %}
+
+<div class="modal" id="exampleModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+                <p>This action will remove the movie from the list</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" onclick="setRemoveMovieTrue()">Delete</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal" id="messageModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+                <p id="modMsg"></p>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 
     
     <div class="row m-3">

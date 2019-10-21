@@ -3,27 +3,76 @@
 
 {% block scripts %}
 <script type="text/javascript">
+
+var delete_list = false;
+function setDeleteListTrue(){
+    delete_list = true;
+    $("#exampleModal").modal('hide');
+}
 function deleteList(id){
     //alert(id);
-    if(confirm("This action will delete the list ")){
-        $.ajax({
-            url : "{% url 'list_delete' %}",
-            method : 'get',
-            data : {'list_id':id},
-            success : function(retData){
-                if(retData['deleted']==='deleted'){
-                    alert("List has been deleted");
-                    location = "{% url 'lists_view' %}";
-                }
-            },
-        })
-    }
+    $("#exampleModal").modal();
+    $("#exampleModal").on('hidden.bs.modal',function(){
+
+
+        if(delete_list){
+        
+            delete_list = false;
+            $.ajax({
+                url : "{% url 'list_delete' %}",
+                method : 'get',
+                data : {'list_id':id},
+                success : function(retData){
+                    if(retData['deleted']==='deleted'){
+
+                        $("#modMsg").text("List has been deleted");
+                        $("#messageModal").modal();
+                        setTimeout(function(){
+                            $("#messageModal").modal('hide');
+                            location = "{% url 'lists_view' %}";
+                        },1000);
+                    }
+                },
+            });
+        }
+
+        
+    });
+    
+    
 }
 </script>
 
 
 {% endblock %}
 {% block profile-content %}
+
+
+<div class="modal" id="exampleModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+                <p>This action will delete the list</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" onclick="setDeleteListTrue()">Delete</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal" id="messageModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+                <p id="modMsg"></p>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 
 <div class="row mb-5">
 

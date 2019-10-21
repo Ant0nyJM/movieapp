@@ -17,21 +17,28 @@
 
     function deleteArtist(){
     
-        
+        $("#exampleModal").modal('hide');
     
-        if(confirm('This action will delete the artist.')){
-            $.ajax({
-            url : "{% url 'artist_delete'%}",
-            method : 'get',
-            data : {'artist_id':'{{artist.artist_id}}'},
-            success : function(retData){
-                if(retData['deleted']=== 'deleted'){
-                    alert("Artist has been deleted");
+        $.ajax({
+        url : "{% url 'artist_delete'%}",
+        method : 'get',
+        data : {'artist_id':'{{artist.artist_id}}'},
+        success : function(retData){
+            if(retData['deleted']=== 'deleted'){
+                
+                $("#modMsg").text("Artist has been deleted");
+                $("#messageModal").modal();
+                setTimeout(function(){
+                    $("#messageModal").modal('hide');
                     location = "{% url 'artist' %}";
-                }
-    
-            }    });     
-        }
+                },1000);
+
+
+            }
+
+        }    
+        });     
+        
     
     
     }
@@ -40,6 +47,31 @@
 
 {% endblock %}
 {% block content%}
+
+<div class="modal" id="exampleModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+                <p>This action will delete the artist</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" onclick="deleteArtist()">Delete</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal" id="messageModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+                <p id="modMsg"></p>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 <div class="row">
 <div class="card p-2">
@@ -152,7 +184,7 @@
             {% if user.is_superuser or artist.user == user%}
                 <hr>
                 <a class="btn btn-warning p-2" href="{% url 'artist_edit' artist.artist_id %}">Edit Artist</a>
-                <button class="btn btn-danger p-2" onclick="deleteArtist()">Delete Artist</button>
+                <button class="btn btn-danger p-2" data-toggle="modal" data-target="#exampleModal">Delete Artist</button>
             {% endif%}
       </div>
     </div>

@@ -15,19 +15,22 @@
 {% block scripts %}
 <script type="text/javascript">
 function deleteMovie(){
-    if(confirm('This action will delete the movie.')){
-            $.ajax({
-                url : "{% url 'movie_delete' %}",
-                method : 'get',
-                data : {'movie_id':"{{ movie.movie_id }}"},
-                success: function(retData){
-                    if(retData['deleted']==='deleted'){
-                        alert('Movie has been deleted ');
-                        location = "{% url 'profile' %}";
-                    }
-                }
-            });
-    }
+    $("#exampleModal").modal('hide');
+    $.ajax({
+        url : "{% url 'movie_delete' %}",
+        method : 'get',
+        data : {'movie_id':"{{ movie.movie_id }}"},
+        success: function(retData){
+            if(retData['deleted']==='deleted'){
+                $("#modMsg").text("Movie has been deleted");
+                $("#messageModal").modal();
+                setTimeout(function(){
+                    location = "{% url 'movie' %}";
+                },1500);
+            }
+        }
+    });
+    
     
 
 }
@@ -38,11 +41,20 @@ function addToList(){
         data : {'movie_id':"{{ movie.movie_id }}",'list_id':$("#list_id").val()},
         success : function(retData){
             if(retData['status']==='added'){
-                alert("Movie added to list");
-                reload();
+                $("#modMsg").text("Movie has been added to list");
+                $("#messageModal").modal();
+                setTimeout(function(){
+                    $("#messageModal").modal('hide');
+                    location.reload();
+                },1000);
+                
             }
             else{
-                alert("Movie already present in list");
+                $("#modMsg").text("Movie already present in list");
+                $("#messageModal").modal();
+                setTimeout(function(){
+                    $("#messageModal").modal('hide');
+                },1000);
             }
         },
     });
@@ -54,25 +66,32 @@ function addToList(){
 
 {% block content%}
 
-<!-- user prompt modal-->
+<!-- delete modal-->
 <div class="modal" id="exampleModal" tabindex="-1" role="dialog">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-body">
-                <p>Confirm Delete</p>
+                <p>This action will delete the movie</p>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-primary">Save changes</button>
+                <button type="button" class="btn btn-primary" onclick="deleteMovie()">Delete</button>
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
 </div>
 
+<div class="modal" id="messageModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+                <p id="modMsg"></p>
+            </div>
+        </div>
+    </div>
+</div>
 
-<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
-        Launch demo modal
-    </button>
+
 <div class="col">
 <div class="row">
 <div class="card p-2 mx-auto">
@@ -265,7 +284,7 @@ function addToList(){
                             
                             
                             <a class="btn btn-warning p-2" href="{% url 'movie_edit' movie.movie_id %}">Edit Movie<a>
-                            <button class="btn btn-danger p-2" onclick="deleteMovie()">Delete Movie</button>
+                            <button class="btn btn-danger p-2" data-toggle="modal" data-target="#exampleModal">Delete Movie</button>
                             
                                 <!-- <span>Movie has not been approved</span> -->
                             
