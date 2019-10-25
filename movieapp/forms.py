@@ -8,8 +8,9 @@ from django.contrib.auth.models import User
 class MotionPictureForm(ModelForm):
     choices_list = Category.objects.get(name='Movies').categorylabel_set.all()
     choices = tuple([ (x.name,x.name) for x in choices_list ])
-    
     genre = ChoiceField(choices=choices)
+
+
     class Meta():
         model = MotionPicture
         fields = ['name','genre','release_date','description','image']

@@ -39,8 +39,6 @@ urlpatterns = [
                 path('movie-autocomplete/',views.MovieAutocomplete.as_view(),name='movie-autocomplete'),
                 path('add-movie-to-list/',views.add_movie_to_list,name="add-movie-to-list"),
 
-                
-                path('jqac/',views.json_data,name="ac"),
                 path('test/',views.test)
                 
             ]

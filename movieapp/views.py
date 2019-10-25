@@ -1,7 +1,6 @@
 from django.shortcuts import render,redirect,reverse
 from django.http import HttpResponse,JsonResponse
 from django.views import View
-#from django.contrib.auth.forms import UserCreationForm
 from .forms import CustomUserCreationForm,MovieReviewForm
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserChangeForm
@@ -17,7 +16,11 @@ import json
 from django.utils import timezone
 from .models import MotionPicture
 
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
+
 from django.core.paginator import Paginator
+
 
 class MotionPictureAutocomplete(View):
     def get(self,request):
@@ -41,17 +44,10 @@ def artist_search(request):
     form = my_forms.ArtistSearchForm()
     return render(request,'movieapp/artist-search.html',{'form':form})
 
-def json_data(request):
-    return JsonResponse([{"name":"Viola Francis",
-      "image": "https://media.licdn.com/mpr/mpr/shrinknp_200_200/AAEAAQAAAAAAAASJAAAAJGMyMTUzN2EyLTExY2ItNDZiNS1hMTY1LTI4NDA2NDMwZmFkNg.jpg",
-      "location":"Zanesville, OH"}],safe=False)
 
 def test(request):
     return render(request,'movieapp/file.html')
 
-
-
-# Create your views here.
 
 class HomeView(View):
 
@@ -79,7 +75,8 @@ class SignupView(View):
         
         return render(request,'movieapp/signup.html',{'form':form})
 
-class UserProfileView(View):
+
+class UserProfileView(LoginRequiredMixin,View):
     def get(self,request):
         orig_user = User.objects.get(username=request.user.username)
         
@@ -90,7 +87,7 @@ class UserProfileView(View):
             return render(request,'movieapp/movie.html',{'movies':movies})
 
 
-class UserMovieView(View):
+class UserMovieView(LoginRequiredMixin,View):
     def get(self,request):
         orig_user = User.objects.get(username=request.user.username)
         
@@ -101,7 +98,7 @@ class UserMovieView(View):
             movies = my_models.MotionPicture.objects.filter(user=orig_user)
             return render(request,'movieapp/movie.html',{'movies':movies})
 
-class MovieAddView(View):
+class MovieAddView(LoginRequiredMixin,View):
 
 
     def get(self,request):
@@ -130,16 +127,7 @@ class MovieAddView(View):
             artist.save()
         return redirect('movie')
         
-        
-        # if form.is_valid():
-        #     print("form is valid**********************************************", form.user)
-        #     form.save()
-        #     return redirect('movie')
-        # else:
-        #     return HttpResponse(form.errors)
-        # new_mp = my_models.MotionPicture(name=params['name'],genre=params['genre'],release_date=params['release_date'],description=params['description'],user=current_user,image=params.get('image'))
-        # new_mp.save()
-        # return redirect('movie')
+
 
 class MovieView(View):
     def get(self,request,movie_id):
@@ -163,7 +151,7 @@ class MovieView(View):
         current_user_reviewed = True if len(movie.review_set.filter(movie_id=movie_id)) > 0 else False
         review_form = MovieReviewForm()
         context.update({'movie':movie,'rating_len':rating_len,'review_form':review_form,'reviews':reviews,'reviews_len':reviews_len,'current_user_reviewed':current_user_reviewed})
-        print("888888",context)
+
         if request.user.is_authenticated:
             movs = my_models.List.objects.exclude(movies=movie)
             user_lists = movs.filter(user=request.user)
@@ -177,27 +165,16 @@ class MovieView(View):
             return render(request,'movieapp/movie_view.html',context)
 
 
-class PendingView(View):
+class PendingView(LoginRequiredMixin,View):
     @csrf_exempt
     def dispatch(self, *args, **kwargs):
         return super().dispatch(*args, **kwargs)
     def get(self,request):
-        # if request.user.is_superuser:
-
-        #     pending = my_models.MotionPicture.objects.filter(approved=False)
-        #     pending_art = my_models.Artist.objects.filter(approved=False)
-        #     print(str(pending_art))
-        # else:
-        #     pending = my_models.MotionPicture.objects.filter(user=request.user,approved=False)
-        #     pending_art = my_models.Artist.objects.filter(user=request.user,approved=False)
         categories = my_models.Category.objects.all()
         
 
         if 'query' in request.GET:
             query = request.GET.get('query')
-        
-
-
         
         if 'show_model' in request.GET:
             model = request.GET.get('show_model')
@@ -252,6 +229,8 @@ class PendingView(View):
             movie.save()
             return JsonResponse({'approved':'true','msg':'{} is approved'.format(movie.name)})
 
+
+
 class SearchView(View):
     def get(self,request):
         print("-------------",request.GET)
@@ -266,6 +245,8 @@ class SearchView(View):
         except IndexError:
             return redirect('home')
 
+
+@login_required
 def rate_movie(request,movie_id):
     if request.method == "POST":
         rating = request.POST.get('rating')
@@ -284,6 +265,7 @@ def rate_movie(request,movie_id):
     else:
         return redirect('home')
 
+@login_required
 def review_movie(request,movie_id):
     if request.method == "POST":
         review = request.POST.get('review')
@@ -299,18 +281,22 @@ def review_movie(request,movie_id):
     else:
         return redirect('home')
 
+@login_required
 def user_reviews(request):
     user = User.objects.get(username=request.user.username)
     user_reviews = my_models.Review.objects.filter(user=user)
     print(user_reviews)
     return render(request,'movieapp/user_reviews.html',{'user_reviews':user_reviews})
 
+@login_required
 def movie_delete(request):
     movie = my_models.MotionPicture.objects.get(movie_id=int(request.GET.get('movie_id')))
     movie.delete()
     return JsonResponse({'deleted':'deleted'})
 
-class MovieEditView(View):
+
+
+class MovieEditView(LoginRequiredMixin,View):
     def get(self,request,movie_id):
         movie = my_models.MotionPicture.objects.get(movie_id=movie_id)
         try:
@@ -364,12 +350,16 @@ class MovieEditView(View):
             artist.save()
         return redirect(reverse('movie_view',args=[movie_id]))
 
+
+@login_required
 def review_delete(request):
     review = my_models.Review.objects.get(id=request.GET.get('review_id'))
     review.delete()
     return JsonResponse({'deleted':'deleted'})
+    # return HttpResponse("yes")
 
-class ReviewEditView(View):
+
+class ReviewEditView(LoginRequiredMixin,View):
     def get(self,request,review_id):
         review = my_models.Review.objects.get(id=review_id)
         form = my_forms.MovieReviewForm(instance=review)
@@ -379,11 +369,10 @@ class ReviewEditView(View):
         review = my_models.Review.objects.get(id=review_id)
         review.review = request.POST.get('review')
         review.save()
-        # print("----->"+str(request.user.username))
-        # print("---->"+my_models.Review.objects.get(id=review_id).movie.name)
         return redirect(reverse('user_reviews'))
 
-class ArtistAddView(View):
+
+class ArtistAddView(LoginRequiredMixin,View):
     def get(self,request):
         form = my_forms.ArtistForm()
         return render(request,'movieapp/artist_add.html',{'form':form})
@@ -402,7 +391,7 @@ class ArtistView(View):
         return render(request,'movieapp/artist_view2.html',{'artist':artist})
 
 
-
+@login_required
 def artist_delete(request):
     artist = my_models.Artist.objects.get(artist_id=int(request.GET.get('artist_id')))
     print("artost ====",artist.name)
@@ -410,6 +399,7 @@ def artist_delete(request):
     return JsonResponse({'deleted':'deleted'})
 
 
+@login_required
 def user_artists(request):
     if request.user.is_superuser:
         artists = my_models.Artist.objects.filter(approved=True)
@@ -419,9 +409,7 @@ def user_artists(request):
 
 
 class DirectorAutocomplete(View):
-    def get(self,request):
-        # Don't forget to filter out results depending on the visitor !
-        
+    def get(self,request):        
 
         qs = my_models.Artist.objects.all()
         q = request.GET.get('q','')
@@ -434,10 +422,9 @@ class DirectorAutocomplete(View):
         except IndexError:
             return JsonResponse({})
 
+
 class MovieAutocomplete(View):
-    def get(self,request):
-        # Don't forget to filter out results depending on the visitor !
-        
+    def get(self,request):        
 
         qs = my_models.MotionPicture.objects.all()
         q = request.GET.get('q','')
@@ -451,8 +438,7 @@ class MovieAutocomplete(View):
             return JsonResponse({})
 
 
-
-class ArtistEditView(View):
+class ArtistEditView(LoginRequiredMixin,View):
     def get(self,request,artist_id):
         artist = my_models.Artist.objects.get(artist_id=artist_id)
         form = my_forms.ArtistEditForm(instance= artist)
@@ -481,14 +467,14 @@ class ArtistEditView(View):
         
 
 
-            
+@login_required            
 def lists_view(request):        
     user = User.objects.get(username=request.user.username)
     lists = my_models.List.objects.filter(user=user)
     return render(request,'movieapp/lists_view.html',{'lists':lists})
 
 
-class ListCreateView(View):
+class ListCreateView(LoginRequiredMixin,View):
     def get(self,request):
         form = my_forms.ListForm()
         return render(request,'movieapp/list_create.html',{'form':form})
@@ -511,12 +497,13 @@ class ListCreateView(View):
         return redirect(reverse('list_view',args=[usr.id]))
 
 
-class ListView(View):
+class ListView(LoginRequiredMixin,View):
     def get(self,request,list_id):
         lis = my_models.List.objects.get(id=list_id)
         return render(request,'movieapp/list_view.html',{'list':lis})
 
 
+@login_required
 def list_movie_remove(request):
     print("params ----->",str(request.GET))
     movie = my_models.MotionPicture.objects.get(movie_id=request.GET.get('movie_id'))
@@ -526,12 +513,13 @@ def list_movie_remove(request):
     print(lis.name)
     return JsonResponse({'deleted':'deleted'})
 
-
+@login_required
 def list_delete(request):
     lis = my_models.List.objects.get(id=request.GET.get('list_id'))
     lis.delete()
     return JsonResponse({'deleted':'deleted'})
 
+@login_required
 def add_movie_to_list(request):
     lis = my_models.List.objects.get(id=request.GET.get('list_id'))
     movie = my_models.MotionPicture.objects.get(movie_id=request.GET.get('movie_id'))
@@ -541,7 +529,8 @@ def add_movie_to_list(request):
     else:
         return JsonResponse({'status':'present'})
 
-class ProfileEditView(View):
+
+class ProfileEditView(LoginRequiredMixin,View):
     def get(self,request):
         user = User.objects.get(username=request.user.username)
         form = UserChangeForm(instance=user)

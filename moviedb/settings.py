@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'movieapp.apps.MovieappConfig',
     'widget_tweaks',
+    'debug_toolbar',
 ]
 
 MIDDLEWARE = [
@@ -50,6 +51,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
     
 ]
 
@@ -77,28 +79,28 @@ WSGI_APPLICATION = 'moviedb.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql',
-#         'NAME': 'moviedb',
-#         'USER' : 'mdbadmin',
-#         'PASSWORD' : 'admin01',
-#         'HOST': '127.0.0.1',
-#         'PORT':'5432',
-#     }
-# }
-
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'df472mq38rejrb',
-        'USER' : 'goqdlbowvfwgzl',
-        'PASSWORD' : '651aa0a6cb73cbdf42ce00c13baf28a03f98fdedb8ae87698658a9cbf523d155',
-        'HOST': 'ec2-107-20-167-241.compute-1.amazonaws.com',
+        'NAME': 'moviedb',
+        'USER' : 'mdbadmin',
+        'PASSWORD' : 'admin01',
+        'HOST': '127.0.0.1',
         'PORT':'5432',
     }
 }
+
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'df472mq38rejrb',
+#         'USER' : 'goqdlbowvfwgzl',
+#         'PASSWORD' : '651aa0a6cb73cbdf42ce00c13baf28a03f98fdedb8ae87698658a9cbf523d155',
+#         'HOST': 'ec2-107-20-167-241.compute-1.amazonaws.com',
+#         'PORT':'5432',
+#     }
+# }
 
 
 
@@ -141,7 +143,7 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, "static")
 
-
+LOGIN_URL = 'login'
 LOGIN_REDIRECT_URL = 'home'
 LOGOUT_REDIRECT_URL = 'home'
 
@@ -157,3 +159,15 @@ EMAIL_HOST_USER = 'antonyjmdev' # email id
 EMAIL_HOST_PASSWORD = 'Ant0nyJMdev' #password
 EMAIL_PORT = 465
 EMAIL_USE_SSL = True
+
+
+
+INTERNAL_IPS = [
+    # ...
+    '127.0.0.1',
+    # ...
+]
+
+
+
+
