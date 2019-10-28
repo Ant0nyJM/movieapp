@@ -7,6 +7,7 @@
         {% if movies %}
             <p>{{ movies|length }} result{{ movies|pluralize }} found in Movies</p>
             {% for movie in movies %}
+              {% with mv_artist_set=movie.artist_set.all %}
                 <div class="search-result-div shadow my-3 md-5" style="width:100%">
                     <a href="{% url 'movie_view' movie.movie_id %}">
                             {% if movie.image %}
@@ -25,7 +26,7 @@
                         <small class="mt-2">
                             <div class="m-1 mb-1">
                             <span class="search-result-sm-text p-1">Directed By: 
-                                {% for c in movie.artist_set.all %}
+                                {% for c in mv_artist_set %}
                                     {% if c.artist_type == 'Director' %} 
                                         <a href="{% url 'artist_view' c.artist_id %}">{{ c.name }}</a>
                                     {% endif %}
@@ -34,7 +35,7 @@
                             <div class="m-1 mt-1">
                             <span class="search-result-sm-text p-1">
                                 Cast : 
-                                {% for c in movie.artist_set.all %}
+                                {% for c in mv_artist_set %}
                                     {% if c.artist_type == 'Actor' %} 
                                         {% if forloop.last %}
                                         <a href="{% url 'artist_view' c.artist_id %}">{{ c.name }}</a>
@@ -51,6 +52,7 @@
                         </small>
                     </div>
                 </div>
+                {% endwith %}
             {% endfor %}
         {% endif %}
 
@@ -76,15 +78,17 @@
                             <div class="m-1 mt-1">
                             <span class="search-result-sm-text p-1">
                                 Movies : 
-                                {% for movie in artist.movies.all %}
-                                    
-                                        {% if forloop.last %}
-                                        <a href="{% url 'movie_view' movie.movie_id %}">{{ movie.name }}</a>
-                                        {% else %}
-                                            <a href="{% url 'movie_view' movie.movie_id %}">{{ movie.name }}</a>,
-            
-                                        {% endif %}
-                                {% endfor %}
+                                {% with artist_movies=artist.movies.all %}
+                                    {% for movie in artist_movies %}
+                                        
+                                            {% if forloop.last %}
+                                            <a href="{% url 'movie_view' movie.movie_id %}">{{ movie.name }}</a>
+                                            {% else %}
+                                                <a href="{% url 'movie_view' movie.movie_id %}">{{ movie.name }}</a>,
+                
+                                            {% endif %}
+                                    {% endfor %}
+                                {% endwith %}
                             </span>
                             </div>
                         </small>
@@ -96,6 +100,7 @@
         {% if genre %}
             <p>{{ genre|length }} result{{ genre|pluralize }} found in  Genre</p>
             {% for movie in genre %}
+                {% with mv_genre_set=movie.artist_set.all %}
                 <div class="search-result-div shadow my-3 md-5" style="width:100%">
                     <a href="{% url 'movie_view' movie.movie_id %}">
                         {% if movie.image %}
@@ -123,7 +128,7 @@
                             <div class="m-1 mt-1">
                             <span class="search-result-sm-text p-1">
                                 Cast : 
-                                {% for c in movie.artist_set.all %}
+                                {% for c in mv_genre_set %}
                                     {% if c.artist_type == 'Actor' %} 
                                         {% if forloop.last %}
                                         <a href="{% url 'artist_view' c.artist_id %}">{{ c.name }}</a>
@@ -140,6 +145,7 @@
                         </small>
                     </div>
                 </div>
+                {% endwith %}
             {% endfor %}
         {% endif %}
 

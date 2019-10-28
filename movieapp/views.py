@@ -8,7 +8,7 @@ from . import models as my_models
 from . import forms as my_forms
 
 from django.views.decorators.csrf import csrf_exempt
-from django.db.models import Avg
+from django.db.models import Avg,prefetch_related_objects
 from django.core import serializers
 
 import json
@@ -132,31 +132,36 @@ class MovieAddView(LoginRequiredMixin,View):
 class MovieView(View):
     def get(self,request,movie_id):
         context = {}
+        
         movie = my_models.MotionPicture.objects.get(movie_id=movie_id)
-        rating_len = len(my_models.Rate.objects.filter(movie = movie))
-        reviews = my_models.Review.objects.filter(movie=movie)
-        actors = movie.artist_set.filter(artist_type="Actor")
-        print("------------.",actors)
+        prefetch_related_objects(movie)
+        
+        rating_len = movie.rate_set.all().count()
+        reviews = movie.review_set.all()
+        artists = movie.artist_set.all().defer('description','birthday')
+        actors = artists.filter(artist_type="Actor")
+
+        if(actors.exists()):
+            context['actors']=actors
+            
         try:
-            director = movie.artist_set.get(artist_type="Director")
+            director = artists.get(artist_type="Director")
+            context['director']= director
         except my_models.Artist.DoesNotExist:
             director = None
-        print("----------",director)
-        if(director!=None):
-            context['director']= director
 
-        if(len(actors)!=0):
-            context['actors']=actors
-        reviews_len = len(reviews)
-        current_user_reviewed = True if len(movie.review_set.filter(movie_id=movie_id)) > 0 else False
+        reviews_len = reviews.count()
+        current_user_reviewed = True if reviews_len > 0 else False
+
         review_form = MovieReviewForm()
         context.update({'movie':movie,'rating_len':rating_len,'review_form':review_form,'reviews':reviews,'reviews_len':reviews_len,'current_user_reviewed':current_user_reviewed})
 
         if request.user.is_authenticated:
-            movs = my_models.List.objects.exclude(movies=movie)
-            user_lists = movs.filter(user=request.user)
-            user = User.objects.get(username=request.user.username)
-            not_rated = True if len(my_models.Rate.objects.filter(user=user,movie=movie))<1 else False
+            user = request.user
+            user_lists = my_models.List.objects.filter(user=user).exclude(movies=movie)
+            
+            
+            not_rated = True if my_models.Rate.objects.filter(user=user,movie=movie).count() <1 else False
             context['not_rated']=not_rated
             context['user_lists']=user_lists
 
@@ -233,14 +238,25 @@ class PendingView(LoginRequiredMixin,View):
 
 class SearchView(View):
     def get(self,request):
-        print("-------------",request.GET)
         q = request.GET.get('q','')
         try:
             if q[0] != '' :
-                movies = my_models.MotionPicture.objects.filter(name__icontains=q,approved=True)
-                artists = my_models.Artist.objects.filter(name__icontains=q,approved=True)
-                genre = my_models.MotionPicture.objects.filter(genre__iexact=q,approved=True)
-                return render(request,'movieapp/search.html',{'movies':movies,'artists':artists,'genre':genre})
+                context = {}
+                movies = my_models.MotionPicture.objects.filter(approved=True,name__icontains=q)
+                if movies.exists():
+                    context.update({'movies':movies})
+
+                artists = my_models.Artist.objects.filter(approved=True,name__icontains=q)
+                if artists.exists():
+                    context.update({'artists':artists})
+
+                
+                genre = my_models.MotionPicture.objects.filter(approved=True,genre__iexact=q)
+                if genre.exists():
+                    context.update({'genre':genre})
+
+                
+                return render(request,'movieapp/search.html',context)
 
         except IndexError:
             return redirect('home')

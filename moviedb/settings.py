@@ -39,7 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'movieapp.apps.MovieappConfig',
     'widget_tweaks',
-    'debug_toolbar',
+    #'debug_toolbar',
 ]
 
 MIDDLEWARE = [
@@ -51,8 +51,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'debug_toolbar.middleware.DebugToolbarMiddleware',
-    
+    #'debug_toolbar.middleware.DebugToolbarMiddleware',
+    'movieapp.middleware.ProfilerMiddleware',
 ]
 
 ROOT_URLCONF = 'moviedb.urls'
@@ -79,28 +79,28 @@ WSGI_APPLICATION = 'moviedb.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'moviedb',
-        'USER' : 'mdbadmin',
-        'PASSWORD' : 'admin01',
-        'HOST': '127.0.0.1',
-        'PORT':'5432',
-    }
-}
-
-
 # DATABASES = {
 #     'default': {
 #         'ENGINE': 'django.db.backends.postgresql',
-#         'NAME': 'df472mq38rejrb',
-#         'USER' : 'goqdlbowvfwgzl',
-#         'PASSWORD' : '651aa0a6cb73cbdf42ce00c13baf28a03f98fdedb8ae87698658a9cbf523d155',
-#         'HOST': 'ec2-107-20-167-241.compute-1.amazonaws.com',
+#         'NAME': 'moviedb',
+#         'USER' : 'mdbadmin',
+#         'PASSWORD' : 'admin01',
+#         'HOST': '127.0.0.1',
 #         'PORT':'5432',
 #     }
 # }
+
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'df472mq38rejrb',
+        'USER' : 'goqdlbowvfwgzl',
+        'PASSWORD' : '651aa0a6cb73cbdf42ce00c13baf28a03f98fdedb8ae87698658a9cbf523d155',
+        'HOST': 'ec2-107-20-167-241.compute-1.amazonaws.com',
+        'PORT':'5432',
+    }
+}
 
 
 

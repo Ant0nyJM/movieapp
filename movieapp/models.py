@@ -15,9 +15,9 @@ class MotionPicture(models.Model):
 
 
 
-    movie_id = models.AutoField(primary_key=True)
+    movie_id = models.AutoField(primary_key=True,unique=True)
     mp_type = models.CharField(max_length=15,default='Movie')
-    name = models.CharField(max_length=140)
+    name = models.CharField(max_length=140,db_index=True)
     genre = models.CharField(max_length=15)
     release_date = models.DateField(default=timezone.now().date())
     description = models.TextField()
@@ -29,9 +29,9 @@ class MotionPicture(models.Model):
 class Artist(models.Model):
     def __str__(self):
         return self.name
-    artist_id = models.AutoField(primary_key=True)
+    artist_id = models.AutoField(primary_key=True,unique=True)
     artist_type = models.CharField(max_length=15,default="Actor")
-    name = models.CharField(max_length=50,null=False)
+    name = models.CharField(max_length=50,null=False,db_index=True)
     birthday = models.DateField(null=False,default=None)
     description = models.TextField(default="")
     user = models.ForeignKey(User,on_delete=models.DO_NOTHING,default=None)
