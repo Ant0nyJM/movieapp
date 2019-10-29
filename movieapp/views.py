@@ -29,11 +29,9 @@ class MotionPictureAutocomplete(View):
 
         qs = my_models.Artist.objects.all()
         q = request.GET.get('q','')
-        print("-- ",request.GET)
         try:
             if q[0]!='':
                 qs = qs.filter(name__icontains=q,artist_type="Actor",approved=True)
-            print(qs)
             return JsonResponse(serializers.serialize('json',qs),safe=False)
         except IndexError:
             return JsonResponse({})
@@ -120,7 +118,6 @@ class MovieAddView(LoginRequiredMixin,View):
             pass
         ids = request.POST.getlist('artist_ids[]')
         for x in ids:
-            print(x)
             artist = my_models.Artist.objects.get(artist_id=x)
             
             artist.movies.add(movie)
@@ -193,7 +190,6 @@ class PendingView(LoginRequiredMixin,View):
                 paginator = Paginator(pending_art_list,5)
                 page = request.GET.get('page',1)
                 pending_art = paginator.get_page(page)
-                print("-----------------------------",len(pending_art))
                 return render(request,'movieapp/pending_artists.html',{'pending_art':pending_art,'categories':categories,'selected':model})
                 
             if model == 'Movies':
@@ -206,7 +202,6 @@ class PendingView(LoginRequiredMixin,View):
                 paginator = Paginator(pending_list,5)
                 page = request.GET.get('page',1)
                 pending = paginator.get_page(page)
-                print("-----------------------------",len(pending))
                 return render(request,'movieapp/pending_movies.html',{'pending':pending,'categories':categories,'selected':model})
         else:
             try:
@@ -218,11 +213,9 @@ class PendingView(LoginRequiredMixin,View):
             paginator = Paginator(pending_list,5)
             page = request.GET.get('page',1)
             pending = paginator.get_page(page)
-            print("-----------------------------",len(pending))
             return render(request,'movieapp/pending_movies.html',{'pending':pending,'categories':categories})
 
     def post(self,request):
-        print(request.POST)
         if 'artist_id' in request.POST:
             artist = my_models.Artist.objects.get(artist_id=request.POST.get('artist_id'))
             artist.approved = True
@@ -299,9 +292,8 @@ def review_movie(request,movie_id):
 
 @login_required
 def user_reviews(request):
-    user = User.objects.get(username=request.user.username)
+    user = request.user
     user_reviews = my_models.Review.objects.filter(user=user)
-    print(user_reviews)
     return render(request,'movieapp/user_reviews.html',{'user_reviews':user_reviews})
 
 @login_required
@@ -327,13 +319,11 @@ class MovieEditView(LoginRequiredMixin,View):
             context['actors'] = actors
         if(director!=None):
             context['director'] = director
-        print("----->",context)
         return render(request,'movieapp/movie_edit.html',context)
 
     def post(self,request,movie_id):
         movie = my_models.MotionPicture.objects.get(movie_id=movie_id)
         if(request.FILES):
-            print("=--============")
             form = my_forms.MotionPictureForm(request.POST,request.FILES)
             usr = form.save(commit=False)
         else:
@@ -359,7 +349,6 @@ class MovieEditView(LoginRequiredMixin,View):
             pass
         ids = request.POST.getlist('artist_ids[]')
         for x in ids:
-            print(x)
             artist = my_models.Artist.objects.get(artist_id=x)
             
             artist.movies.add(movie)
@@ -410,7 +399,6 @@ class ArtistView(View):
 @login_required
 def artist_delete(request):
     artist = my_models.Artist.objects.get(artist_id=int(request.GET.get('artist_id')))
-    print("artost ====",artist.name)
     artist.delete()
     return JsonResponse({'deleted':'deleted'})
 
@@ -429,11 +417,9 @@ class DirectorAutocomplete(View):
 
         qs = my_models.Artist.objects.all()
         q = request.GET.get('q','')
-        print("-- ",request.GET)
         try:
             if q[0]!='':
                 qs = qs.filter(name__icontains=q,artist_type='Director',approved=True)
-            print(qs)
             return JsonResponse(serializers.serialize('json',qs),safe=False)
         except IndexError:
             return JsonResponse({})
@@ -444,11 +430,9 @@ class MovieAutocomplete(View):
 
         qs = my_models.MotionPicture.objects.all()
         q = request.GET.get('q','')
-        print("-- ",request.GET)
         try:
             if q[0]!='':
                 qs = qs.filter(name__icontains=q,approved=True)
-            print(qs)
             return JsonResponse(serializers.serialize('json',qs),safe=False)
         except IndexError:
             return JsonResponse({})
@@ -461,7 +445,6 @@ class ArtistEditView(LoginRequiredMixin,View):
         return render(request,'movieapp/artist_edit.html',{'form':form})
 
     def post(self,request,artist_id):
-        print("^^^^^^^^^^^^^^^^^^^^^^^^ ",request.POST)
         artist = my_models.Artist.objects.get(artist_id=artist_id)
         try:
             if(request.FILES):
@@ -495,7 +478,6 @@ class ListCreateView(LoginRequiredMixin,View):
         form = my_forms.ListForm()
         return render(request,'movieapp/list_create.html',{'form':form})
     def post(self,request):
-        print("Request parametres",str(request.POST))
 
 
         form = my_forms.ListForm(request.POST)
@@ -505,9 +487,7 @@ class ListCreateView(LoginRequiredMixin,View):
         
         ids = request.POST.getlist('movie_ids[]')
         for x in ids:
-            print(x)
             movie = my_models.MotionPicture.objects.get(movie_id=x)
-            print("-------mvie id",movie.name)
             usr.movies.add(movie)
             usr.save()
         return redirect(reverse('list_view',args=[usr.id]))
@@ -515,18 +495,15 @@ class ListCreateView(LoginRequiredMixin,View):
 
 class ListView(LoginRequiredMixin,View):
     def get(self,request,list_id):
-        lis = my_models.List.objects.get(id=list_id)
+        lis = my_models.List.objects.select_related().get(id=list_id)
         return render(request,'movieapp/list_view.html',{'list':lis})
 
 
 @login_required
 def list_movie_remove(request):
-    print("params ----->",str(request.GET))
     movie = my_models.MotionPicture.objects.get(movie_id=request.GET.get('movie_id'))
-    print(movie.name)
     lis = my_models.List.objects.get(id=request.GET.get('list_id'))
     lis.movies.remove(movie)
-    print(lis.name)
     return JsonResponse({'deleted':'deleted'})
 
 @login_required

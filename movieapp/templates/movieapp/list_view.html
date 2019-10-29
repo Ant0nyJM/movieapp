@@ -148,12 +148,13 @@ function showMovieSearch(btn){
         <br>
         <br>
         <div class="container p-4">
-                <p class="h4">{{ list.name }} - {{ list.movies.all|length }} movie{{ list.movies.all|pluralize}} in list</p>
+            {% with list_movies=list.movies.all %}
+                <p class="h4">{{ list.name }} - {{ list_movies|length }} movie{{ list_movies|pluralize}} in list</p>
             {% if list.movies %}
-                {% for movie in list.movies.all %}
+                {% for movie in list_movies %}
                     
                          
-<div class="container">
+    <div class="container">
         <div class="shadow my-3 md-5" >
             <div class="row">
                 <div class="col-md-2">
@@ -173,33 +174,36 @@ function showMovieSearch(btn){
                     <div class="row">
 
                         <small class="mt-2">
+                            {% with movie_artist_set=movie.artist_set.all %}
                                 <div class="m-1 mb-1">
-                                <span class="search-result-sm-text p-1">Directed By: 
-                                    {% for c in movie.artist_set.all %}
-                                        {% if c.artist_type == 'Director' %} 
-                                            <a href="{% url 'artist_view' c.artist_id %}">{{ c.name }}</a>
-                                        {% endif %}
-                                    {% endfor %}  
-                                </span></div>
-                                <div class="m-1 mt-1">
-                                <span class="search-result-sm-text p-1">
-                                    Cast : 
-                                    {% for c in movie.artist_set.all %}
-                                        {% if c.artist_type == 'Actor' %} 
-                                            {% if forloop.last %}
-                                            <a href="{% url 'artist_view' c.artist_id %}">{{ c.name }}</a>
-                                            {% else %}
-                                                <a href="{% url 'artist_view' c.artist_id %}">{{ c.name }}</a>,
+                                    <span class="search-result-sm-text p-1">Directed By: 
+                                        {% for c in movie_artist_set %}
+                                            {% if c.artist_type == 'Director' %} 
+                                                <a href="{% url 'artist_view' c.artist_id %}">{{ c.name }}</a>
                                             {% endif %}
-                                            {% endif %}
-                                    {% endfor %}
-                                </span><br>
-                                <span class="search-result-sm-text p-1">
-                                    Description : 
-                                    {{ movie.description }}
-                                </span>
+                                        {% endfor %}  
+                                    </span>
                                 </div>
-                            </small>
+                                <div class="m-1 mt-1">
+                                    <span class="search-result-sm-text p-1">
+                                        Cast : 
+                                        {% for c in movie_artist_set %}
+                                            {% if c.artist_type == 'Actor' %} 
+                                                {% if forloop.last %}
+                                                <a href="{% url 'artist_view' c.artist_id %}">{{ c.name }}</a>
+                                                {% else %}
+                                                    <a href="{% url 'artist_view' c.artist_id %}">{{ c.name }}</a>,
+                                                {% endif %}
+                                                {% endif %}
+                                        {% endfor %}
+                                    </span><br>
+                                    <span class="search-result-sm-text p-1">
+                                        Description : 
+                                        {{ movie.description }}
+                                    </span>
+                                </div>
+                            {% endwith %}
+                        </small>
 
                     </div>
 
@@ -212,9 +216,9 @@ function showMovieSearch(btn){
                 </div>                
                 
             </div>
-            </div>
-            
         </div>
+            
+    </div>
         
         
 
@@ -246,6 +250,7 @@ function showMovieSearch(btn){
             {% else %}
             <p class="h4">This list does not have any movies yet</p>
             {% endif %}
+            {% endwith %}
         </div>
         
 

@@ -39,7 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'movieapp.apps.MovieappConfig',
     'widget_tweaks',
-    #'debug_toolbar',
+    'debug_toolbar',
 ]
 
 MIDDLEWARE = [
@@ -51,8 +51,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    #'debug_toolbar.middleware.DebugToolbarMiddleware',
-    'movieapp.middleware.ProfilerMiddleware',
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
+    #'movieapp.middleware.ProfilerMiddleware',
 ]
 
 ROOT_URLCONF = 'moviedb.urls'
