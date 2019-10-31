@@ -241,6 +241,8 @@ function deleteArtist(btn,aid){
                                         {% for category in categories %}
                                         <option value="{{ category.name }}" {% if category.name == selected %}selected="selected"{% endif  %}>{{category.name}}</option>
                                         {% endfor %}
+                                        <option value="Movies" {% if 'Movies' == selected %}selected="selected"{% endif  %}>Movies</option>
+                                        <option value="Artists" {% if 'Artists' == selected %}selected="selected"{% endif  %}>Artists</option>
                                     </select>
                                 </div>
                                 <input type="text" name='query' class="form-control" placeholder="Enter a name" aria-label="Search Field">

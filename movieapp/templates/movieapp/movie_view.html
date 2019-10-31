@@ -119,13 +119,13 @@ function addToList(){
                     <!-- gallery-wrap .end// -->
                     <div class="container text-center mt-3">
                         
-                            <p class="h6">Add to list </p>
+                            <p class="h6">Like this movie? Add to your lists </p>
                             <select id="list_id">
                                 {% for list in user_lists %}
                                 <option value="{{list.id}}">{{list.name}}</option>
                                 {% endfor %}
                             </select>
-                            <button class="btn btn-primary p-1" type="button" onclick="addToList()">Add Movie</button>
+                            <button class="btn btn-primary p-1" type="button" onclick="addToList()">Add to list</button>
                         
                     </div>
                 </div>

@@ -6,9 +6,8 @@ from django.contrib.auth.models import User
 
 
 class MotionPictureForm(ModelForm):
-    choices_list = Category.objects.get(name='Movies').categorylabel_set.all()
-    choices = tuple([ (x.name,x.name) for x in choices_list ])
-    genre = ChoiceField(choices=choices)
+    movie_choices = [('Action','Action'),('Adventure','Adventure'),('History','History'),('Drama','Drama'),('Romance','Romance'),('Documentary','Documentary')]
+    genre = ChoiceField(choices=movie_choices)
 
 
     class Meta():
@@ -43,9 +42,8 @@ class ArtistForm(ModelForm):
         # there's a `fields` property now
         self.fields['image'].required = False
 
-    choices_list = Category.objects.get(name='Artists').categorylabel_set.all()
-    choices = tuple([ (x.name,x.name) for x in choices_list ])
-    artist_type = ChoiceField(choices=choices)
+    artist_choices = [('Actor','Actor'),('Director','Director')]
+    artist_type = ChoiceField(choices=artist_choices)
     class Meta():
         model = Artist
         fields = ['name','birthday','artist_type','description','image']
@@ -62,9 +60,8 @@ class ArtistEditForm(ModelForm):
         self.fields['image'].required = False
         self.fields['artist_type'].required = False
 
-    choices_list = Category.objects.get(name='Artists').categorylabel_set.all()
-    choices = tuple([ (x.name,x.name) for x in choices_list ])
-    artist_type = ChoiceField(choices=choices)
+    artist_choices = [('Actor','Actor'),('Director','Director')]
+    artist_type = ChoiceField(choices=artist_choices)
     class Meta():
         model = Artist
         fields = ['name','birthday','artist_type','description','image']

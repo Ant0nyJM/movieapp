@@ -9,7 +9,7 @@ class MotionPictureAdmin(admin.ModelAdmin):
 
 
 class ArtistAdmin(admin.ModelAdmin):
-    list_display = ('name','birthday','artist_type')
+    list_display = ('name','birthday','artist_type','modified_date_time')
 
 class ListAdmin(admin.ModelAdmin):
     list_display = ('name','user')

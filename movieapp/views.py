@@ -51,7 +51,7 @@ class HomeView(View):
 
     def get(self,request):
         #return render(request,'movieapp/base.html')
-        movies_list = my_models.MotionPicture.objects.filter(approved=True)
+        movies_list = my_models.MotionPicture.objects.filter(approved=True).order_by('-created_date_time')
         paginator = Paginator(movies_list,6)
         page = request.GET.get('page',1)
         movies = paginator.get_page(page)
@@ -90,7 +90,7 @@ class UserMovieView(LoginRequiredMixin,View):
         orig_user = User.objects.get(username=request.user.username)
         
         if orig_user.is_superuser:
-            movies = my_models.MotionPicture.objects.filter(approved=True)
+            movies = my_models.MotionPicture.objects.filter(approved=True).order_by('-created_date_time')
             return render(request,'movieapp/movie.html',{'movies':movies})
         else:
             movies = my_models.MotionPicture.objects.filter(user=orig_user)
@@ -182,9 +182,9 @@ class PendingView(LoginRequiredMixin,View):
             model = request.GET.get('show_model')
             if model == 'Artists':
                 try:
-                    pending_art_list = my_models.Artist.objects.filter(approved=False,name__icontains=query)
+                    pending_art_list = my_models.Artist.objects.filter(approved=False,name__icontains=query).order_by('-created_date_time')
                 except NameError:
-                    pending_art_list = my_models.Artist.objects.filter(approved=False)
+                    pending_art_list = my_models.Artist.objects.filter(approved=False).order_by('-created_date_time')
                 if not request.user.is_superuser:
                     pending_art_list = pending_art_list.filter(user=request.user)
                 paginator = Paginator(pending_art_list,5)
@@ -194,9 +194,9 @@ class PendingView(LoginRequiredMixin,View):
                 
             if model == 'Movies':
                 try:
-                    pending_list = my_models.MotionPicture.objects.filter(approved=False,name__icontains=query)
+                    pending_list = my_models.MotionPicture.objects.filter(approved=False,name__icontains=query).order_by('-created_date_time')
                 except NameError:
-                    pending_list = my_models.MotionPicture.objects.filter(approved=False)
+                    pending_list = my_models.MotionPicture.objects.filter(approved=False).order_by('-created_date_time')
                 if not request.user.is_superuser:
                     pending_list = pending_list.filter(user=request.user)
                 paginator = Paginator(pending_list,5)
@@ -205,9 +205,9 @@ class PendingView(LoginRequiredMixin,View):
                 return render(request,'movieapp/pending_movies.html',{'pending':pending,'categories':categories,'selected':model})
         else:
             try:
-                pending_list = my_models.MotionPicture.objects.filter(approved=False,name__icontains=query)
+                pending_list = my_models.MotionPicture.objects.filter(approved=False,name__icontains=query).order_by('-created_date_time')
             except NameError:
-                pending_list = my_models.MotionPicture.objects.filter(approved=False)
+                pending_list = my_models.MotionPicture.objects.filter(approved=False).order_by('-created_date_time')
             if not request.user.is_superuser:
                 pending_list = pending_list.filter(user=request.user)
             paginator = Paginator(pending_list,5)
@@ -293,7 +293,7 @@ def review_movie(request,movie_id):
 @login_required
 def user_reviews(request):
     user = request.user
-    user_reviews = my_models.Review.objects.filter(user=user)
+    user_reviews = my_models.Review.objects.filter(user=user).order_by('-created_date_time')
     return render(request,'movieapp/user_reviews.html',{'user_reviews':user_reviews})
 
 @login_required
@@ -406,9 +406,9 @@ def artist_delete(request):
 @login_required
 def user_artists(request):
     if request.user.is_superuser:
-        artists = my_models.Artist.objects.filter(approved=True)
+        artists = my_models.Artist.objects.filter(approved=True).order_by('-created_date_time')
     else:
-        artists = my_models.Artist.objects.filter(user = request.user)
+        artists = my_models.Artist.objects.filter(user = request.user).order_by('-created_date_time')
     return render(request,'movieapp/artist.html',{'artists':artists})
 
 
