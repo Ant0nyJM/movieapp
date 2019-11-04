@@ -205,6 +205,14 @@ function deleteArtist(elem){
                                     <div class="controls">
                                             {% render_field form.name class+="form-control" %}
                                     </div>
+                                    {% if form.name.errors %}
+
+                                        {% for error in form.name.errors %}
+                                            <div class="m-1 alert alert-danger">
+                                                <small>{{ error|escape }}</small>
+                                            </div>
+                                        {% endfor %}
+                                    {% endif %}
                                 </div>
                                 <!-- <div class="form-inline"> -->
                                 <div class="form-group row p-3">
@@ -214,11 +222,27 @@ function deleteArtist(elem){
                                         <div class="col-sm-6 pl-0">
                                             <label class="control-label"  for="genre">Genre</label>
                                                 {% render_field form.genre class+="form-control" %}
+                                            {% if form.genre.errors %}
+
+                                                {% for error in form.genre.errors %}
+                                                    <div class="m-1 alert alert-danger">
+                                                        <small>{{ error|escape }}</small>
+                                                    </div>
+                                                {% endfor %}
+                                            {% endif %}
                                         </div>
                                             
                                         <div class="col-sm-6 pr-0">
                                             <label class="control-label" for="release_date">Release Date</label>
                                                     {% render_field form.release_date class+="form-control" %}
+                                                {% if form.release_date.errors %}
+
+                                                    {% for error in form.release_date.errors %}
+                                                        <div class="m-1 alert alert-danger">
+                                                            <small>{{ error|escape }}</small>
+                                                        </div>
+                                                    {% endfor %}
+                                                {% endif %}
                                         </div>
                                             
                                     <!-- </div> -->
@@ -256,8 +280,7 @@ function deleteArtist(elem){
                                     
                                     </div>
                     
-                                </div>
-                                                          
+                                </div>                      
                 
                                         
                         
@@ -267,6 +290,14 @@ function deleteArtist(elem){
                                 <div class="controls">
                                         {% render_field form.description class+="form-control" %}
                                 </div>
+                                {% if form.description.errors %}
+
+                                    {% for error in form.description.errors %}
+                                        <div class="m-1 alert alert-danger">
+                                            <small>{{ error|escape }}</small>
+                                        </div>
+                                    {% endfor %}
+                                {% endif %}
                                 </div>
                         
                                 <div class="control-group">
@@ -275,9 +306,25 @@ function deleteArtist(elem){
                                 <div class="controls">
                                         {% render_field form.image  %}
                                 </div>
+                                {% if form.image.errors %}
+
+                                    {% for error in form.image.errors %}
+                                        <div class="m-1 alert alert-danger">
+                                            <small>{{ error|escape }}</small>
+                                        </div>
+                                    {% endfor %}
+                                {% endif %}
                                 </div>
                         
                                 <div class="control-group">
+                                    {% if form.non_field.errors %}
+
+                                        {% for error in form.non_field_errors %}
+                                            <div class="m-1 alert alert-danger">
+                                                <small>{{ error|escape }}</small>
+                                            </div>
+                                        {% endfor %}
+                                    {% endif %}
                                 <!-- Button -->
                                 <div class="controls">
                                     <button class="btn btn-success btn-block">Add Movie</button>

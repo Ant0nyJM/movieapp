@@ -1,8 +1,9 @@
-from django.db import models
 from django.contrib.auth.models import User
-from django.core.validators import MinValueValidator,MaxValueValidator
-# Create your models here.
+from django.core.validators import MaxValueValidator, MinValueValidator
+from django.db import models
 from django.utils import timezone
+from django.utils.text import slugify
+
 class MovieappBaseModel(models.Model):
 
     created_date_time = models.DateTimeField(auto_now_add=True)
@@ -14,7 +15,7 @@ class MovieappBaseModel(models.Model):
 
 class MotionPicture(MovieappBaseModel):
 
-    movie_id = models.AutoField(primary_key=True, unique=True)
+    # movie_id = models.AutoField(primary_key=True, unique=True)
     mp_type = models.CharField(max_length=15, default='Movie')
     name = models.CharField(max_length=140, db_index=True)
     genre = models.CharField(max_length=15)
@@ -24,6 +25,7 @@ class MotionPicture(MovieappBaseModel):
     approved = models.BooleanField(default=False)
     image = models.ImageField(upload_to='images/', blank=True)
     rating = models.DecimalField(max_digits=3, decimal_places=1, default=0.00)
+    movie_id = models.SlugField(primary_key=True,unique=True)
 
     def __str__(self):
         return self.name
@@ -33,9 +35,10 @@ class MotionPicture(MovieappBaseModel):
     get_director.short_description = 'Director'
 
 
+
 class Artist(MovieappBaseModel):
 
-    artist_id = models.AutoField(primary_key=True, unique=True)
+    # artist_id = models.AutoField(primary_key=True, unique=True)
     artist_type = models.CharField(max_length=15, default="Actor")
     name = models.CharField(max_length=50, null=False, db_index=True)
     birthday = models.DateField(null=False, default=None)
@@ -44,9 +47,12 @@ class Artist(MovieappBaseModel):
     image = models.ImageField(upload_to='images/')
     movies = models.ManyToManyField(MotionPicture)
     approved = models.BooleanField(default=False)  
+    artist_id = models.SlugField(primary_key=True,unique=True)
 
     def __str__(self):
         return self.name
+
+
      
 
 class Rate(MovieappBaseModel):
@@ -54,7 +60,7 @@ class Rate(MovieappBaseModel):
     rating = models.DecimalField(max_digits=3, decimal_places=1)
     movie = models.ForeignKey(MotionPicture, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-
+   
     def __str__(self):
         return str(self.user.username+" for "+self.movie.name)
     
@@ -80,22 +86,3 @@ class List(MovieappBaseModel):
     def __str__(self):
         return str(self.name)
     
-
-
-
-class Category(MovieappBaseModel):
-
-    name = models.CharField(max_length=50)
-
-    def __str__(self):
-        return str(self.name)
-    
-
-
-class CategoryLabel(MovieappBaseModel):
-        
-    name = models.CharField(max_length=50)
-    category = models.ForeignKey(Category,on_delete=models.CASCADE)
-    
-    def __str__(self):
-        return str(self.name)

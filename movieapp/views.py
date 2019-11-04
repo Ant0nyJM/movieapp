@@ -1,25 +1,24 @@
-from django.shortcuts import render,redirect,reverse
-from django.http import HttpResponse,JsonResponse
-from django.views import View
-from .forms import CustomUserCreationForm,MovieReviewForm
-from django.contrib.auth.models import User
-from django.contrib.auth.forms import UserChangeForm
-from . import models as my_models
-from . import forms as my_forms
-
-from django.views.decorators.csrf import csrf_exempt
-from django.db.models import Avg,prefetch_related_objects
-from django.core import serializers
-
 import json
 
-from django.utils import timezone
-from .models import MotionPicture
-
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required,user_passes_test
+from django.contrib.auth.forms import UserChangeForm
 from django.contrib.auth.mixins import LoginRequiredMixin
-
+from django.contrib.auth.models import User
+from django.core import serializers
 from django.core.paginator import Paginator
+from django.db.models import Avg, prefetch_related_objects
+from django.http import HttpResponse, JsonResponse
+from django.shortcuts import get_object_or_404, redirect, render, reverse
+from django.utils import timezone
+from django.utils.text import slugify
+from django.utils.decorators import method_decorator
+from django.views import View
+from django.views.decorators.csrf import csrf_exempt
+
+from . import forms as my_forms
+from . import models as my_models
+from .forms import CustomUserCreationForm, MovieReviewForm
+from .models import MotionPicture
 
 
 class MotionPictureAutocomplete(View):
@@ -81,8 +80,7 @@ class UserProfileView(LoginRequiredMixin,View):
         if orig_user.is_superuser:
             return redirect(reverse('pending'))
         else:
-            movies = my_models.MotionPicture.objects.filter(user=orig_user)
-            return render(request,'movieapp/movie.html',{'movies':movies})
+           return redirect(reverse('movie'))
 
 
 class UserMovieView(LoginRequiredMixin,View):
@@ -90,11 +88,13 @@ class UserMovieView(LoginRequiredMixin,View):
         orig_user = User.objects.get(username=request.user.username)
         
         if orig_user.is_superuser:
-            movies = my_models.MotionPicture.objects.filter(approved=True).order_by('-created_date_time')
-            return render(request,'movieapp/movie.html',{'movies':movies})
+            movies_list = my_models.MotionPicture.objects.filter(approved=True).order_by('-created_date_time')
         else:
-            movies = my_models.MotionPicture.objects.filter(user=orig_user)
-            return render(request,'movieapp/movie.html',{'movies':movies})
+            movies_list = my_models.MotionPicture.objects.filter(user=orig_user)
+        paginator = Paginator(movies_list,10)
+        page = request.GET.get('page',1)
+        movies = paginator.get_page(page)
+        return render(request,'movieapp/movie.html',{'movies':movies})
 
 class MovieAddView(LoginRequiredMixin,View):
 
@@ -108,6 +108,7 @@ class MovieAddView(LoginRequiredMixin,View):
         form = my_forms.MotionPictureForm(request.POST,request.FILES)
         usr = form.save(commit=False)
         usr.user = User.objects.get(username=request.user.username)
+        usr.movie_id = slugify(usr.name)
         usr.save()
         movie = my_models.MotionPicture.objects.get(movie_id=usr.pk)
         try:
@@ -130,7 +131,7 @@ class MovieView(View):
     def get(self,request,movie_id):
         context = {}
         
-        movie = my_models.MotionPicture.objects.get(movie_id=movie_id)
+        movie = get_object_or_404(my_models.MotionPicture,movie_id=movie_id)
         prefetch_related_objects(movie)
         
         rating_len = movie.rate_set.all().count()
@@ -168,9 +169,7 @@ class MovieView(View):
 
 
 class PendingView(LoginRequiredMixin,View):
-    @csrf_exempt
-    def dispatch(self, *args, **kwargs):
-        return super().dispatch(*args, **kwargs)
+
     def get(self,request):
         categories = my_models.Category.objects.all()
         
@@ -232,27 +231,32 @@ class PendingView(LoginRequiredMixin,View):
 class SearchView(View):
     def get(self,request):
         q = request.GET.get('q','')
-        try:
-            if q[0] != '' :
-                context = {}
+        model = request.GET.get('model','')
+        print("------------",type(model))
+        # try:
+        if q[0] != '' :
+            context = {}
+            try:
+                if model[0]=='Movies':
+                    movies = my_models.MotionPicture.objects.filter(approved=True,name__icontains=q)
+                    if movies.exists():
+                        context.update({'movies':movies})
+                if model[0]=='Artists':
+                    artists = my_models.Artist.objects.filter(approved=True,name__icontains=q)
+                    if artists.exists():
+                        context.update({'artists':artists})
+            except IndexError:
+
                 movies = my_models.MotionPicture.objects.filter(approved=True,name__icontains=q)
                 if movies.exists():
                     context.update({'movies':movies})
+            
 
-                artists = my_models.Artist.objects.filter(approved=True,name__icontains=q)
-                if artists.exists():
-                    context.update({'artists':artists})
+            
+            return render(request,'movieapp/search.html',context)
 
-                
-                genre = my_models.MotionPicture.objects.filter(approved=True,genre__iexact=q)
-                if genre.exists():
-                    context.update({'genre':genre})
-
-                
-                return render(request,'movieapp/search.html',context)
-
-        except IndexError:
-            return redirect('home')
+        # except IndexError:
+        #     return redirect('home')
 
 
 @login_required
@@ -302,24 +306,27 @@ def movie_delete(request):
     movie.delete()
     return JsonResponse({'deleted':'deleted'})
 
-
-
-class MovieEditView(LoginRequiredMixin,View):
+@method_decorator(login_required,name='dispatch')
+class MovieEditView(View):
     def get(self,request,movie_id):
-        movie = my_models.MotionPicture.objects.get(movie_id=movie_id)
-        try:
-            director = movie.artist_set.get(artist_type='Director')
-        except my_models.Artist.DoesNotExist:
-            director = None
-        actors = movie.artist_set.filter(artist_type="Actor")
-        form = my_forms.MotionPictureForm(instance=movie)
-        context = {}
-        context.update({'form':form})
-        if(len(actors)!=0):
-            context['actors'] = actors
-        if(director!=None):
-            context['director'] = director
-        return render(request,'movieapp/movie_edit.html',context)
+
+        movie = get_object_or_404(my_models.MotionPicture,movie_id=movie_id)
+        if movie.user==request.user or request.user.is_superuser:
+            try:
+                director = movie.artist_set.get(artist_type='Director')
+            except my_models.Artist.DoesNotExist:
+                director = None
+            actors = movie.artist_set.filter(artist_type="Actor")
+            form = my_forms.MotionPictureForm(instance=movie)
+            context = {}
+            context.update({'form':form})
+            if(len(actors)!=0):
+                context['actors'] = actors
+            if(director!=None):
+                context['director'] = director
+            return render(request,'movieapp/movie_edit.html',context)
+        else:
+            return redirect(reverse('movie_view',args=[movie_id]))
 
     def post(self,request,movie_id):
         movie = my_models.MotionPicture.objects.get(movie_id=movie_id)
@@ -337,6 +344,7 @@ class MovieEditView(LoginRequiredMixin,View):
         usr.movie_id = movie_id
         if(movie.approved):
             usr.approved = True
+        usr.created_date_time = movie.created_date_time
         usr.save()
 
         
@@ -366,7 +374,7 @@ def review_delete(request):
 
 class ReviewEditView(LoginRequiredMixin,View):
     def get(self,request,review_id):
-        review = my_models.Review.objects.get(id=review_id)
+        review = get_object_or_404(my_models.Review,id=review_id)
         form = my_forms.MovieReviewForm(instance=review)
         return render(request,'movieapp/review_edit.html',{'form':form})
     
@@ -386,13 +394,14 @@ class ArtistAddView(LoginRequiredMixin,View):
         form = my_forms.ArtistForm(request.POST,request.FILES)
         usr = form.save(commit=False)
         usr.user = User.objects.get(username=request.user.username)
+        usr.artist_id = slugify(usr.name)
         usr.save()
         artist_id = usr.artist_id
         return redirect(reverse('artist_view',args=[artist_id]))
 
 class ArtistView(View):
     def get(self,request,artist_id):
-        artist = my_models.Artist.objects.get(artist_id=artist_id)
+        artist = get_object_or_404(my_models.Artist,artist_id=artist_id)
         return render(request,'movieapp/artist_view2.html',{'artist':artist})
 
 
@@ -406,9 +415,12 @@ def artist_delete(request):
 @login_required
 def user_artists(request):
     if request.user.is_superuser:
-        artists = my_models.Artist.objects.filter(approved=True).order_by('-created_date_time')
+        artists_list = my_models.Artist.objects.filter(approved=True).order_by('-created_date_time')
     else:
-        artists = my_models.Artist.objects.filter(user = request.user).order_by('-created_date_time')
+        artists_list = my_models.Artist.objects.filter(user = request.user).order_by('-created_date_time')
+    paginator = Paginator(artists_list,10)
+    page = request.GET.get('page',1)
+    artists = paginator.get_page(page)
     return render(request,'movieapp/artist.html',{'artists':artists})
 
 
@@ -440,25 +452,40 @@ class MovieAutocomplete(View):
 
 class ArtistEditView(LoginRequiredMixin,View):
     def get(self,request,artist_id):
-        artist = my_models.Artist.objects.get(artist_id=artist_id)
-        form = my_forms.ArtistEditForm(instance= artist)
-        return render(request,'movieapp/artist_edit.html',{'form':form})
+
+        artist = get_object_or_404(my_models.Artist,artist_id=artist_id)
+        if artist.user == request.user or request.user.is_superuser:
+            form = my_forms.ArtistEditForm(instance= artist)
+            return render(request,'movieapp/artist_edit.html',{'form':form})
+        else:
+            return redirect(reverse('artist_view',args=[artist_id]))
+
 
     def post(self,request,artist_id):
         artist = my_models.Artist.objects.get(artist_id=artist_id)
+        
         try:
             if(request.FILES):
                 form = my_forms.ArtistEditForm(request.POST,request.FILES)
-                usr = form.save(commit=False)
+                if form.is_valid():
+                    usr = form.save(commit=False)
+                else:
+                    return render(request,'movieapp/artist_edit.html',{'form':form})
             else:
                 form = my_forms.ArtistEditForm(request.POST)
-                usr = form.save(commit=False)
-                usr.image = artist.image
+                if form.is_valid():
+                    usr = form.save(commit=False)
+                    usr.image = artist.image
+                else:
+                    return render(request,'movieapp/artist_edit.html',{'form':form})
+
+            
             usr.artist_type = artist.artist_type
             usr.user = User.objects.get(username=request.user.username)
             usr.artist_id = artist_id
             if(artist.approved == True):
                 usr.approved = True
+            usr.created_date_time = artist.created_date_time
             usr.save()
             return redirect(reverse('artist_view',args=[artist_id]))
         except ValueError:
@@ -495,7 +522,7 @@ class ListCreateView(LoginRequiredMixin,View):
 
 class ListView(LoginRequiredMixin,View):
     def get(self,request,list_id):
-        lis = my_models.List.objects.select_related().get(id=list_id)
+        lis = get_object_or_404(my_models.List.objects.select_related(),id=list_id)
         return render(request,'movieapp/list_view.html',{'list':lis})
 
 

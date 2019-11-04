@@ -2,8 +2,28 @@
 {% load static %}
 {% block title %}Search{% endblock %}
 {% block content %}
+
     {% if movies or artists or genre %}
         <div class="col">
+            <div class="row">
+                <p>Showing results in 
+                    {% if movies %}
+                        Movies
+                    {% endif %}
+                    {% if artists %}
+                        Artists
+                    {% endif %}
+                </p>
+                <select name='model'>
+                    <option value="Movies" {% if movies%}selected='selected'{% endif %}>Movies</option>
+                    <option value="Artists" {% if artists %}selected='selected'{% endif %}>Artists</option>
+                </select>
+                <form method="get">
+                    {% csrf_token %}
+                        <input type="submit" value="Go">
+                </form>
+                
+            </div>
         {% if movies %}
             <p>{{ movies|length }} result{{ movies|pluralize }} found in Movies</p>
             {% for movie in movies %}

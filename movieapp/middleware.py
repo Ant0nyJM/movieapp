@@ -1,7 +1,9 @@
-import sys
 import cProfile
+import sys
 from io import StringIO
+
 from django.conf import settings
+
 
 class ProfilerMiddleware(object):
     def __init__(self, get_response):

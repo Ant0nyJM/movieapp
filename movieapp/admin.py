@@ -1,15 +1,17 @@
 from django.contrib import admin
 
 # Register your models here.
-from .models import MotionPicture,Artist,Rate,Review,List,Category,CategoryLabel
+from .models import (Artist, Category, CategoryLabel, List, MotionPicture,
+                     Rate, Review)
+
 
 class MotionPictureAdmin(admin.ModelAdmin):
-    list_display = ('name','release_date','genre','get_director')
+    list_display = ('name','release_date','genre','movie_id','get_director')
 
 
 
 class ArtistAdmin(admin.ModelAdmin):
-    list_display = ('name','birthday','artist_type','modified_date_time')
+    list_display = ('name','birthday','artist_type','artist_id','modified_date_time')
 
 class ListAdmin(admin.ModelAdmin):
     list_display = ('name','user')
