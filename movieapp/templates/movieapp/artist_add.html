@@ -65,6 +65,14 @@
                                 <div class="controls">
                                         {% render_field form.name class+="form-control" %}
                                 </div>
+                                {% if form.name.errors %}
+
+                                    {% for error in form.name.errors %}
+                                        <div class="m-1 alert alert-danger">
+                                            <small>{{ error|escape }}</small>
+                                        </div>
+                                    {% endfor %}
+                                {% endif %}
                             </div>
                             <!-- <div class="form-inline"> -->
                             <div class="form-group row p-3">
@@ -79,11 +87,27 @@
                                             <option value="Director">Director</option>
                                         </select> -->
                                         {% render_field form.artist_type class+='form-control' %}
+                                        {% if form.artist_type.errors %}
+
+                                            {% for error in form.artist_type.errors %}
+                                                <div class="m-1 alert alert-danger">
+                                                    <small>{{ error|escape }}</small>
+                                                </div>
+                                            {% endfor %}
+                                        {% endif %}
                                     </div>
                                         
                                     <div class="col-sm-6 pr-0">
                                         <label class="control-label" for="birthday">Birthday</label>
                                                 {% render_field form.birthday class+="form-control" %}
+                                        {% if form.birthday.errors %}
+
+                                            {% for error in form.birthday.errors %}
+                                                <div class="m-1 alert alert-danger">
+                                                    <small>{{ error|escape }}</small>
+                                                </div>
+                                            {% endfor %}
+                                        {% endif %}
                                     </div>
                                         
                                
@@ -98,6 +122,14 @@
                             <div class="controls">
                                     {% render_field form.description class+="form-control" %}
                             </div>
+                            {% if form.description.errors %}
+
+                                {% for error in form.description.errors %}
+                                    <div class="m-1 alert alert-danger">
+                                        <small>{{ error|escape }}</small>
+                                    </div>
+                                {% endfor %}
+                            {% endif %}
                             </div>
                     
                             <div class="control-group">
@@ -106,9 +138,26 @@
                             <div class="controls">
                                     {% render_field form.image  %}
                             </div>
+                            {% if form.image.errors %}
+
+                                {% for error in form.image.errors %}
+                                    <div class="m-1 alert alert-danger">
+                                        <small>{{ error|escape }}</small>
+                                    </div>
+                                {% endfor %}
+                            {% endif %}
+                            
                             </div>
                     
                             <div class="control-group">
+                                {% if form.non_field.errors %}
+
+                                    {% for error in form.non_field_errors %}
+                                        <div class="m-1 alert alert-danger">
+                                            <small>{{ error|escape }}</small>
+                                        </div>
+                                    {% endfor %}
+                                {% endif %}
                             <!-- Button -->
                             <div class="controls">
                                 <button class="btn btn-success btn-block">Add Artist</button>

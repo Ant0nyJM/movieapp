@@ -1,5 +1,6 @@
 {% extends 'movieapp/user_profile3.html' %}
 {% load static %}
+{% load thumbnail %}
 {% block title %}Movie{% endblock %}
 {% block style %}
 <link rel="stylesheet" href="{% static 'movieapp/css/newhome.css' %}" >
@@ -67,12 +68,23 @@
         <!-- <div class="col-xs-9"> -->
             {% for artist in artists %}
                 <div class="movie-card"><a href="{% url 'artist_view' artist.artist_id %}">
-                <div class="movie-header" style="{% if artist.image %}background: url({{artist.image.url}});background-size:100% auto;background-repeat:no-repeat;background-position:center;{% else %}background: url({% static 'movieapp/images/noimage.jpg' %});background-position: center; {% endif %}">
-                    <div class="header-icon-container">
+                {%if artist.image %}
+                    {% thumbnail artist.image '200x300' as image %}
+                        <div class="movie-header" style="background: url({{image.url}});background-size:100% auto;background-repeat:no-repeat;background-position:center;">
+                            <div class="header-icon-container">
+                                    
+                            </div>
                             
+                        </div>
+                    {% endthumbnail %}
+                {% else %}
+                    <div class="movie-header" style="background: url({% static 'movieapp/images/noimage.jpg' %});background-position: center;">
+                        <div class="header-icon-container">
+                                
+                        </div>
+                        
                     </div>
-                    
-                </div>
+                {% endif %}
                 <h3 class="movie-title">{{ artist.name }}</h3>
                 
                     

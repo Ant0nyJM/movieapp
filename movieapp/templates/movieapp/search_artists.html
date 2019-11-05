@@ -1,0 +1,75 @@
+{% load static %}
+{% load thumbnail %}
+{% for artist in artists %}
+    <div class="search-result-div shadow my-3 md-5" style="width:70%">
+        <a href="{% url 'artist_view' artist.artist_id %}">
+            {% if artist.image %}
+                {% thumbnail artist.image '80x120' as image %}
+                    <img class="search-result-item m-1" src="{{ image.url }}">
+                {% endthumbnail %}
+            {% else %}
+            <img class="search-result-item m-1" src="{%static 'movieapp/images/noimage.jpg' %}"  style="height:7.0rem;width:auto;" >
+            {% endif %}
+        </a>
+        <div class="search-result-item">
+            <span class="search-result-item">
+                <h4 class="h3-responsive m-1">
+                    <a href="{% url 'artist_view' artist.artist_id %}">{{ artist.name }}</a>
+                </h4>
+                
+            </span>
+            <small class="mt-2">
+                <div class="m-1 mt-1">
+                <span class="search-result-sm-text p-1">
+                    Movies : 
+                    {% with artist_movies=artist.movies.all %}
+                        {% for movie in artist_movies %}
+                            
+                                {% if forloop.last %}
+                                <a href="{% url 'movie_view' movie.movie_id %}">{{ movie.name }}</a>
+                                {% else %}
+                                    <a href="{% url 'movie_view' movie.movie_id %}">{{ movie.name }}</a>,
+    
+                                {% endif %}
+                        {% endfor %}
+                    {% endwith %}
+                </span>
+                </div>
+            </small>
+        </div>
+    </div>
+{% endfor %}
+
+
+<div class="pagination pt-5">
+        <div class="col-sm-4">
+            <span>
+                {% if artists.has_previous %}
+                    <a class="mx-2" href="?page=1&model={% if request.GET.model %}{{ request.GET.model }}{% endif %}&q={% if request.GET.q %}{{ request.GET.q}}{% endif %}">&laquo; first</a>
+                    <a class="mx-2"href="?page={{ artists.previous_page_number  }}&model={% if request.GET.model %}{{ request.GET.model }}{% endif %}&q={% if request.GET.q %}{{ request.GET.q}}{% endif %}">previous</a>
+                {% endif %}
+            </span>
+
+        </div>
+
+        <div class="col-sm-4">
+
+            <span class="current">
+                <a disabled="disabled">Page {{ artists.number }} of {{ artists.paginator.num_pages }}</a>
+            </span>
+        </div>
+
+        <div class="col-sm-4">
+
+            <span>
+                {% if artists.has_next %}
+                    <a class="mx-2" href="?page={{ artists.next_page_number }}&model={% if request.GET.model %}{{ request.GET.model }}{% endif %}&q={% if request.GET.q %}{{ request.GET.q}}{% endif %}">next</a>
+                    <a class="mx-2" href="?page={{ artists.paginator.num_pages }}&model={% if request.GET.model %}{{ request.GET.model }}{% endif %}&q={% if request.GET.q %}{{ request.GET.q}}{% endif %}">last &raquo;</a>
+                {% endif %}
+            </span>
+
+
+        </div>
+        
+        
+</div>

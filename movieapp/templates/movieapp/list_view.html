@@ -1,5 +1,6 @@
 {% extends 'movieapp/user_profile2.html' %}
 {% load static %}
+{% load thumbnail %}
 {% block title %}List - {{ list.name }}{% endblock %}
 {% block scripts %}
 <script type="text/javascript">
@@ -158,7 +159,15 @@ function showMovieSearch(btn){
         <div class="shadow my-3 md-5" >
             <div class="row">
                 <div class="col-md-2">
-                    <a href="{% url 'movie_view' movie.movie_id %}">{% if movie.image %}<img class="search-result-item m-1" src="{{movie.image.url}}"  style="height:7.0rem;width:auto;" >{% endif %}</a>
+                    <a href="{% url 'movie_view' movie.movie_id %}">
+                        {% if movie.image %}
+                            {% thumbnail movie.image '80x120' as image  %}
+                                <img class="search-result-item m-1" src="{{ image.url }}">
+                            {% endthumbnail %}
+                        {% else %}
+                            <img class="search-result-item m-1" src="{% static 'movieapp/images/noimage.jpg' %}"  style="height:7.0rem;width:auto;" >
+                        {% endif %}
+                    </a>
                 </div>
                 <div class="col-md-8">
                     <div class="row">

@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'movieapp.apps.MovieappConfig',
     'widget_tweaks',
     #'debug_toolbar',
+    'sorl.thumbnail',
 ]
 
 MIDDLEWARE = [

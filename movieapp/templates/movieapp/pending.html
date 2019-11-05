@@ -78,7 +78,6 @@ function deleteMovie(btn,mid){
     $("#movieModal").on('hidden.bs.modal',function(){
         if(delete_movie){
             delete_movie = false;
-            alert("dd");
 
             $(".btn-link").each(function(index,btn){
                     //alert($(this))
@@ -216,73 +215,80 @@ function deleteArtist(btn,aid){
 <div class="row mb-5">
 
 
-        <div class="col-sm-10">
+        <div class="col-sm-12">
             <div class="row">
-                {% if request.user.is_superuser %}
                 <div class="col-sm-8">
-                <ul class="nav nav-tabs">
-                        <li class="nav-item">
-                            <a class="nav-link active" href="{% url 'pending' %}">Pending</a>
-                        </li>
-                        <li class="nav-item">
-                                <a class="nav-link" href="{% url 'movie' %}">Movies</a>
-                        </li>
-                        <li class="nav-item">
-                                <a class="nav-link" href="{% url 'artist' %}">Artists</a>
-                        </li>
-                        
-                </ul>
-            </div>
-            <div class="col-sm-4">
-                <form class="form-row" method="get">
-                        <div class="input-group mb-3">
-                                <div class="input-group-prepend">
-                                    <select class="form-control" name="show_model">
-                                        {% for category in categories %}
-                                        <option value="{{ category.name }}" {% if category.name == selected %}selected="selected"{% endif  %}>{{category.name}}</option>
-                                        {% endfor %}
-                                        <option value="Movies" {% if 'Movies' == selected %}selected="selected"{% endif  %}>Movies</option>
-                                        <option value="Artists" {% if 'Artists' == selected %}selected="selected"{% endif  %}>Artists</option>
-                                    </select>
-                                </div>
-                                <input type="text" name='query' class="form-control" placeholder="Enter a name" aria-label="Search Field">
-                                <div class="input-group-append">
-                                        <input class="btn btn-primary p-2 my-0 ml-0" type="submit" value="Filter">
-                                </div>
-                        </div>
-                </form>
-            </div>
-
-
-            {% else %}
-
-            <ul class="nav nav-tabs">
+                    {% if request.user.is_superuser %}
                     
-                <li class="nav-item">
-                        <a class="nav-link" href="{% url 'movie' %}">Your Movies</a>
-                </li>
-                <li class="nav-item">
-                        <a class="nav-link" href="{% url 'artist' %}">Artists</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link active" href="{% url 'pending' %}">Pending</a>
-                </li>
-                <li class="nav-item">
-                        <a class="nav-link" href="{% url 'lists_view' %}">Your Lists</a>
-                </li>
-                <li class="nav-item">
-                        <a class="nav-link" href="{% url 'user_reviews' %}">Your Reviews</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'movie_add' %}">Add Movie</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'artist_add' %}">Add Artist</a>
-                </li>
-            </ul>
+                        <ul class="nav nav-tabs">
+                                <li class="nav-item">
+                                    <a class="nav-link active" href="{% url 'pending' %}">Pending</a>
+                                </li>
+                                <li class="nav-item">
+                                        <a class="nav-link" href="{% url 'movie' %}">Movies</a>
+                                </li>
+                                <li class="nav-item">
+                                        <a class="nav-link" href="{% url 'artist' %}">Artists</a>
+                                </li>
+                                
+                        </ul>
+                
 
-            {% endif %}
-        </div>
+
+                    {% else %}            
+                        <ul class="nav nav-tabs">
+                                
+                            <li class="nav-item">
+                                    <a class="nav-link" href="{% url 'movie' %}">Your Movies</a>
+                            </li>
+                            <li class="nav-item">
+                                    <a class="nav-link" href="{% url 'artist' %}">Artists</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link active" href="{% url 'pending' %}">Pending</a>
+                            </li>
+                            <li class="nav-item">
+                                    <a class="nav-link" href="{% url 'lists_view' %}">Your Lists</a>
+                            </li>
+                            <li class="nav-item">
+                                    <a class="nav-link" href="{% url 'user_reviews' %}">Your Reviews</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'movie_add' %}">Add Movie</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'artist_add' %}">Add Artist</a>
+                            </li>
+                        </ul>
+                    
+
+                    {% endif %}
+
+                </div>
+
+
+
+                <div class="col-sm-4">
+                    <form class="form-row" method="get">
+                            <div class="input-group mb-3">
+                                    <div class="input-group-prepend">
+                                        <select class="form-control" name="show_model">
+                                            {% for category in categories %}
+                                            <option value="{{ category.name }}" {% if category.name == selected %}selected="selected"{% endif  %}>{{category.name}}</option>
+                                            {% endfor %}
+                                            <option value="Movies" {% if 'Movies' == selected %}selected="selected"{% endif  %}>Movies</option>
+                                            <option value="Artists" {% if 'Artists' == selected %}selected="selected"{% endif  %}>Artists</option>
+                                        </select>
+                                    </div>
+                                    <input type="text" name='query' class="form-control" placeholder="Enter a name" aria-label="Search Field">
+                                    <div class="input-group-append">
+                                            <input class="btn btn-primary p-2 my-0 ml-0" type="submit" value="Filter">
+                                    </div>
+                            </div>
+                    </form>
+                </div>
+
+            </div>
 
         </div>
 </div>

@@ -20,6 +20,7 @@ from . import models as my_models
 from .forms import CustomUserCreationForm, MovieReviewForm
 from .models import MotionPicture
 
+import pdb
 
 class MotionPictureAutocomplete(View):
     def get(self,request):
@@ -231,25 +232,48 @@ class PendingView(LoginRequiredMixin,View):
 class SearchView(View):
     def get(self,request):
         q = request.GET.get('q','')
+        page = request.GET.get('page',1)
         model = request.GET.get('model','')
-        print("------------",type(model))
-        # try:
-        if q[0] != '' :
-            context = {}
-            try:
-                if model[0]=='Movies':
-                    movies = my_models.MotionPicture.objects.filter(approved=True,name__icontains=q)
-                    if movies.exists():
-                        context.update({'movies':movies})
-                if model[0]=='Artists':
-                    artists = my_models.Artist.objects.filter(approved=True,name__icontains=q)
-                    if artists.exists():
-                        context.update({'artists':artists})
-            except IndexError:
 
-                movies = my_models.MotionPicture.objects.filter(approved=True,name__icontains=q)
-                if movies.exists():
+        # try:
+        if q != '' :
+            context = {'q_value':q}
+            if model == '':
+                movies_list = my_models.MotionPicture.objects.filter(approved=True,name__icontains=q)
+                if movies_list.exists():
+                    paginator = Paginator(movies_list,5)
+                    movies = paginator.get_page(page)
                     context.update({'movies':movies})
+                else:
+                    artists_list = my_models.Artist.objects.filter(approved=True,name__icontains=q)
+                    if artists_list.exists():
+                        paginator = Paginator(artists_list,5)
+                        artists = paginator.get_page(page)
+                        context.update({'artists':artists})
+
+            if model=='Movies':
+                movies_list = my_models.MotionPicture.objects.filter(approved=True,name__icontains=q)
+                
+                if movies_list.exists():
+                    paginator = Paginator(movies_list,5)
+                    movies = paginator.get_page(page)
+
+                    context.update({'movies':movies})
+
+            if model=='Artists':
+
+                artists_list = my_models.Artist.objects.filter(approved=True,name__icontains=q)
+
+                if artists_list.exists():
+                    paginator = Paginator(artists_list,5)
+                    artists = paginator.get_page(page)
+                    context.update({'artists':artists})
+
+            # except IndexError:
+
+            #     movies_list = my_models.MotionPicture.objects.filter(approved=True,name__icontains=q[0])
+            #     if movies_lsit.exists():
+            #         context.update({'movies':movies})
             
 
             
@@ -302,7 +326,7 @@ def user_reviews(request):
 
 @login_required
 def movie_delete(request):
-    movie = my_models.MotionPicture.objects.get(movie_id=int(request.GET.get('movie_id')))
+    movie = my_models.MotionPicture.objects.get(movie_id=request.GET.get('movie_id'))
     movie.delete()
     return JsonResponse({'deleted':'deleted'})
 
@@ -407,7 +431,7 @@ class ArtistView(View):
 
 @login_required
 def artist_delete(request):
-    artist = my_models.Artist.objects.get(artist_id=int(request.GET.get('artist_id')))
+    artist = my_models.Artist.objects.get(artist_id=request.GET.get('artist_id'))
     artist.delete()
     return JsonResponse({'deleted':'deleted'})
 

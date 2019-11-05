@@ -1,0 +1,87 @@
+{% load static %}
+{% load thumbnail %}
+{% for movie in movies %}
+    {% with mv_artist_set=movie.artist_set.all %}
+    <div class="search-result-div shadow my-3 md-5" style="width:100%">
+        <a href="{% url 'movie_view' movie.movie_id %}">
+                {% if movie.image %}
+                    {% thumbnail movie.image '80x120' as image %}
+                        <img class="search-result-item m-1" src="{{ image.url }}">
+                    {% endthumbnail %}
+                {% else %}
+                    <img class="search-result-item m-1" src="{% static 'movieapp/images/noimage.jpg' %}"  style="height:7.0rem;width:auto;" >
+                {% endif%}
+        </a>
+        <div class="search-result-item">
+            <span class="search-result-item">
+                <h4 class="h3-responsive m-1">
+                    <a href="{% url 'movie_view' movie.movie_id %}">{{ movie.name }}({{ movie.release_date.year}})</a>
+                </h4>
+                
+            </span>
+            <small class="mt-2">
+                <div class="m-1 mb-1">
+                <span class="search-result-sm-text p-1">Directed By: 
+                    {% for c in mv_artist_set %}
+                        {% if c.artist_type == 'Director' %} 
+                            <a href="{% url 'artist_view' c.artist_id %}">{{ c.name }}</a>
+                        {% endif %}
+                    {% endfor %}  
+                </span></div>
+                <div class="m-1 mt-1">
+                <span class="search-result-sm-text p-1">
+                    Cast : 
+                    {% for c in mv_artist_set %}
+                        {% if c.artist_type == 'Actor' %} 
+                            {% if forloop.last %}
+                            <a href="{% url 'artist_view' c.artist_id %}">{{ c.name }}</a>
+                            {% else %}
+                                <a href="{% url 'artist_view' c.artist_id %}">{{ c.name }}</a>,
+                            {% endif %}
+                            {% endif %}
+                    {% endfor %}
+                </span><br>
+                <span class="search-result-sm-text p-1">
+                        Description : {{ movie.description }}
+                </span>
+                </div>
+            </small>
+        </div>
+    </div>
+    {% endwith %}
+{% endfor %}
+
+
+
+<div class="pagination pt-5">
+    <div class="col-sm-4">
+            <span>
+                    {% if movies.has_previous %}
+                        <a class="mx-2" href="?page=1&model={% if request.GET.model %}{{ request.GET.model }}{% endif %}&q={% if request.GET.q %}{{ request.GET.q}}{% endif %}">&laquo; first</a>
+                        <a class="mx-2"href="?page={{ movies.previous_page_number  }}&model={% if request.GET.model %}{{ request.GET.model }}{% endif %}&q={% if request.GET.q %}{{ request.GET.q}}{% endif %}">previous</a>
+                    {% endif %}
+                </span>
+
+    </div>
+    <div class="col-sm-4">
+
+            <span class="current">
+                    <a disabled="disabled">Page {{ movies.number }} of {{ movies.paginator.num_pages }}</a>
+                </span>
+
+
+    </div>
+    <div class="col-sm-4">
+
+            <span>
+                    {% if movies.has_next %}
+                    <a class="mx-2" href="?page={{ movies.next_page_number }}&model={% if request.GET.model %}{{ request.GET.model }}{% endif %}&q={% if request.GET.q %}{{ request.GET.q}}{% endif %}">next</a>
+                    <a class="mx-2" href="?page={{ movies.paginator.num_pages }}&model={% if request.GET.model %}{{ request.GET.model }}{% endif %}&q={% if request.GET.q %}{{ request.GET.q}}{% endif %}">last &raquo;</a>
+                {% endif %}
+                </span>
+
+
+    </div>
+    
+    
+</div>

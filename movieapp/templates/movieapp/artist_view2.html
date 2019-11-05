@@ -1,5 +1,6 @@
 {% extends 'movieapp/base3.html' %}
 {% load static %}
+{% load thumbnail %}
 {% load widget_tweaks %}
 {% block title %}{{ artist.name }}{% endblock %}
 
@@ -74,7 +75,7 @@
 
 
 <div class="row">
-<div class="card p-2">
+<div class="card p-2 mx-auto">
     <div class="col">
       <div class="row">
           <div class="col-sm-6 p-1 d-flex flex-column" style="height:80%;">
@@ -84,7 +85,10 @@
                     <article class="gallery-wrap" style="width:inherit;">
                         <div class="img-big-wrap d-flex justify-content-center pt-2" style="width:inherit;">
                                 {% if artist.image %}
-                                <img class="img-responsive" src="{{artist.image.url}}" style="max-width:inherit;width:60%;height:auto;">
+                                    {% thumbnail artist.image '400x1200' as image %}
+                                        <!-- <img class="img-responsive" src="{{ image.url }}" style="max-width:inherit;width:60%;height:auto;"> -->
+                                        <img class="img-responsive" src="{{ image.url }}">
+                                    {% endthumbnail %}
                                 {% else %}
                                     <img src="{% static 'movieapp/images/noimage2.jpg' %}" style="max-width:inherit;width:60%;height:auto;">
                                 {% endif%}
@@ -153,7 +157,17 @@
                                 {% if artist.movies.all|length != 0 %}
                                     {% for movie in artist.movies.all %}
                                         <tr class="p-1">
-                                            <td><a href="{% url 'movie_view' movie.movie_id %}">{% if movie.image %}<img src="{{ movie.image.url }}" style="width:3em;height:auto;">{% else %}<img src="{% static 'movieapp/images/noimage.png' %}" style="width:3em;height:auto;">{% endif %}</a></td>
+                                            <td>
+                                                <a href="{% url 'movie_view' movie.movie_id %}">
+                                                    {% if movie.image %}
+                                                        {% thumbnail movie.image '30x45' as image %}
+                                                            <img src="{{ image.url }}">
+                                                        {% endthumbnail %}
+                                                    {% else %}
+                                                    <img src="{% static 'movieapp/images/noimage.png' %}" style="width:3em;height:auto;">
+                                                    {% endif %}
+                                                </a>
+                                            </td>
                                             <td style="vertical-align: middle;"><h5><a href="{% url 'movie_view' movie.movie_id %}">{{movie.name}}</a></h5></td>
                                             <td style="vertical-align: middle;"><h5>{{ movie.genre }}</h5></td>
                                         </tr>

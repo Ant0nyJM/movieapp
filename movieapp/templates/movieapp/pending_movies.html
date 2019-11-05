@@ -1,6 +1,7 @@
 {% extends 'movieapp/pending.html' %}
 {% block pending  %}
 {% load static %}
+{% load thumbnail %}
 {% if pending|length != 0 %}
         <div id="tab-movies">
             
@@ -19,8 +20,10 @@
                                 <div class="row">
                                     <div class="col-md-1">
                                         <a href="{% url 'movie_view' movie.movie_id %}">
-                                            {%if movie.image %}
-                                                <img class="search-result-item m-1" src="{{movie.image.url}}"  style="height:7.0rem;width:auto;" >
+                                            {% if movie.image %}
+                                                {% thumbnail movie.image '80x120' as image %}
+                                                    <img class="search-result-item m-1" src="{{image.url}}">
+                                                {% endthumbnail %}
                                             {% else %}
                                                 <img class="search-result-item m-1" src="{% static 'movieapp/images/noimage.jpg' %}"  style="height:7.0rem;width:auto;" >
                                             {% endif %}
@@ -78,8 +81,8 @@
                                     <div class="col-md-2">
                                         {% if request.user.is_superuser%}
                                     <div class="row float-right">
-                                    <button class="btn btn-link p-1 mr-0" onclick="approveMovie(this,'{{ movie.movie_id }}')"><img style="height:2rem;width:auto;" src="https://www.freepngimg.com/thumb/green_tick/27889-3-green-tick-thumb.png"></button>
-                                    <button class="btn btn-link p-1 ml-0 mr-4" onclick="deleteMovie(this,'{{ movie.movie_id }}')"><img style="height:1.6rem;width:auto;" src="http://www.pngall.com/wp-content/uploads/2016/04/Red-Cross-Mark-PNG.png"></button>
+                                    <button class="btn btn-link p-1 mr-0" onclick="approveMovie(this,'{{ movie.movie_id }}')"><img style="height:2rem;width:auto;" src="{% static 'movieapp/images/tick.png' %}"></button>
+                                    <button class="btn btn-link p-1 ml-0 mr-4" onclick="deleteMovie(this,'{{ movie.movie_id }}')"><img style="height:1.6rem;width:auto;" src="{% static 'movieapp/images/cross.png' %}"></button>
                                     </div>
                                         {% endif %}
                                 </div>                

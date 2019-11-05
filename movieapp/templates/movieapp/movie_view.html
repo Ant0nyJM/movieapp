@@ -1,5 +1,6 @@
 {% extends 'movieapp/base3.html' %}
 {% load static %}
+{% load thumbnail %}
 {% load widget_tweaks %}
 {% block title %}{{ movie.name }}{% endblock %}
 
@@ -104,7 +105,9 @@ function addToList(){
                     <article class="gallery-wrap" style="width:inherit;">
                         <div class="img-big-wrap d-flex justify-content-center pt-2" style="width:inherit;">
                                 {% if movie.image %}
-                                <img class="img-responsive" src="{{movie.image.url}}" style="max-width:inherit;width:60%;height:auto;">
+                                    {% thumbnail movie.image '600x1200' as image %}
+                                        <img src="{{image.url}}">
+                                    {% endthumbnail %}
                                 {% else %}
                                     <img class="img-responsive"  src="{% static 'movieapp/images/noimage2.jpg' %}" style="max-width:inherit;width:60%;height:auto;">
                                 {% endif%}
@@ -145,7 +148,17 @@ function addToList(){
                                 <tbody>
                                     {% if director %}
                                         <tr>
-                                            <td><a href="{% url 'artist_view' director.artist_id %}">{% if director.image %}<img src="{{ director.image.url }}" style="width:3em;height:auto;">{% else %}<img src="{% static 'movieapp/images/noimage.png' %}" style="width:3em;height:auto;">{% endif %}</a></td>
+                                            <td>
+                                                <a href="{% url 'artist_view' director.artist_id %}">
+                                                    {% if director.image %}
+                                                        {% thumbnail director.image '30x45' as image %}
+                                                            <img src="{{ image.url }}">
+                                                        {% endthumbnail %}
+                                                    {% else %}
+                                                        <img src="{% static 'movieapp/images/noimage.png' %}" style="width:3em;height:auto;">
+                                                    {% endif %}
+                                                </a>
+                                            </td>
                                             <td style="vertical-align: middle;"><h6><a href="{% url 'artist_view' director.artist_id %}">{{ director.name }}</a></h6></td>
                                         </tr>
                                         {% else %}
@@ -254,7 +267,17 @@ function addToList(){
                             {% if actors %}
                                     {% for actor in actors %}
                                         <tr class="p-1">
-                                            <td><a href="{% url 'artist_view' actor.artist_id %}">{% if actor.image %}<img src="{{ actor.image.url }}" style="width:3em;height:auto;">{% else %}<img src="{% static 'movieapp/images/noimage.png' %}" style="width:3em;height:auto;">{% endif %}</a></td>
+                                            <td>
+                                                <a href="{% url 'artist_view' actor.artist_id %}">
+                                                    {% if actor.image %}
+                                                        {% thumbnail actor.image '30x45' as image %}
+                                                            <img src="{{ image.url }}">
+                                                        {% endthumbnail %}
+                                                    {% else %}
+                                                        <img src="{% static 'movieapp/images/noimage.png' %}" style="width:3em;height:auto;">
+                                                    {% endif %}
+                                                </a>
+                                            </td>
                                             <td style="vertical-align: middle;"><h5><a href="{% url 'artist_view' actor.artist_id %}">{{actor.name}}</a></h5></td>
                                             <td style="vertical-align: middle;"><h5>{{ actor.artist_type }}</h5></td>
                                         </tr>

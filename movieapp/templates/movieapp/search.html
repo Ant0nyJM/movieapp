@@ -6,115 +6,49 @@
     {% if movies or artists or genre %}
         <div class="col">
             <div class="row">
-                <p>Showing results in 
-                    {% if movies %}
-                        Movies
-                    {% endif %}
-                    {% if artists %}
-                        Artists
-                    {% endif %}
-                </p>
-                <select name='model'>
-                    <option value="Movies" {% if movies%}selected='selected'{% endif %}>Movies</option>
-                    <option value="Artists" {% if artists %}selected='selected'{% endif %}>Artists</option>
-                </select>
-                <form method="get">
-                    {% csrf_token %}
-                        <input type="submit" value="Go">
-                </form>
+
+                <div class="col-sm-4">
+                    <div>
+                        <p style="text-align: center;">Showing results in 
+                            <b>
+                                {% if movies %}
+                                    Movies
+                                {% endif %}
+                                {% if artists %}
+                                    Artists
+                                {% endif %}
+                            </b>
+                        </p>  
+                    </div>
+                </div>
+                <div class="col-sm-3">
+                
+                    <form method="get">
+                        <select name='model'>
+                            <option value="Movies" {% if movies %}selected='selected'{% endif %}>Movies</option>
+                            <option value="Artists" {% if artists %}selected='selected'{% endif %}>Artists</option>
+                        </select>
+                        <input name='q' value="{{ q_value }}" type="hidden">
+                        <button class="btn btn-primary p-2">Go</button>
+                    </form>
+                </div>
+                <div class="col">
+
+                </div>
                 
             </div>
         {% if movies %}
-            <p>{{ movies|length }} result{{ movies|pluralize }} found in Movies</p>
-            {% for movie in movies %}
-              {% with mv_artist_set=movie.artist_set.all %}
-                <div class="search-result-div shadow my-3 md-5" style="width:100%">
-                    <a href="{% url 'movie_view' movie.movie_id %}">
-                            {% if movie.image %}
-                            <img class="search-result-item m-1" src="{{movie.image.url}}"  style="height:7.0rem;width:auto;" >
-                            {% else %}
-                            <img class="search-result-item m-1" src="{% static 'movieapp/images/noimage.jpg' %}"  style="height:7.0rem;width:auto;" >
-                            {% endif%}
-                    </a>
-                    <div class="search-result-item">
-                        <span class="search-result-item">
-                            <h4 class="h3-responsive m-1">
-                                <a href="{% url 'movie_view' movie.movie_id %}">{{ movie.name }}({{ movie.release_date.year}})</a>
-                            </h4>
-                            
-                        </span>
-                        <small class="mt-2">
-                            <div class="m-1 mb-1">
-                            <span class="search-result-sm-text p-1">Directed By: 
-                                {% for c in mv_artist_set %}
-                                    {% if c.artist_type == 'Director' %} 
-                                        <a href="{% url 'artist_view' c.artist_id %}">{{ c.name }}</a>
-                                    {% endif %}
-                                {% endfor %}  
-                            </span></div>
-                            <div class="m-1 mt-1">
-                            <span class="search-result-sm-text p-1">
-                                Cast : 
-                                {% for c in mv_artist_set %}
-                                    {% if c.artist_type == 'Actor' %} 
-                                        {% if forloop.last %}
-                                        <a href="{% url 'artist_view' c.artist_id %}">{{ c.name }}</a>
-                                        {% else %}
-                                            <a href="{% url 'artist_view' c.artist_id %}">{{ c.name }}</a>,
-                                        {% endif %}
-                                        {% endif %}
-                                {% endfor %}
-                            </span><br>
-                            <span class="search-result-sm-text p-1">
-                                    Description : {{ movie.description }}
-                            </span>
-                            </div>
-                        </small>
-                    </div>
-                </div>
-                {% endwith %}
-            {% endfor %}
+
+            {% include 'movieapp/search_movies.html' %}
+
         {% endif %}
 
         {% if artists %}
-            <p>{{ artists|length }} result{{ artists|pluralize }} found in Artists</p>
-            {% for artist in artists %}
-                <div class="search-result-div shadow my-3 md-5" style="width:70%">
-                    <a href="{% url 'artist_view' artist.artist_id %}">
-                        {% if artist.image %}
-                        <img class="search-result-item m-1" src="{{artist.image.url}}"  style="height:7.0rem;width:auto;" >
-                        {% else %}
-                        <img class="search-result-item m-1" src="{%static 'movieapp/images/noimage.jpg' %}"  style="height:7.0rem;width:auto;" >
-                        {% endif %}
-                    </a>
-                    <div class="search-result-item">
-                        <span class="search-result-item">
-                            <h4 class="h3-responsive m-1">
-                                <a href="{% url 'artist_view' artist.artist_id %}">{{ artist.name }}</a>
-                            </h4>
-                            
-                        </span>
-                        <small class="mt-2">
-                            <div class="m-1 mt-1">
-                            <span class="search-result-sm-text p-1">
-                                Movies : 
-                                {% with artist_movies=artist.movies.all %}
-                                    {% for movie in artist_movies %}
-                                        
-                                            {% if forloop.last %}
-                                            <a href="{% url 'movie_view' movie.movie_id %}">{{ movie.name }}</a>
-                                            {% else %}
-                                                <a href="{% url 'movie_view' movie.movie_id %}">{{ movie.name }}</a>,
-                
-                                            {% endif %}
-                                    {% endfor %}
-                                {% endwith %}
-                            </span>
-                            </div>
-                        </small>
-                    </div>
-                </div>
-            {% endfor %}
+            
+
+            {% include 'movieapp/search_artists.html' %}
+
+
         {% endif %}
 
         {% if genre %}
