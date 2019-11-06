@@ -116,14 +116,17 @@ class MovieAddView(LoginRequiredMixin,View):
             director = my_models.Artist.objects.get(artist_id=request.POST.get('director-id'))
             director.movies.add(movie)
             director.save()
-        except ValueError:
+        except (ValueError,my_models.Artist.DoesNotExist):
             pass
+
         ids = request.POST.getlist('artist_ids[]')
         for x in ids:
-            artist = my_models.Artist.objects.get(artist_id=x)
-            
-            artist.movies.add(movie)
-            artist.save()
+            try:
+                artist = my_models.Artist.objects.get(artist_id=x)
+                artist.movies.add(movie)
+                artist.save()
+            except my_models.Artist.DoesNotExist:
+                pass
         return redirect(reverse('pending')+"?show_model=Movies")
         
 
@@ -419,7 +422,6 @@ class ArtistAddView(LoginRequiredMixin,View):
         usr.user = User.objects.get(username=request.user.username)
         usr.artist_id = slugify(usr.name)
         usr.save()
-        artist_id = usr.artist_id
         return redirect(reverse('pending')+"?show_model=Artists")
 
 class ArtistView(View):
