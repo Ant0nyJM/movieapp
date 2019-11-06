@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.forms import ChoiceField, DateInput, HiddenInput, ModelForm
 from django.utils.translation import gettext as _
-from .models import Artist, Category, List, MotionPicture, Review
+from .models import Artist, List, MotionPicture, Review
 
 
 class MotionPictureForm(ModelForm):

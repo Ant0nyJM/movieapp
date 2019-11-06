@@ -21,9 +21,9 @@
                         //alert(retData['msg']);
                         alert('Movie has been approved');
                         
-                        setTimeout(function(){
-                             location.reload();
-                        },1000);
+                        
+                        location.reload();
+                        
                         
                     }
                     else{
@@ -43,7 +43,10 @@
 
         function approveArtist(bt,aid){
             $(bt).children(".aprv-status").addClass('spinner-border spinner-border-sm')
-            bt.disabled = true;
+            $(".btn-link").each(function(index,btn){
+                //alert($(this))
+                $(this).attr('disabled',true);
+            });
             $.ajax({
                 url : "{% url 'pending' %}",
                 method : 'post',
@@ -53,9 +56,9 @@
                         //alert(retData['msg']);
                         alert('Artist has been approved');
                         
-                        setTimeout(function(){
-                             location.reload();
-                        },1000);
+                        
+                        location.reload();
+                        
                         
                     }
                     else{
@@ -96,9 +99,9 @@ function deleteMovie(btn,mid){
                         
                         $("#modMsg").text("Movie deleted");
                         $("#messageModal").modal();
-                        setTimeout(function(){
+                        
                             location.reload();
-                        },1000);
+                        
                     }
                 }
             });
@@ -143,9 +146,9 @@ function deleteArtist(btn,aid){
                     });
                     $("#modMsg").text("Artist deleted");
                     $("#messageModal").modal();
-                    setTimeout(function(){
-                        location.reload();
-                    },1000);
+                    
+                    location.reload();
+                   
                 }
 
             }    });   

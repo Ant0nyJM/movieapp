@@ -1,7 +1,7 @@
 from django.contrib import admin
 
 # Register your models here.
-from .models import (Artist, Category, CategoryLabel, List, MotionPicture,
+from .models import (Artist, List, MotionPicture,
                      Rate, Review)
 
 
@@ -27,5 +27,3 @@ admin.site.register(Artist,ArtistAdmin)
 admin.site.register(Rate,RateAdmin)
 admin.site.register(Review,ReviewAdmin)
 admin.site.register(List,ListAdmin)
-admin.site.register(Category)
-admin.site.register(CategoryLabel)

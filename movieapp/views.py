@@ -124,7 +124,7 @@ class MovieAddView(LoginRequiredMixin,View):
             
             artist.movies.add(movie)
             artist.save()
-        return redirect('movie')
+        return redirect(reverse('pending')+"?show_model=Movies")
         
 
 
@@ -172,7 +172,6 @@ class MovieView(View):
 class PendingView(LoginRequiredMixin,View):
 
     def get(self,request):
-        categories = my_models.Category.objects.all()
         
 
         if 'query' in request.GET:
@@ -190,7 +189,7 @@ class PendingView(LoginRequiredMixin,View):
                 paginator = Paginator(pending_art_list,5)
                 page = request.GET.get('page',1)
                 pending_art = paginator.get_page(page)
-                return render(request,'movieapp/pending_artists.html',{'pending_art':pending_art,'categories':categories,'selected':model})
+                return render(request,'movieapp/pending_artists.html',{'pending_art':pending_art,'selected':model})
                 
             if model == 'Movies':
                 try:
@@ -202,7 +201,7 @@ class PendingView(LoginRequiredMixin,View):
                 paginator = Paginator(pending_list,5)
                 page = request.GET.get('page',1)
                 pending = paginator.get_page(page)
-                return render(request,'movieapp/pending_movies.html',{'pending':pending,'categories':categories,'selected':model})
+                return render(request,'movieapp/pending_movies.html',{'pending':pending,'selected':model})
         else:
             try:
                 pending_list = my_models.MotionPicture.objects.filter(approved=False,name__icontains=query).order_by('-created_date_time')
@@ -213,7 +212,7 @@ class PendingView(LoginRequiredMixin,View):
             paginator = Paginator(pending_list,5)
             page = request.GET.get('page',1)
             pending = paginator.get_page(page)
-            return render(request,'movieapp/pending_movies.html',{'pending':pending,'categories':categories})
+            return render(request,'movieapp/pending_movies.html',{'pending':pending})
 
     def post(self,request):
         if 'artist_id' in request.POST:
@@ -421,7 +420,7 @@ class ArtistAddView(LoginRequiredMixin,View):
         usr.artist_id = slugify(usr.name)
         usr.save()
         artist_id = usr.artist_id
-        return redirect(reverse('artist_view',args=[artist_id]))
+        return redirect(reverse('pending')+"?show_model=Artists")
 
 class ArtistView(View):
     def get(self,request,artist_id):
