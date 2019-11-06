@@ -89,19 +89,3 @@ class List(MovieappBaseModel):
 
 
 
-class Category(MovieappBaseModel):
-
-    name = models.CharField(max_length=50)
-
-    def __str__(self):
-        return str(self.name)
-    
-
-
-class CategoryLabel(MovieappBaseModel):
-        
-    name = models.CharField(max_length=50)
-    category = models.ForeignKey(Category,on_delete=models.CASCADE)
-    
-    def __str__(self):
-        return str(self.name)
