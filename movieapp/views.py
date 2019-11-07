@@ -1,4 +1,6 @@
 import json
+import requests
+import barcode 
 
 from django.contrib.auth.decorators import login_required,user_passes_test
 from django.contrib.auth.forms import UserChangeForm
@@ -588,3 +590,42 @@ class ProfileEditView(LoginRequiredMixin,View):
             return redirect('profile')
         else:
             return render(request,'profile_edit',{'form':form})
+
+
+def share_page(request):
+
+    requesting_url = request.META['HTTP_REFERER']
+    user_email = request.POST.get('share-email')
+
+    try:
+        barcode_url = my_models.Barcode.objects.get(url=requesting_url)
+    except my_models.Barcode.DoesNotExist:
+        code128 = barcode.get_barcode_class('code128')
+        img = code128(requesting_url)
+        barcode_url = my_forms.Barcode(reques)
+    
+    
+
+    return HttpResponse("requesting url is -->"+requesting_url+" requesting email -->"+user_email)
+
+def shorten_url(url):
+
+    linkRequest = {
+        "destination": url , 
+        "domain": { "fullName": "rebrand.ly" }
+    }
+
+    requestHeaders = {
+    "Content-type": "application/json",
+    "apikey": "2530603f8d76454fa2c3eaaa19d59f17",
+    }
+
+    response = requests.post("https://api.rebrandly.com/v1/links", 
+        data = json.dumps(linkRequest),
+        headers=requestHeaders)
+
+    if (response.status_code == requests.codes.ok):
+        link = response.json()
+        return json.dumps({'status':'ok','link':link['shortUrl']})
+    else:
+        return json.dumps({'status':'fail'})

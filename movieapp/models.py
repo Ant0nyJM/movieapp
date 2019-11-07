@@ -85,6 +85,15 @@ class List(MovieappBaseModel):
 
     def __str__(self):
         return str(self.name)
+
+
+class Barcode(MovieappBaseModel):
+
+    url = models.URLField(primary_key=True)
+    image = models.FileField(upload_to='images/barcodes/')
+
+    def __str__(self):
+        return str(self.url)
     
 
 

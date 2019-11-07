@@ -1,7 +1,9 @@
 {% extends 'movieapp/base3.html' %}
+
 {% load static %}
 {% load thumbnail %}
 {% load widget_tweaks %}
+
 {% block title %}{{ movie.name }}{% endblock %}
 
 {% block style %}
@@ -239,8 +241,11 @@ function addToList(){
                     
                 
                     {% endif %}
-
-                    
+                        <form method="post" action="{% url 'share-page' %}">
+                            {% csrf_token %}
+                            <input type="email" name="share-email">
+                            <input type="submit" value="Send mail">
+                        </form>
                         <span style="visibility:hidden">NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN</span>
                     
               </article>

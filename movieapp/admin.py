@@ -2,7 +2,7 @@ from django.contrib import admin
 
 # Register your models here.
 from .models import (Artist, List, MotionPicture,
-                     Rate, Review)
+                     Rate, Review,Barcode)
 
 
 class MotionPictureAdmin(admin.ModelAdmin):
@@ -27,3 +27,4 @@ admin.site.register(Artist,ArtistAdmin)
 admin.site.register(Rate,RateAdmin)
 admin.site.register(Review,ReviewAdmin)
 admin.site.register(List,ListAdmin)
+admin.site.register(Barcode)

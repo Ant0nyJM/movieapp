@@ -33,6 +33,7 @@ urlpatterns = [
                 path('profile/list/movie/remove/',views.list_movie_remove,name="list_movie_remove"),
                 path('profile/list/delete/',views.list_delete,name="list_delete"),
                 path('profile/edit/',views.ProfileEditView.as_view(),name='profile_edit'),
+                path('share/',views.share_page,name='share-page'),
                 
                 
                 path('artist-autocomplete/',views.MotionPictureAutocomplete.as_view(),name='artist-autocomplete'),
