@@ -625,7 +625,7 @@ def share_page(request):
     return render(request,'movieapp/barcode.html',{'barcode':barcode_obj})
 
 def shorten_url(url):
-
+    print("^^^^^^^^^^^^^^^^^^^^^^^^^^^^",url)
     linkRequest = {
         "destination": url , 
         "domain": { "fullName": "rebrand.ly" }
