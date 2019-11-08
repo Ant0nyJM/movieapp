@@ -80,28 +80,28 @@ WSGI_APPLICATION = 'moviedb.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'moviedb',
-        'USER' : 'mdbadmin',
-        'PASSWORD' : 'admin01',
-        'HOST': '127.0.0.1',
-        'PORT':'5432',
-    }
-}
-
-
 # DATABASES = {
 #     'default': {
 #         'ENGINE': 'django.db.backends.postgresql',
-#         'NAME': 'df472mq38rejrb',
-#         'USER' : 'goqdlbowvfwgzl',
-#         'PASSWORD' : '651aa0a6cb73cbdf42ce00c13baf28a03f98fdedb8ae87698658a9cbf523d155',
-#         'HOST': 'ec2-107-20-167-241.compute-1.amazonaws.com',
+#         'NAME': 'moviedb',
+#         'USER' : 'mdbadmin',
+#         'PASSWORD' : 'admin01',
+#         'HOST': '127.0.0.1',
 #         'PORT':'5432',
 #     }
 # }
+
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'd2oku3116la5di',
+        'USER' : 'hlmtjdbfceiean',
+        'PASSWORD' : 'c54ae1413a6280c1634fb1b60c947752180ef08c2ac3f61905807cf18e7b1ccf',
+        'HOST': 'ec2-54-235-180-123.compute-1.amazonaws.com',
+        'PORT':'5432',
+    }
+}
 
 
 
