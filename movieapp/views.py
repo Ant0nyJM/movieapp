@@ -146,6 +146,8 @@ class MovieView(View):
         artists = movie.artist_set.all().defer('description','birthday')
         actors = artists.filter(artist_type="Actor")
 
+        barcode = gen_or_get_barcode(request)
+
         if(actors.exists()):
             context['actors']=actors
             
@@ -159,7 +161,7 @@ class MovieView(View):
         current_user_reviewed = True if reviews_len > 0 else False
 
         review_form = MovieReviewForm()
-        context.update({'movie':movie,'rating_len':rating_len,'review_form':review_form,'reviews':reviews,'reviews_len':reviews_len,'current_user_reviewed':current_user_reviewed})
+        context.update({'barcode':barcode,'movie':movie,'rating_len':rating_len,'review_form':review_form,'reviews':reviews,'reviews_len':reviews_len,'current_user_reviewed':current_user_reviewed})
 
         if request.user.is_authenticated:
             user = request.user
@@ -593,41 +595,51 @@ class ProfileEditView(LoginRequiredMixin,View):
             return render(request,'profile_edit',{'form':form})
 
 
-def share_page(request):
+def gen_or_get_barcode(request):
 
     requesting_url = request.META['HTTP_REFERER']
+
     user_email = request.POST.get('share-email')
+    # print("requetsing url ------------",requesting_url)
+    code128 = barcode.get_barcode_class('code128')
 
     try:
         barcode_obj = my_models.Barcode.objects.get(long_url=requesting_url)
+        if(not barcode_obj.short_url ):
+            short_barcode_request = json.loads(shorten_url(requesting_url))
+            if(short_barcode_request['status'] == 'ok'):
+                barcode_obj.short_url = short_barcode_request['link']
+                barcode_obj.save()
     except my_models.Barcode.DoesNotExist:
 
         barcode_obj = my_models.Barcode(long_url=requesting_url)
 
         short_barcode_request = json.loads(shorten_url(requesting_url))
-        print("-----------",short_barcode_request['status'])
+        # print("-----------",str(short_barcode_request))
         if(short_barcode_request['status'] == 'ok'):
-            barcode_obj.short_url = short_barcode_request['shortUrl']
-
-            code128 = barcode.get_barcode_class('code128')
-            barcode_img = code128(barcode_obj.short_url)
-            barcode_img.save('barcode')
-
-            filename = 'barcode_'+barcode_obj.short_url.split('/')[1]+".svg"
-            barcode_obj.image.save(filename,File(open('barcode.svg')))
+            barcode_obj.short_url = short_barcode_request['link']
         
         barcode_obj.save()
         
-        # barcode_url.
-    
+    if not barcode_obj.image and barcode_obj.short_url :
+        # print("no image but shorturl exists")
+            
+        barcode_img = code128(barcode_obj.short_url)
+        barcode_img.save('barcode')
+
+        filename = 'barcode_'+barcode_obj.short_url.split('/')[1]+".svg"
+        barcode_obj.image.save(filename,File(open('barcode.svg')))
     
 
-    return render(request,'movieapp/barcode.html',{'barcode':barcode_obj})
+    return barcode_obj
 
 def shorten_url(url):
-    print("^^^^^^^^^^^^^^^^^^^^^^^^^^^^",url)
+
+    # print("^^^^^^^^^^^^^^^^^^^^^^^^^^^^",url)
+
     linkRequest = {
         "destination": url , 
+        # "destination" : "https://barcodemoviedb.herokuapp.com/movie/baby/",
         "domain": { "fullName": "rebrand.ly" }
     }
 
@@ -635,11 +647,14 @@ def shorten_url(url):
     "Content-type": "application/json",
     "apikey": "2530603f8d76454fa2c3eaaa19d59f17",
     }
+    try:
+        response = requests.post("https://api.rebrandly.com/v1/links", 
+            data = json.dumps(linkRequest),
+            headers=requestHeaders)
+    except requests.exceptions.ConnectionError:
+        response.status_code = "Connection Error"
 
-    response = requests.post("https://api.rebrandly.com/v1/links", 
-        data = json.dumps(linkRequest),
-        headers=requestHeaders)
-    print("**************",str(response.text))
+    # print("**************",str(response.text))
     if (response.status_code == requests.codes.ok):
         link = response.json()
         return json.dumps({'status':'ok','link':link['shortUrl']})
