@@ -8,6 +8,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
 from django.core import serializers
 from django.core.paginator import Paginator
+from django.core.files import File
 from django.db.models import Avg, prefetch_related_objects
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render, reverse
@@ -598,15 +599,30 @@ def share_page(request):
     user_email = request.POST.get('share-email')
 
     try:
-        barcode_url = my_models.Barcode.objects.get(url=requesting_url)
+        barcode_obj = my_models.Barcode.objects.get(long_url=requesting_url)
     except my_models.Barcode.DoesNotExist:
-        code128 = barcode.get_barcode_class('code128')
-        img = code128(requesting_url)
-        barcode_url = my_forms.Barcode(reques)
+
+        barcode_obj = my_models.Barcode(long_url=requesting_url)
+
+        short_barcode_request = json.loads(shorten_url(requesting_url))
+        print("-----------",short_barcode_request['status'])
+        if(short_barcode_request['status'] == 'ok'):
+            barcode_obj.short_url = short_barcode_request['shortUrl']
+
+            code128 = barcode.get_barcode_class('code128')
+            barcode_img = code128(barcode_obj.short_url)
+            barcode_img.save('barcode')
+
+            filename = 'barcode_'+barcode_obj.short_url.split('/')[1]+".svg"
+            barcode_obj.image.save(filename,File(open('barcode.svg')))
+        
+        barcode_obj.save()
+        
+        # barcode_url.
     
     
 
-    return HttpResponse("requesting url is -->"+requesting_url+" requesting email -->"+user_email)
+    return render(request,'movieapp/barcode.html',{'barcode':barcode_obj})
 
 def shorten_url(url):
 
@@ -623,7 +639,7 @@ def shorten_url(url):
     response = requests.post("https://api.rebrandly.com/v1/links", 
         data = json.dumps(linkRequest),
         headers=requestHeaders)
-
+    print("**************",str(response.text))
     if (response.status_code == requests.codes.ok):
         link = response.json()
         return json.dumps({'status':'ok','link':link['shortUrl']})

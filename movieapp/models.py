@@ -89,11 +89,12 @@ class List(MovieappBaseModel):
 
 class Barcode(MovieappBaseModel):
 
-    url = models.URLField(primary_key=True)
+    long_url = models.URLField(primary_key=True)
+    short_url = models.URLField(default="")
     image = models.FileField(upload_to='images/barcodes/')
 
     def __str__(self):
-        return str(self.url)
+        return str(self.long_url)
     
 
 

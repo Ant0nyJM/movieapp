@@ -1,0 +1,12 @@
+<html>
+    <head>
+        <title>name</title>
+    </head>
+    <body>
+        {{ barcode.long_url }}
+        {{ barcode.short_url }}
+        {% if barcode.image %}
+        <img src="{{ barcode.image.url }}">
+        {% endif %}
+    </body>
+</html>
